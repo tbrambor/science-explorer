@@ -151,13 +151,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
   .stat-grid{grid-template-columns:1fr}
   .portrait{width:120px;height:120px}
 }
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
 </style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/turing-explorer.html">DE</a>
+</div>
 
 <div class="hero">
   <div class="hero-content">
-    <div class="portrait" style="background:linear-gradient(135deg,#7bb8e0,#f5d863);display:flex;align-items:center;justify-content:center;font-size:80px">&#128105;</div>
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg" alt="Alan Turing aged 16">
     <h1>Alan Turing: The Code Breaker</h1>
     <p class="subtitle">The father of computer science and artificial intelligence</p>
     <p class="life">1912 – 1954 · British mathematician, logician, and visionary</p>

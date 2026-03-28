@@ -118,13 +118,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
   .stat-grid{grid-template-columns:1fr}
   .portrait{width:120px;height:120px}
 }
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
 </style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/pascal-explorer.html">DE</a>
+</div>
 
 <div class="hero">
   <div class="hero-content">
-    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Blaise_pascal.jpg" alt="Blaise Pascal">
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/9/98/Blaise_Pascal_Versailles.JPG" alt="Blaise Pascal">
     <h1>The World of Blaise Pascal</h1>
     <p class="subtitle">A brilliant mind, a giant of mathematics and probability</p>
     <p class="life">1623 – 1662 · Clermont-Ferrand, France</p>

@@ -543,9 +543,18 @@
         .step-info strong {
             color: #f5d863;
         }
-    </style>
+    /* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
+</style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="../lovelace-explorer.html">EN</a>
+  <a href="#" class="active">DE</a>
+</div>
     <nav>
   <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
         <h1>Ada-Lovelace-Erkunder</h1>

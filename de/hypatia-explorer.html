@@ -20,7 +20,7 @@ nav button.active{background:var(--amber);color:#000;box-shadow:0 4px 18px rgba(
 .hero{text-align:center;padding:50px 20px 35px;position:relative}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.07) 0%,transparent 50%);pointer-events:none}
 .hero-content{position:relative;max-width:800px;margin:0 auto}
-.portrait{width:170px;height:170px;border-radius:50%;border:4px solid var(--amber);box-shadow:0 0 40px rgba(245,216,99,.25);margin-bottom:18px;background:linear-gradient(135deg,#3a2a5a 0%,#1a1040 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.portrait{width:170px;height:170px;border-radius:50%;border:4px solid var(--amber);box-shadow:0 0 40px rgba(245,216,99,.25);margin-bottom:18px;object-fit:cover;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .portrait svg{width:120px;height:120px}
 .hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,#f5d863,#d96b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
 .hero .sub{font-size:19px;color:var(--dim)}.hero .life{margin-top:10px;font-size:15px;color:var(--teal)}
@@ -105,16 +105,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
 </head>
 <body>
 <div class="hero"><div class="hero-content">
-  <div class="portrait"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="32" r="18" fill="#e8a838" opacity=".85"/>
-    <ellipse cx="50" cy="85" rx="28" ry="22" fill="#e8a838" opacity=".7"/>
-    <path d="M35 30 Q40 8 50 10 Q60 8 65 30" stroke="#c77d20" stroke-width="2.5" fill="none"/>
-    <circle cx="44" cy="31" r="2" fill="#1a1040"/><circle cx="56" cy="31" r="2" fill="#1a1040"/>
-    <path d="M46 38 Q50 41 54 38" stroke="#1a1040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-    <ellipse cx="50" cy="60" rx="6" ry="3" fill="none" stroke="#e8a838" stroke-width="1.5" transform="rotate(-30 50 60)"/>
-    <line x1="44" y1="58" x2="56" y2="62" stroke="#e8a838" stroke-width="1.2"/>
-    <circle cx="50" cy="60" r="12" fill="none" stroke="rgba(232,168,56,.3)" stroke-width="1" stroke-dasharray="3 3"/>
-  </svg></div>
+  <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Escuela_de_Atenas_Hipatia_de_Alejandr%C3%ADa.jpg/250px-Escuela_de_Atenas_Hipatia_de_Alejandr%C3%ADa.jpg" alt="Hypatia, Detail aus Raffaels Schule von Athen">
   <h1>Die Welt der Hypatia</h1>
   <p class="sub">Die erste große Mathematikerin</p>
   <p class="life">ca. 350–415 AD · Alexandria, Ägypten</p>

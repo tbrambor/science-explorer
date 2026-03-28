@@ -207,9 +207,18 @@
     .stat-grid { grid-template-columns: 1fr 1fr; }
     nav button { padding: 8px 14px; font-size: 13px; }
   }
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
 </style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/geometry-explorer.html">DE</a>
+</div>
 
 <div class="hero">
   <h1>Circles & Symmetry Explorer</h1>

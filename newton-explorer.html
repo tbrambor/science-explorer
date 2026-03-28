@@ -114,13 +114,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
   .stat-grid{grid-template-columns:1fr}
   .portrait{width:120px;height:120px}
 }
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
 </style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/newton-explorer.html">DE</a>
+</div>
 
 <div class="hero">
   <div class="hero-content">
-    <div class="portrait">I</div>
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Portrait_of_Sir_Isaac_Newton%2C_1689.jpg" alt="Portrait of Isaac Newton by Godfrey Kneller, 1689">
     <h1>The World of Isaac Newton</h1>
     <p class="subtitle">The man who unlocked the laws of motion and gravity</p>
     <p class="life">1643 – 1727 · England</p>

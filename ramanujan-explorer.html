@@ -554,9 +554,18 @@
             border-color: #ef4444;
             color: #fca5a5;
         }
-    </style>
+    /* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
+</style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/ramanujan-explorer.html">DE</a>
+</div>
     <header>
         <h1>🌟 Ramanujan Explorer 🌟</h1>
         <p>Journey through the extraordinary life and discoveries of a mathematical genius</p>

@@ -144,14 +144,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
 
 .race-timer{font-size:32px;font-weight:800;text-align:center;margin:14px 0;color:var(--accent)}
 .race-result{text-align:center;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;margin-top:14px;font-size:15px}
-
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
 </style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/alkhwarizmi-explorer.html">DE</a>
+</div>
 
 <div class="hero">
   <div class="hero-content">
-    <div class="portrait">📚</div>
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Khwarizmi_Amirkabir_University_of_Technology.png" alt="Al-Khwarizmi statue at Amirkabir University">
     <h1>The World of Al-Khwarizmi</h1>
     <p class="subtitle">The genius who invented algebra and algorithms</p>
     <p class="life">c. 780 – c. 850 AD · Khwarezm (modern Uzbekistan)</p>

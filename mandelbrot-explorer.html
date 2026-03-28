@@ -125,13 +125,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
   .portrait{width:120px;height:120px}
   canvas{max-width:100%;height:auto}
 }
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
 </style>
 </head>
 <body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/mandelbrot-explorer.html">DE</a>
+</div>
 
 <div class="hero">
   <div class="hero-content">
-    <div class="portrait"></div>
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Benoit_Mandelbrot%2C_TED_2010_%283x4_cropped%29.jpg/250px-Benoit_Mandelbrot%2C_TED_2010_%283x4_cropped%29.jpg" alt="Benoît Mandelbrot">
     <h1>Benoit Mandelbrot</h1>
     <p class="subtitle">The Man Who Found the Shapes of Nature</p>
     <p class="life">1924–2010 · Poland, France, United States</p>
