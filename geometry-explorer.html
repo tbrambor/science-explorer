@@ -4,209 +4,115 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-<title>Circles & Symmetry Explorer</title>
+<title>The World of Geometry</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;--accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;--radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
 
-  :root {
-    --bg: #2b3a2b;
-    --card: #314231;
-    --accent: #f5d863;
-    --accent2: #d96b6b;
-    --accent3: #8fd4a4;
-    --blue: #7bb8e0;
-    --text: #e8e4d9;
-    --dim: #9ca898;
-    --radius: 8px;
-  }
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
 
-  body {
-    font-family: 'Patrick Hand', 'Caveat', cursive, 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.hero-icon{width:170px;height:170px;margin-bottom:18px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-right:auto}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .subtitle{font-size:19px;color:var(--dim)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
 
-  /* ── NAV ── */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 14px 20px;
-    background: rgba(35,48,35,.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(245,216,99,.25);
-  }
-  nav button {
-    padding: 10px 22px; border: none; border-radius: 6px;
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    background: transparent; color: var(--dim);
-    transition: all .25s;
-  }
-  nav button:hover { color: #fff; }
-  nav button.active {
-    background: var(--accent); color: #fff;
-    box-shadow: 0 4px 20px rgba(245,216,99,.45);
-  }
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
 
-  /* ── HERO ── */
-  .hero {
-    text-align: center; padding: 50px 20px 30px;
-  }
-  .hero h1 {
-    font-size: clamp(28px, 5vw, 44px);
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero p { color: var(--dim); margin-top: 8px; font-size: 17px; }
+/* ── INTRO CARDS ── */
+.intro-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:20px}
+.intro-card{background:rgba(245,216,99,.04);border-radius:14px;padding:20px;border-left:4px solid var(--accent);transition:.25s}
+.intro-card:nth-child(2){border-left-color:var(--accent2)}
+.intro-card:nth-child(3){border-left-color:var(--accent3)}
+.intro-card h3{font-size:18px;margin-bottom:8px;color:var(--accent)}
+.intro-card p{font-size:14px;color:var(--dim);line-height:1.6}
 
-  /* ── SECTIONS ── */
-  section { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
-  section.visible { display: block; animation: fadeUp .4s ease; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+/* ── INTERACTIVE SHARED ── */
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+canvas{border-radius:8px;border:2px solid rgba(245,216,99,.15)}
+.slider-group{margin-bottom:16px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(245,216,99,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:20px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
 
-  .card {
-    background: var(--card); border-radius: var(--radius);
-    padding: 28px; margin-bottom: 24px;
-    border: 1px solid rgba(245,216,99,.15);
-  }
-  .card h2 {
-    font-size: 22px; margin-bottom: 6px;
-  }
-  .card .subtitle { color: var(--dim); margin-bottom: 20px; font-size: 14px; }
+/* ── BUTTONS ── */
+.btn-group{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;justify-content:center}
+.btn-group button{padding:10px 18px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.25s}
+.btn-group button:hover{border-color:var(--accent)}
+.btn-group button.active{background:var(--accent);border-color:var(--accent);color:#000}
 
-  /* ── CIRCLE PLAYGROUND ── */
-  .circle-lab { display: flex; flex-wrap: wrap; gap: 30px; align-items: center; justify-content: center; }
-  .circle-canvas-wrap { position: relative; }
-  canvas#circleCanvas { background: transparent; }
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}
+.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#f472b6}
+.fact-card:nth-child(7){border-left-color:#fb923c}
+.fact-card:nth-child(8){border-left-color:#38bdf8}
+.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}
+.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
 
-  .controls { flex: 1; min-width: 240px; }
-  .slider-group { margin-bottom: 22px; }
-  .slider-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 15px; }
-  input[type=range] {
-    -webkit-appearance: none; width: 100%; height: 8px;
-    border-radius: 4px; background: rgba(245,216,99,.25); outline: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 24px; height: 24px;
-    border-radius: 50%; background: var(--accent); cursor: pointer;
-    box-shadow: 0 2px 10px rgba(245,216,99,.5);
-  }
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .stat-box {
-    background: rgba(245,216,99,.1); border-radius: 12px;
-    padding: 14px; text-align: center;
-  }
-  .stat-box .label { font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
-  .stat-box .value { font-size: 24px; font-weight: 700; margin-top: 4px; }
-  .stat-box .value.purple { color: var(--accent); }
-  .stat-box .value.pink { color: var(--accent2); }
-  .stat-box .value.green { color: var(--accent3); }
-  .stat-box .value.orange { color: #ffa940; }
+/* ── QUIZ ── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:6px;font-weight:700;color:var(--accent3);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--accent);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--accent3);background:rgba(143,212,164,.12);color:var(--accent3)}
+.answer-btn.wrong{border-color:var(--accent2);background:rgba(217,107,107,.1);color:var(--accent2)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--accent3)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--accent2)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(245,216,99,.35)}
+.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}
+.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.restart-btn:hover{transform:scale(1.05)}
 
-  .formula-bar {
-    margin-top: 18px; padding: 14px 18px;
-    background: rgba(143,212,164,.08); border-radius: 12px;
-    border-left: 4px solid var(--accent3);
-    font-size: 14px; line-height: 1.7;
-  }
-  .formula-bar code {
-    background: rgba(255,255,255,.08); padding: 2px 7px; border-radius: 4px;
-    font-family: 'Courier New', monospace; font-size: 14px;
-  }
+@media(max-width:600px){
+  nav button{padding:7px 10px;font-size:11px}
+  .card{padding:18px}
+  .answers{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr}
+  .hero-icon{width:120px;height:120px}
+}
 
-  /* ── SYMMETRY ── */
-  .shape-picker { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; justify-content: center; }
-  .shape-btn {
-    padding: 10px 20px; border: 2px solid rgba(245,216,99,.3);
-    border-radius: 6px; background: transparent; color: var(--text);
-    font-size: 14px; font-weight: 600; cursor: pointer; transition: all .25s;
-  }
-  .shape-btn:hover { border-color: var(--accent); }
-  .shape-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .symmetry-display { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: center; }
-  .sym-info { flex: 1; min-width: 220px; }
-  .sym-info h3 { font-size: 20px; margin-bottom: 8px; }
-  .sym-fact {
-    padding: 12px 16px; border-radius: 12px;
-    background: rgba(217,107,107,.08); border-left: 4px solid var(--accent2);
-    margin-top: 14px; font-size: 14px; line-height: 1.6;
-  }
-  .toggle-wrap { margin-top: 16px; display: flex; align-items: center; gap: 10px; }
-  .toggle {
-    width: 52px; height: 28px; border-radius: 14px;
-    background: rgba(245,216,99,.25); position: relative;
-    cursor: pointer; transition: background .25s;
-  }
-  .toggle.on { background: var(--accent); }
-  .toggle::after {
-    content: ''; position: absolute; top: 3px; left: 3px;
-    width: 22px; height: 22px; border-radius: 50%;
-    background: #fff; transition: transform .25s;
-  }
-  .toggle.on::after { transform: translateX(24px); }
-
-  /* ── QUIZ ── */
-  .quiz-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-  .score-badge {
-    background: rgba(143,212,164,.12); padding: 8px 18px;
-    border-radius: 30px; font-weight: 700; color: var(--accent3);
-    font-size: 15px;
-  }
-  .question-text { font-size: 20px; font-weight: 600; margin-bottom: 22px; line-height: 1.4; }
-  .quiz-visual { text-align: center; margin-bottom: 18px; }
-  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-  .answer-btn {
-    padding: 16px; border: 2px solid rgba(245,216,99,.25);
-    border-radius: 14px; background: rgba(245,216,99,.06);
-    color: var(--text); font-size: 16px; font-weight: 600;
-    cursor: pointer; transition: all .2s; text-align: center;
-  }
-  .answer-btn:hover:not(.locked) { border-color: var(--accent); background: rgba(245,216,99,.15); transform: scale(1.02); }
-  .answer-btn.correct { border-color: var(--accent3); background: rgba(143,212,164,.15); color: var(--accent3); }
-  .answer-btn.wrong { border-color: var(--accent2); background: rgba(217,107,107,.12); color: var(--accent2); }
-  .feedback {
-    padding: 16px; border-radius: 12px; font-size: 15px; line-height: 1.6;
-    display: none; margin-bottom: 16px;
-  }
-  .feedback.show { display: block; animation: fadeUp .3s ease; }
-  .feedback.correct-fb { background: rgba(143,212,164,.1); border-left: 4px solid var(--accent3); }
-  .feedback.wrong-fb { background: rgba(217,107,107,.1); border-left: 4px solid var(--accent2); }
-  .next-btn {
-    display: none; padding: 14px 32px; border: none; border-radius: 6px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
-    transition: transform .2s, box-shadow .2s;
-  }
-  .next-btn:hover { transform: scale(1.04); box-shadow: 0 6px 24px rgba(245,216,99,.4); }
-  .next-btn.show { display: inline-block; }
-  .progress-bar { height: 6px; border-radius: 3px; background: rgba(245,216,99,.15); margin-bottom: 20px; }
-  .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent3)); transition: width .4s; }
-
-  /* ── COMPLETION ── */
-  .quiz-complete { text-align: center; padding: 40px 20px; }
-  .quiz-complete h2 { font-size: 32px; margin-bottom: 10px; }
-  .final-score { font-size: 64px; font-weight: 800; margin: 20px 0;
-    background: linear-gradient(135deg, var(--accent3), var(--accent));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .restart-btn {
-    margin-top: 20px; padding: 14px 36px; border: none; border-radius: 6px;
-    background: var(--accent); color: #fff; font-size: 16px;
-    font-weight: 700; cursor: pointer; transition: transform .2s;
-  }
-  .restart-btn:hover { transform: scale(1.05); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 600px) {
-    .answers { grid-template-columns: 1fr; }
-    .stat-grid { grid-template-columns: 1fr 1fr; }
-    nav button { padding: 8px 14px; font-size: 13px; }
-  }
 /* ── LANGUAGE TOGGLE ── */
 .lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
 .lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
@@ -221,497 +127,659 @@
 </div>
 
 <div class="hero">
-  <h1>Circles & Symmetry Explorer</h1>
-  <p>Learn geometry by playing with shapes, then test yourself!</p>
+  <div class="hero-content">
+    <div class="hero-icon">
+      <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Compass background circle -->
+        <circle cx="80" cy="80" r="75" fill="rgba(245,216,99,.1)" stroke="rgba(245,216,99,.3)" stroke-width="2"/>
+        <!-- Compass needle -->
+        <path d="M 80 20 L 85 75 L 80 70 L 75 75 Z" fill="#f5d863"/>
+        <!-- Compass circle -->
+        <circle cx="80" cy="80" r="50" fill="none" stroke="#f5d863" stroke-width="2.5"/>
+        <!-- Cardinal directions -->
+        <text x="80" y="35" text-anchor="middle" fill="#8fd4a4" font-size="14" font-weight="700">N</text>
+        <text x="130" y="85" text-anchor="middle" fill="#8fd4a4" font-size="14" font-weight="700">E</text>
+        <text x="80" y="135" text-anchor="middle" fill="#8fd4a4" font-size="14" font-weight="700">S</text>
+        <text x="30" y="85" text-anchor="middle" fill="#8fd4a4" font-size="14" font-weight="700">W</text>
+        <!-- Grid lines for ruler -->
+        <line x1="50" y1="120" x2="110" y2="120" stroke="#d96b6b" stroke-width="2" opacity="0.6"/>
+        <line x1="50" y1="125" x2="50" y2="115" stroke="#d96b6b" stroke-width="1.5"/>
+        <line x1="60" y1="125" x2="60" y2="115" stroke="#d96b6b" stroke-width="1.5"/>
+        <line x1="70" y1="125" x2="70" y2="115" stroke="#d96b6b" stroke-width="1.5"/>
+        <line x1="80" y1="125" x2="80" y2="115" stroke="#d96b6b" stroke-width="1.5"/>
+        <line x1="90" y1="125" x2="90" y2="115" stroke="#d96b6b" stroke-width="1.5"/>
+        <line x1="100" y1="125" x2="100" y2="115" stroke="#d96b6b" stroke-width="1.5"/>
+        <line x1="110" y1="125" x2="110" y2="115" stroke="#d96b6b" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <h1>The World of Geometry</h1>
+    <p class="subtitle">Where Shapes Meet Numbers</p>
+    <p class="tagline">Geometry is everywhere — from the screen you're looking at to the stars above. Let's explore the beautiful world of shapes, angles, and patterns!</p>
+  </div>
 </div>
 
 <nav>
   <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
-  <button class="active" onclick="showSection('circles')">Circle Lab</button>
-  <button onclick="showSection('symmetry')">Symmetry</button>
-  <button onclick="showSection('quiz')">Quiz</button>
+  <button class="active" onclick="show('intro',this)">Introduction</button>
+  <button onclick="show('circle',this)">Circle Lab</button>
+  <button onclick="show('angles',this)">Angle Explorer</button>
+  <button onclick="show('symmetry',this)">Symmetry Studio</button>
+  <button onclick="show('facts',this)">Fun Facts</button>
+  <button onclick="show('quiz',this)">Quiz</button>
 </nav>
 
-<!-- ═══════════════ CIRCLE LAB ═══════════════ -->
-<section id="sec-circles" class="visible">
+<!-- ═══════════ INTRODUCTION ═══════════ -->
+<section id="sec-intro" class="visible">
   <div class="card">
-    <h2>Interactive Circle Lab</h2>
-    <p class="subtitle">Drag the slider to change the radius and watch everything update!</p>
-    <div class="circle-lab">
-      <div class="circle-canvas-wrap">
-        <canvas id="circleCanvas" width="300" height="300"></canvas>
+    <h2>What is Geometry?</h2>
+    <p class="sub">The study of shapes, sizes, and the spaces around us.</p>
+    <div class="intro-grid">
+      <div class="intro-card">
+        <h3>🌍 What is Geometry?</h3>
+        <p>Geometry comes from Greek words meaning "Earth measurement." It's the study of points, lines, shapes, angles, and spaces. Everything around you has geometry!</p>
       </div>
-      <div class="controls">
+      <div class="intro-card">
+        <h3>📐 Why Does It Matter?</h3>
+        <p>Architects use geometry to design buildings. Engineers use it to build bridges. Artists use it to create beautiful compositions. Even nature follows geometric patterns!</p>
+      </div>
+      <div class="intro-card">
+        <h3>✨ Where We See It</h3>
+        <p>Hexagons in honeycomb, spirals in galaxies, circles in wheels, triangles in trusses, rectangles everywhere! Geometry is the hidden language of the universe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CIRCLE LAB ═══════════ -->
+<section id="sec-circle">
+  <div class="card">
+    <h2>Circle Lab — Explore Radius, Diameter & Area</h2>
+    <p class="sub">Circles are one of the most important shapes in geometry. Adjust the radius slider and watch the circle grow or shrink, then see how the measurements change!</p>
+    <div class="lab-layout">
+      <div><canvas id="circleCanvas" width="380" height="380"></canvas></div>
+      <div class="lab-side">
         <div class="slider-group">
-          <label>Radius: <span id="radiusVal">5</span> units</label>
-          <input type="range" id="radiusSlider" min="1" max="10" step="0.5" value="5">
+          <label>Radius: <span style="color:var(--accent);font-weight:700" id="radiusVal">50</span>px</label>
+          <input type="range" id="radiusSlider" min="20" max="150" value="50" onchange="updateCircle()">
         </div>
         <div class="stat-grid">
-          <div class="stat-box">
-            <div class="label">Radius (r)</div>
-            <div class="value purple" id="statR">5</div>
-          </div>
-          <div class="stat-box">
-            <div class="label">Diameter (d)</div>
-            <div class="value pink" id="statD">10</div>
-          </div>
-          <div class="stat-box">
-            <div class="label">Circumference</div>
-            <div class="value green" id="statC">31.42</div>
-          </div>
-          <div class="stat-box">
-            <div class="label">Area</div>
-            <div class="value orange" id="statA">78.54</div>
-          </div>
+          <div class="stat-box"><div class="lbl">Diameter</div><div class="val" id="diameterStat">100</div></div>
+          <div class="stat-box"><div class="lbl">Circumference</div><div class="val" id="circumStat">314</div></div>
+          <div class="stat-box"><div class="lbl">Area (π r²)</div><div class="val" id="areaStat">7854</div></div>
+          <div class="stat-box"><div class="lbl">Formula</div><div class="val" style="font-size:12px">C = 2πr</div></div>
         </div>
-        <div class="formula-bar">
-          <strong>Formulas:</strong><br>
-          Diameter: <code>d = 2 &times; r</code><br>
-          Circumference: <code>C = 2 &times; &pi; &times; r</code><br>
-          Area: <code>A = &pi; &times; r&sup2;</code>
+        <div class="explain-box">
+          <strong>Key relationships:</strong> The diameter is always 2× the radius. The circumference (distance around) is about 3.14× (π) the diameter. The area grows with the square of the radius!
         </div>
       </div>
     </div>
   </div>
 </section>
+<!-- ═══════════ ANGLE EXPLORER ═══════════ -->
+<section id="sec-angles">
+  <div class="card">
+    <h2>Angle Explorer — Acute, Right, Obtuse & More</h2>
+    <p class="sub">Angles are measured in degrees (°). Adjust the slider to see different angle types and learn what makes each one special!</p>
+    <div class="lab-layout">
+      <div><canvas id="angleCanvas" width="380" height="380"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Angle: <span style="color:var(--accent);font-weight:700" id="angleVal">45</span>°</label>
+          <input type="range" id="angleSlider" min="0" max="360" value="45" onchange="updateAngle()">
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="lbl">Current Angle</div><div class="val" id="angleStat">45°</div></div>
+          <div class="stat-box"><div class="lbl">Type</div><div class="val" id="angleType">Acute</div></div>
+        </div>
+        <div class="explain-box" id="angleExplain">
+          <strong>Acute Angle:</strong> Less than 90°. These are sharp, pointy angles. They look like the tip of a pencil!
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!-- ═══════════════ SYMMETRY ═══════════════ -->
+  <div class="card">
+    <h2>Angle Types Reference</h2>
+    <p class="sub">Here's how we classify angles by their size:</p>
+    <div class="intro-grid">
+      <div class="intro-card">
+        <h3>Acute: 0° – 90°</h3>
+        <p>Sharp, pointy angles. Any angle smaller than a right angle. Think of an arrow tip or a slice of pizza.</p>
+      </div>
+      <div class="intro-card">
+        <h3>Right: 90°</h3>
+        <p>A perfect corner, like the corners of a square or a door. We mark it with a small square symbol.</p>
+      </div>
+      <div class="intro-card">
+        <h3>Obtuse: 90° – 180°</h3>
+        <p>Wider, blunter angles. More than a right angle but not yet a straight line. Like an open book.</p>
+      </div>
+      <div class="intro-card">
+        <h3>Straight: 180°</h3>
+        <p>A perfectly flat line with no bend. Like opening a book all the way flat. This is half a full rotation.</p>
+      </div>
+      <div class="intro-card">
+        <h3>Reflex: 180° – 360°</h3>
+        <p>The "outside" angle. More than straight but less than a full circle. It's the angle you measure the long way around.</p>
+      </div>
+      <div class="intro-card">
+        <h3>Full: 360°</h3>
+        <p>A complete rotation, like spinning around in a full circle and facing the same direction again.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SYMMETRY STUDIO ═══════════ -->
 <section id="sec-symmetry">
   <div class="card">
-    <h2>Symmetry Explorer</h2>
-    <p class="subtitle">Pick a shape to see its lines of symmetry.</p>
-    <div class="shape-picker" id="shapePicker"></div>
-    <div class="symmetry-display">
-      <canvas id="symCanvas" width="300" height="300"></canvas>
-      <div class="sym-info">
-        <h3 id="symName">Equilateral Triangle</h3>
-        <p id="symLines" style="font-size:18px; color:var(--accent);">Lines of symmetry: <strong id="symCount">3</strong></p>
-        <div class="toggle-wrap">
-          <div class="toggle on" id="symToggle" onclick="toggleSymmetry()"></div>
-          <span style="font-size:14px;">Show symmetry lines</span>
+    <h2>Symmetry Studio — Mirror & Rotation</h2>
+    <p class="sub">Symmetry is when something looks the same on both sides or at different rotations. Use the toggles to see reflection and rotational symmetry!</p>
+    <div class="lab-layout">
+      <div><canvas id="symmetryCanvas" width="380" height="380"></canvas></div>
+      <div class="lab-side">
+        <div class="btn-group">
+          <button class="active" onclick="setSymmetryShape('star')">Star</button>
+          <button onclick="setSymmetryShape('triangle')">Triangle</button>
+          <button onclick="setSymmetryShape('square')">Square</button>
+          <button onclick="setSymmetryShape('hexagon')">Hexagon</button>
         </div>
-        <div class="sym-fact" id="symFact"></div>
+        <div style="margin-top:14px;padding:14px;background:rgba(245,216,99,.06);border-radius:12px">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px">
+            <input type="checkbox" id="reflectToggle" onchange="updateSymmetry()" style="width:18px;height:18px;cursor:pointer">
+            <span>Show Reflection Lines</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <input type="checkbox" id="rotateToggle" onchange="updateSymmetry()" style="width:18px;height:18px;cursor:pointer">
+            <span>Show Rotational Symmetry</span>
+          </label>
+        </div>
+        <div class="explain-box" style="margin-top:14px">
+          <strong>Reflection Symmetry:</strong> If you fold the shape in half, both sides match perfectly. <br><strong>Rotational Symmetry:</strong> The shape looks the same when you spin it around.
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════ QUIZ ═══════════════ -->
-<section id="sec-quiz">
-  <div class="card" id="quizCard">
-    <div class="quiz-header">
-      <h2>Quiz Time!</h2>
-      <div class="score-badge">Score: <span id="quizScore">0</span> / <span id="quizTotal">0</span></div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
-    <div id="quizBody">
-      <div class="quiz-visual"><canvas id="quizCanvas" width="220" height="220"></canvas></div>
-      <div class="question-text" id="questionText"></div>
-      <div class="answers" id="answersDiv"></div>
-      <div class="feedback" id="feedback"></div>
-      <div style="text-align:center;">
-        <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question &rarr;</button>
+<!-- ═══════════ FUN FACTS ═══════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>12 Amazing Geometry Facts</h2>
+    <p class="sub">Discover the cool side of shapes and patterns!</p>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-icon">🎯</div>
+        <div class="fact-title">Circles are Special</div>
+        <div class="fact-text">A circle has infinite symmetry lines! No matter where you draw a line through the center, both sides are mirror images.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🏗️</div>
+        <div class="fact-title">Triangles are Strongest</div>
+        <div class="fact-text">Triangles are the strongest shapes. That's why bridges, towers, and roofs use triangular bracing to stay up!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🐝</div>
+        <div class="fact-title">Hexagon Power</div>
+        <div class="fact-text">Bees build honeycomb with hexagons because they're the most efficient shape for storing the most honey using the least wax.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🌊</div>
+        <div class="fact-title">The Golden Ratio</div>
+        <div class="fact-text">Nature loves the number 1.618 (phi). It appears in spirals, flowers, sea shells, and even your own body! It's the most beautiful proportion.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">⭐</div>
+        <div class="fact-title">5-Point Stars</div>
+        <div class="fact-text">The 5-pointed star appears everywhere in nature — from starfish to flowers. It has perfect rotational symmetry!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🔷</div>
+        <div class="fact-title">Angles in Triangles</div>
+        <div class="fact-text">No matter what triangle you draw, the three angles always add up to exactly 180 degrees. Always! It's a guaranteed rule.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🌍</div>
+        <div class="fact-title">Earth is Roughly Spherical</div>
+        <div class="fact-text">A sphere is the most efficient shape for distributing weight evenly. That's why planets and stars are spheres!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">📐</div>
+        <div class="fact-title">Pythagorean Theorem</div>
+        <div class="fact-text">In any right triangle, a² + b² = c². This simple formula is used in architecture, engineering, and computer graphics!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🎨</div>
+        <div class="fact-title">Art Loves Geometry</div>
+        <div class="fact-text">Famous artists like Picasso and Da Vinci used geometric shapes as the foundation for their most famous works.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🕐</div>
+        <div class="fact-title">Clock Geometry</div>
+        <div class="fact-text">A clock face is divided into 12 equal sections. Each hour is 30 degrees (360° ÷ 12 = 30°).</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🎮</div>
+        <div class="fact-title">Video Games Use Geometry</div>
+        <div class="fact-text">Every 3D video game is made from millions of triangles. The computer calculates light, shadows, and movement using pure geometry!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">✨</div>
+        <div class="fact-title">Snowflakes are Geometric</div>
+        <div class="fact-text">Every snowflake has 6-fold rotational symmetry. No two are identical, but they all follow the same geometric rules!</div>
       </div>
     </div>
-    <div class="quiz-complete" id="quizComplete" style="display:none;">
-      <h2>Quiz Complete!</h2>
-      <div class="final-score" id="finalScore"></div>
-      <p id="finalMsg" style="font-size:18px; color:var(--text-dim);"></p>
-      <button class="restart-btn" onclick="startQuiz()">Try Again</button>
+  </div>
+</section>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<section id="sec-quiz">
+  <div class="card">
+    <div class="quiz-header">
+      <div>
+        <div class="question-text" id="quizQuestion">Question 1 of 10</div>
+      </div>
+      <div class="score-badge">Score: <span id="quizScore">0</span>/10</div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="quizProgress" style="width:10%"></div>
+    </div>
+
+    <div id="quizContent">
+      <div class="question-text" id="question">What is the circumference of a circle with radius 5?</div>
+      <div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+
+    <div id="quizCompleteScreen" class="quiz-complete" style="display:none">
+      <h2>Quiz Complete! 🎉</h2>
+      <p>You've explored the world of geometry!</p>
+      <div class="final-score" id="finalScore">8/10</div>
+      <p style="color:var(--dim);margin-bottom:20px" id="scoreMessage">Great understanding of geometry!</p>
+      <button class="restart-btn" onclick="restartQuiz()">Try Again</button>
     </div>
   </div>
 </section>
 
 <script>
-/* ════════════════════════════════════════
-   NAVIGATION
-   ════════════════════════════════════════ */
-function showSection(name) {
+// ════════════════════════════════════════════════════════════════════
+// SECTION MANAGEMENT
+// ════════════════════════════════════════════════════════════════════
+function show(sectionId, btn) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
-  document.getElementById('sec-' + name).classList.add('visible');
+  document.getElementById('sec-' + sectionId).classList.add('visible');
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  if (name === 'quiz' && quizQuestions.length === 0) startQuiz();
+  btn.classList.add('active');
 }
 
-/* ════════════════════════════════════════
-   CIRCLE LAB
-   ════════════════════════════════════════ */
-const cCanvas = document.getElementById('circleCanvas');
-const cCtx = cCanvas.getContext('2d');
-const slider = document.getElementById('radiusSlider');
-
-function drawCircle() {
-  const r = parseFloat(slider.value);
-  const px = r * 13 + 10;          // pixel radius
-  const cx = 150, cy = 150;
-
-  cCtx.clearRect(0, 0, 300, 300);
-
-  // filled circle
-  cCtx.beginPath();
-  cCtx.arc(cx, cy, px, 0, Math.PI * 2);
-  cCtx.fillStyle = 'rgba(108,99,255,.15)';
-  cCtx.fill();
-  cCtx.strokeStyle = '#6c63ff';
-  cCtx.lineWidth = 3;
-  cCtx.stroke();
-
-  // radius line
-  cCtx.beginPath();
-  cCtx.moveTo(cx, cy);
-  cCtx.lineTo(cx + px, cy);
-  cCtx.strokeStyle = '#ff6584';
-  cCtx.lineWidth = 2.5;
-  cCtx.setLineDash([6, 4]);
-  cCtx.stroke();
-  cCtx.setLineDash([]);
-
-  // radius label
-  cCtx.fillStyle = '#ff6584';
-  cCtx.font = 'bold 14px Segoe UI, sans-serif';
-  cCtx.fillText('r = ' + r, cx + px / 2 - 14, cy - 10);
-
-  // diameter line (faint)
-  cCtx.beginPath();
-  cCtx.moveTo(cx - px, cy);
-  cCtx.lineTo(cx + px, cy);
-  cCtx.strokeStyle = 'rgba(255,101,132,.35)';
-  cCtx.lineWidth = 1.5;
-  cCtx.setLineDash([4, 4]);
-  cCtx.stroke();
-  cCtx.setLineDash([]);
-
-  // center dot
-  cCtx.beginPath();
-  cCtx.arc(cx, cy, 4, 0, Math.PI * 2);
-  cCtx.fillStyle = '#ff6584';
-  cCtx.fill();
-
-  // circumference arc hint
-  cCtx.beginPath();
-  cCtx.arc(cx, cy, px + 8, -0.3, 0.3);
-  cCtx.strokeStyle = '#43e97b';
-  cCtx.lineWidth = 3;
-  cCtx.stroke();
-
-  // update stats
-  const d = r * 2;
-  const circ = 2 * Math.PI * r;
-  const area = Math.PI * r * r;
-  document.getElementById('radiusVal').textContent = r;
-  document.getElementById('statR').textContent = r;
-  document.getElementById('statD').textContent = d;
-  document.getElementById('statC').textContent = circ.toFixed(2);
-  document.getElementById('statA').textContent = area.toFixed(2);
+// ════════════════════════════════════════════════════════════════════
+// CIRCLE LAB
+// ════════════════════════════════════════════════════════════════════
+function updateCircle() {
+  const radius = parseInt(document.getElementById('radiusSlider').value);
+  document.getElementById('radiusVal').textContent = radius;
+  document.getElementById('diameterStat').textContent = (radius * 2).toFixed(0);
+  document.getElementById('circumStat').textContent = (2 * Math.PI * radius).toFixed(0);
+  document.getElementById('areaStat').textContent = (Math.PI * radius * radius).toFixed(0);
+  drawCircle(radius);
 }
 
-slider.addEventListener('input', drawCircle);
-drawCircle();
-
-/* ════════════════════════════════════════
-   SYMMETRY EXPLORER
-   ════════════════════════════════════════ */
-const shapes = [
-  { name: 'Equilateral Triangle', sides: 3, lines: 3, fact: 'Each line of symmetry goes from a vertex to the middle of the opposite side. All three sides are equal!' },
-  { name: 'Square', sides: 4, lines: 4, fact: 'A square has 4 lines of symmetry \u2014 two through opposite corners (diagonals) and two through the midpoints of opposite sides.' },
-  { name: 'Regular Pentagon', sides: 5, lines: 5, fact: 'A regular pentagon has 5 lines of symmetry, each from a vertex to the midpoint of the opposite side. Pentagons appear in nature, like starfish!' },
-  { name: 'Regular Hexagon', sides: 6, lines: 6, fact: 'Hexagons have 6 lines of symmetry \u2014 that\u2019s why bees build hexagonal honeycombs. They tile perfectly!' },
-  { name: 'Circle', sides: 0, lines: Infinity, fact: 'A circle has infinite lines of symmetry! Every line through the center is a line of symmetry. That makes it the most symmetrical 2D shape.' },
-  { name: 'Five-Pointed Star', sides: 10, lines: 5, star: true, fact: 'A regular star has the same number of symmetry lines as it has points. Each line passes through a point and the dip between the two opposite points.' },
-];
-
-let currentShape = 0;
-let showSym = true;
-
-// build picker
-const picker = document.getElementById('shapePicker');
-shapes.forEach((s, i) => {
-  const btn = document.createElement('button');
-  btn.className = 'shape-btn' + (i === 0 ? ' active' : '');
-  btn.textContent = s.name;
-  btn.onclick = () => { currentShape = i; updateSymmetry(); document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); };
-  picker.appendChild(btn);
-});
-
-const symCanvas = document.getElementById('symCanvas');
-const symCtx = symCanvas.getContext('2d');
-
-function getPolygonPoints(cx, cy, r, n, star) {
-  const pts = [];
-  const angleOff = -Math.PI / 2;
-  if (star) {
-    for (let i = 0; i < n; i++) {
-      const outerR = i % 2 === 0 ? r : r * 0.45;
-      const a = angleOff + (2 * Math.PI * i) / n;
-      pts.push([cx + outerR * Math.cos(a), cy + outerR * Math.sin(a)]);
-    }
-  } else {
-    for (let i = 0; i < n; i++) {
-      const a = angleOff + (2 * Math.PI * i) / n;
-      pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
-    }
+function drawCircle(radius) {
+  const canvas = document.getElementById('circleCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Grid
+  ctx.strokeStyle = 'rgba(245,216,99,.1)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= canvas.width; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, canvas.height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(canvas.width, i);
+    ctx.stroke();
   }
-  return pts;
+  
+  // Center point
+  ctx.fillStyle = '#f5d863';
+  ctx.beginPath();
+  ctx.arc(canvas.width/2, canvas.height/2, 4, 0, Math.PI*2);
+  ctx.fill();
+  
+  // Circle
+  ctx.strokeStyle = '#8fd4a4';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI*2);
+  ctx.stroke();
+  
+  // Radius line
+  ctx.strokeStyle = '#f5d863';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(canvas.width/2, canvas.height/2);
+  ctx.lineTo(canvas.width/2 + radius, canvas.height/2);
+  ctx.stroke();
+  
+  // Radius label
+  ctx.fillStyle = '#f5d863';
+  ctx.font = 'bold 14px Patrick Hand';
+  ctx.textAlign = 'center';
+  ctx.fillText('r', canvas.width/2 + radius/2, canvas.height/2 - 12);
 }
 
-function drawSymmetry() {
-  const s = shapes[currentShape];
-  const cx = 150, cy = 150, r = 100;
-  symCtx.clearRect(0, 0, 300, 300);
+updateCircle();
 
-  if (s.sides === 0) {
-    // circle
-    symCtx.beginPath();
-    symCtx.arc(cx, cy, r, 0, Math.PI * 2);
-    symCtx.fillStyle = 'rgba(108,99,255,.12)';
-    symCtx.fill();
-    symCtx.strokeStyle = '#6c63ff';
-    symCtx.lineWidth = 3;
-    symCtx.stroke();
-
-    if (showSym) {
-      for (let i = 0; i < 8; i++) {
-        const a = (Math.PI * i) / 8;
-        symCtx.beginPath();
-        symCtx.moveTo(cx + (r + 16) * Math.cos(a), cy + (r + 16) * Math.sin(a));
-        symCtx.lineTo(cx - (r + 16) * Math.cos(a), cy - (r + 16) * Math.sin(a));
-        symCtx.strokeStyle = 'rgba(255,101,132,.45)';
-        symCtx.lineWidth = 1.5;
-        symCtx.setLineDash([5, 5]);
-        symCtx.stroke();
-        symCtx.setLineDash([]);
-      }
-      symCtx.font = '12px Segoe UI, sans-serif';
-      symCtx.fillStyle = 'rgba(255,101,132,.7)';
-      symCtx.fillText('\u221E more...', cx + 70, cy - r - 4);
-    }
-  } else {
-    const pts = getPolygonPoints(cx, cy, r, s.sides || 5, s.star);
-    // draw shape
-    symCtx.beginPath();
-    symCtx.moveTo(pts[0][0], pts[0][1]);
-    pts.forEach(p => symCtx.lineTo(p[0], p[1]));
-    symCtx.closePath();
-    symCtx.fillStyle = 'rgba(108,99,255,.12)';
-    symCtx.fill();
-    symCtx.strokeStyle = '#6c63ff';
-    symCtx.lineWidth = 3;
-    symCtx.stroke();
-
-    // symmetry lines
-    if (showSym) {
-      const lineCount = s.lines;
-      for (let i = 0; i < lineCount; i++) {
-        const a = -Math.PI / 2 + (Math.PI * i) / lineCount;
-        symCtx.beginPath();
-        symCtx.moveTo(cx + (r + 20) * Math.cos(a), cy + (r + 20) * Math.sin(a));
-        symCtx.lineTo(cx - (r + 20) * Math.cos(a), cy - (r + 20) * Math.sin(a));
-        symCtx.strokeStyle = 'rgba(255,101,132,.55)';
-        symCtx.lineWidth = 2;
-        symCtx.setLineDash([6, 5]);
-        symCtx.stroke();
-        symCtx.setLineDash([]);
-      }
-    }
+// ════════════════════════════════════════════════════════════════════
+// ANGLE EXPLORER
+// ════════════════════════════════════════════════════════════════════
+function updateAngle() {
+  const angle = parseInt(document.getElementById('angleSlider').value);
+  document.getElementById('angleVal').textContent = angle;
+  document.getElementById('angleStat').textContent = angle + '°';
+  
+  let type = 'Reflex';
+  let explain = '<strong>Reflex Angle:</strong> More than 180° but less than 360°. The "outside" angle measured the long way around.';
+  
+  if (angle < 90) {
+    type = 'Acute';
+    explain = '<strong>Acute Angle:</strong> Less than 90°. These are sharp, pointy angles. They look like the tip of a pencil!';
+  } else if (angle === 90) {
+    type = 'Right';
+    explain = '<strong>Right Angle:</strong> Exactly 90°. A perfect corner, like the corners of a square. We mark it with a small square symbol.';
+  } else if (angle < 180) {
+    type = 'Obtuse';
+    explain = '<strong>Obtuse Angle:</strong> Between 90° and 180°. Wider, blunter angles. Like an open book that's not fully flat.';
+  } else if (angle === 180) {
+    type = 'Straight';
+    explain = '<strong>Straight Angle:</strong> Exactly 180°. A perfectly flat line with no bend. This is half a full rotation.';
   }
+  
+  document.getElementById('angleType').textContent = type;
+  document.getElementById('angleExplain').innerHTML = explain;
+  drawAngle(angle);
+}
+
+function drawAngle(angle) {
+  const canvas = document.getElementById('angleCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = 80;
+  
+  // Grid
+  ctx.strokeStyle = 'rgba(245,216,99,.1)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= canvas.width; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, canvas.height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(canvas.width, i);
+    ctx.stroke();
+  }
+  
+  // Center point
+  ctx.fillStyle = '#f5d863';
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, 5, 0, Math.PI*2);
+  ctx.fill();
+  
+  // Starting ray (0°)
+  ctx.strokeStyle = '#7bb8e0';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(centerX + radius, centerY);
+  ctx.stroke();
+  
+  // Angle ray
+  const rad = (angle * Math.PI) / 180;
+  ctx.strokeStyle = '#8fd4a4';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(centerX + radius * Math.cos(rad), centerY - radius * Math.sin(rad));
+  ctx.stroke();
+  
+  // Arc showing angle
+  ctx.strokeStyle = '#d96b6b';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, 40, 0, rad, rad > Math.PI ? true : false);
+  ctx.stroke();
+  
+  // Angle label
+  ctx.fillStyle = '#d96b6b';
+  ctx.font = 'bold 16px Patrick Hand';
+  ctx.textAlign = 'center';
+  const labelRad = (angle / 2 * Math.PI) / 180;
+  ctx.fillText(angle + '°', centerX + 55 * Math.cos(labelRad), centerY - 55 * Math.sin(labelRad));
+}
+
+updateAngle();
+
+// ════════════════════════════════════════════════════════════════════
+// SYMMETRY STUDIO
+// ════════════════════════════════════════════════════════════════════
+let currentSymmetryShape = 'star';
+
+function setSymmetryShape(shape) {
+  currentSymmetryShape = shape;
+  document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateSymmetry();
 }
 
 function updateSymmetry() {
-  const s = shapes[currentShape];
-  document.getElementById('symName').textContent = s.name;
-  document.getElementById('symCount').textContent = s.lines === Infinity ? '\u221E (infinite!)' : s.lines;
-  document.getElementById('symFact').innerHTML = '<strong>Fun fact:</strong> ' + s.fact;
-  drawSymmetry();
+  drawSymmetryShape(currentSymmetryShape);
 }
 
-function toggleSymmetry() {
-  showSym = !showSym;
-  const t = document.getElementById('symToggle');
-  t.classList.toggle('on', showSym);
-  drawSymmetry();
+function drawSymmetryShape(shape) {
+  const canvas = document.getElementById('symmetryCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const showReflect = document.getElementById('reflectToggle').checked;
+  const showRotate = document.getElementById('rotateToggle').checked;
+  
+  // Grid
+  ctx.strokeStyle = 'rgba(245,216,99,.1)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= canvas.width; i += 20) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, canvas.height);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(canvas.width, i);
+    ctx.stroke();
+  }
+  
+  // Reflection lines
+  if (showReflect) {
+    ctx.strokeStyle = 'rgba(143,212,164,.3)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    if (shape === 'star' || shape === 'triangle' || shape === 'hexagon') {
+      for (let i = 0; i < (shape === 'triangle' ? 3 : shape === 'hexagon' ? 6 : 5); i++) {
+        const angle = (i * Math.PI) / (shape === 'triangle' ? 3 : shape === 'hexagon' ? 6 : 5);
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + 100 * Math.cos(angle), centerY + 100 * Math.sin(angle));
+        ctx.stroke();
+      }
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - 100);
+      ctx.lineTo(centerX, centerY + 100);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(centerX - 100, centerY);
+      ctx.lineTo(centerX + 100, centerY);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+  }
+  
+  // Draw shape
+  ctx.fillStyle = '#f5d863';
+  ctx.strokeStyle = '#8fd4a4';
+  ctx.lineWidth = 2;
+  
+  if (shape === 'star') {
+    drawStar(ctx, centerX, centerY, 5, 70, 40);
+  } else if (shape === 'triangle') {
+    drawPolygon(ctx, centerX, centerY, 3, 70);
+  } else if (shape === 'square') {
+    drawPolygon(ctx, centerX, centerY, 4, 70);
+  } else if (shape === 'hexagon') {
+    drawPolygon(ctx, centerX, centerY, 6, 70);
+  }
+  
+  ctx.fill();
+  ctx.stroke();
+}
+
+function drawPolygon(ctx, cx, cy, sides, radius) {
+  ctx.beginPath();
+  for (let i = 0; i < sides; i++) {
+    const angle = (i * 2 * Math.PI) / sides;
+    const x = cx + radius * Math.cos(angle);
+    const y = cy + radius * Math.sin(angle);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+}
+
+function drawStar(ctx, cx, cy, points, outerRadius, innerRadius) {
+  ctx.beginPath();
+  for (let i = 0; i < points * 2; i++) {
+    const angle = (i * Math.PI) / points;
+    const radius = i % 2 === 0 ? outerRadius : innerRadius;
+    const x = cx + radius * Math.cos(angle);
+    const y = cy + radius * Math.sin(angle);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
 }
 
 updateSymmetry();
 
-/* ════════════════════════════════════════
-   QUIZ
-   ════════════════════════════════════════ */
-let quizQuestions = [];
-let qIndex = 0;
+// ════════════════════════════════════════════════════════════════════
+// QUIZ
+// ════════════════════════════════════════════════════════════════════
+const quizData = [
+  {q: 'What is the circumference of a circle with radius 5?', a: ['31.4', '25', '78.5', '15.7'], ans: 0},
+  {q: 'How many degrees are in a straight angle?', a: ['90°', '180°', '270°', '360°'], ans: 1},
+  {q: 'What do the angles of a triangle always add up to?', a: ['90°', '180°', '270°', '360°'], ans: 1},
+  {q: 'Which shape is strongest and most rigid?', a: ['Circle', 'Square', 'Triangle', 'Rectangle'], ans: 2},
+  {q: 'What is a 90-degree angle called?', a: ['Acute', 'Obtuse', 'Right', 'Reflex'], ans: 2},
+  {q: 'How many lines of symmetry does a square have?', a: ['2', '3', '4', '8'], ans: 2},
+  {q: 'What does "circumference" measure?', a: ['Area inside', 'Distance around', 'Radius length', 'Diameter'], ans: 1},
+  {q: 'A regular hexagon has how many sides?', a: ['4', '5', '6', '8'], ans: 2},
+  {q: 'What angle is between 90° and 180°?', a: ['Acute', 'Right', 'Obtuse', 'Reflex'], ans: 2},
+  {q: 'How many degrees in a full rotation?', a: ['90°', '180°', '270°', '360°'], ans: 3}
+];
+
+let currentQuestion = 0;
 let score = 0;
-const TOTAL_Q = 10;
-
-function generateQuestions() {
-  const qs = [];
-
-  // circle questions
-  for (let i = 0; i < 6; i++) {
-    const r = Math.floor(Math.random() * 9) + 2;
-    const type = i % 3;
-    if (type === 0) {
-      const ans = (2 * Math.PI * r).toFixed(2);
-      qs.push({
-        q: `What is the circumference of a circle with radius ${r}?`,
-        correct: ans,
-        options: shuffle([ans, (Math.PI * r * r).toFixed(2), (2 * r).toFixed(2), (Math.PI * r).toFixed(2)]),
-        explain: `C = 2 \u00d7 \u03c0 \u00d7 ${r} = ${ans}`,
-        visual: { type: 'circle', r }
-      });
-    } else if (type === 1) {
-      const ans = (Math.PI * r * r).toFixed(2);
-      qs.push({
-        q: `What is the area of a circle with radius ${r}?`,
-        correct: ans,
-        options: shuffle([ans, (2 * Math.PI * r).toFixed(2), (r * r).toFixed(2), (2 * r * r).toFixed(2)]),
-        explain: `A = \u03c0 \u00d7 ${r}\u00b2 = \u03c0 \u00d7 ${r * r} = ${ans}`,
-        visual: { type: 'circle', r }
-      });
-    } else {
-      const d = r * 2;
-      qs.push({
-        q: `A circle has a diameter of ${d}. What is its radius?`,
-        correct: '' + r,
-        options: shuffle(['' + r, '' + d, '' + (d + r), '' + (r * r)]),
-        explain: `Radius = Diameter \u00f7 2 = ${d} \u00f7 2 = ${r}`,
-        visual: { type: 'circle', r }
-      });
-    }
-  }
-
-  // symmetry questions
-  const symQShapes = [
-    { name: 'equilateral triangle', lines: 3 },
-    { name: 'square', lines: 4 },
-    { name: 'regular pentagon', lines: 5 },
-    { name: 'regular hexagon', lines: 6 },
-    { name: 'circle', lines: '\u221E (infinite!)' },
-  ];
-  symQShapes.forEach(s => {
-    const ans = '' + s.lines;
-    const wrongs = ['1', '2', '3', '4', '5', '6', '8'].filter(x => x !== '' + s.lines);
-    const opts = s.name === 'circle'
-      ? shuffle([ans, '6', '8', '12'])
-      : shuffle([ans, ...wrongs.sort(() => Math.random() - 0.5).slice(0, 3)]);
-    qs.push({
-      q: `How many lines of symmetry does a ${s.name} have?`,
-      correct: ans,
-      options: opts.slice(0, 4),
-      explain: `A ${s.name} has ${ans} line${s.lines === 1 ? '' : 's'} of symmetry.`,
-      visual: { type: 'sym', name: s.name }
-    });
-  });
-
-  return shuffle(qs).slice(0, TOTAL_Q);
-}
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+let answered = false;
 
 function startQuiz() {
-  quizQuestions = generateQuestions();
-  qIndex = 0; score = 0;
-  document.getElementById('quizScore').textContent = 0;
-  document.getElementById('quizTotal').textContent = TOTAL_Q;
-  document.getElementById('quizBody').style.display = 'block';
-  document.getElementById('quizComplete').style.display = 'none';
+  currentQuestion = 0;
+  score = 0;
+  answered = false;
   showQuestion();
 }
 
 function showQuestion() {
-  const q = quizQuestions[qIndex];
-  document.getElementById('questionText').textContent = (qIndex + 1) + '. ' + q.q;
-  document.getElementById('quizProgress').style.width = ((qIndex / TOTAL_Q) * 100) + '%';
-  document.getElementById('feedback').className = 'feedback';
-  document.getElementById('feedback').style.display = 'none';
-  document.getElementById('nextBtn').className = 'next-btn';
-
-  // draw quiz visual
-  const qc = document.getElementById('quizCanvas');
-  const qCtx = qc.getContext('2d');
-  qCtx.clearRect(0, 0, 220, 220);
-  if (q.visual.type === 'circle') {
-    const pr = q.visual.r * 9 + 5;
-    qCtx.beginPath(); qCtx.arc(110, 110, Math.min(pr, 95), 0, Math.PI * 2);
-    qCtx.fillStyle = 'rgba(108,99,255,.1)'; qCtx.fill();
-    qCtx.strokeStyle = '#6c63ff'; qCtx.lineWidth = 2.5; qCtx.stroke();
-    qCtx.beginPath(); qCtx.moveTo(110, 110); qCtx.lineTo(110 + Math.min(pr, 95), 110);
-    qCtx.strokeStyle = '#ff6584'; qCtx.lineWidth = 2; qCtx.setLineDash([5, 3]); qCtx.stroke(); qCtx.setLineDash([]);
-    qCtx.fillStyle = '#ff6584'; qCtx.font = 'bold 13px sans-serif';
-    qCtx.fillText('r=' + q.visual.r, 110 + Math.min(pr, 95) / 2 - 10, 102);
-  } else {
-    const shapeMap = { 'equilateral triangle': 3, 'square': 4, 'regular pentagon': 5, 'regular hexagon': 6, 'circle': 0 };
-    const n = shapeMap[q.visual.name] || 0;
-    if (n === 0) {
-      qCtx.beginPath(); qCtx.arc(110, 110, 80, 0, Math.PI * 2);
-      qCtx.fillStyle = 'rgba(108,99,255,.1)'; qCtx.fill();
-      qCtx.strokeStyle = '#6c63ff'; qCtx.lineWidth = 2.5; qCtx.stroke();
-    } else {
-      const pts = getPolygonPoints(110, 110, 80, n, false);
-      qCtx.beginPath(); qCtx.moveTo(pts[0][0], pts[0][1]);
-      pts.forEach(p => qCtx.lineTo(p[0], p[1])); qCtx.closePath();
-      qCtx.fillStyle = 'rgba(108,99,255,.1)'; qCtx.fill();
-      qCtx.strokeStyle = '#6c63ff'; qCtx.lineWidth = 2.5; qCtx.stroke();
-    }
+  if (currentQuestion >= quizData.length) {
+    endQuiz();
+    return;
   }
-
-  // answers
-  const div = document.getElementById('answersDiv');
-  div.innerHTML = '';
-  q.options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'answer-btn';
-    btn.textContent = opt;
-    btn.onclick = () => checkAnswer(opt, q);
-    div.appendChild(btn);
+  
+  answered = false;
+  const q = quizData[currentQuestion];
+  document.getElementById('question').textContent = q.q;
+  document.getElementById('quizQuestion').textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+  document.getElementById('quizScore').textContent = score;
+  document.getElementById('quizProgress').style.width = ((currentQuestion / quizData.length) * 100) + '%';
+  
+  let answersHtml = '';
+  q.a.forEach((ans, i) => {
+    answersHtml += `<button class="answer-btn" onclick="checkAnswer(${i})">${ans}</button>`;
   });
+  document.getElementById('answers').innerHTML = answersHtml;
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('feedback').classList.remove('show', 'correct-fb', 'wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
 }
 
-function checkAnswer(chosen, q) {
-  const btns = document.querySelectorAll('.answer-btn');
-  btns.forEach(b => {
-    b.classList.add('locked');
-    b.style.pointerEvents = 'none';
-    if (b.textContent === q.correct) b.classList.add('correct');
-    if (b.textContent === chosen && chosen !== q.correct) b.classList.add('wrong');
+function checkAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  
+  const q = quizData[currentQuestion];
+  const buttons = document.querySelectorAll('.answer-btn');
+  const correct = idx === q.ans;
+  
+  buttons.forEach((btn, i) => {
+    btn.classList.add('locked');
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === idx && !correct) btn.classList.add('wrong');
   });
-
-  const fb = document.getElementById('feedback');
-  if (chosen === q.correct) {
+  
+  if (correct) {
     score++;
-    fb.className = 'feedback correct-fb show';
-    fb.innerHTML = '<strong>Correct!</strong> ' + q.explain;
+    document.getElementById('feedback').innerHTML = '<strong>Correct!</strong> You got it right!';
+    document.getElementById('feedback').classList.add('show', 'correct-fb');
   } else {
-    fb.className = 'feedback wrong-fb show';
-    fb.innerHTML = '<strong>Not quite.</strong> ' + q.explain;
+    document.getElementById('feedback').innerHTML = `<strong>Not quite!</strong> The correct answer is: <strong>${q.a[q.ans]}</strong>`;
+    document.getElementById('feedback').classList.add('show', 'wrong-fb');
   }
+  
   document.getElementById('quizScore').textContent = score;
-  document.getElementById('nextBtn').className = 'next-btn show';
+  document.getElementById('nextBtn').classList.add('show');
 }
 
 function nextQuestion() {
-  qIndex++;
-  if (qIndex >= TOTAL_Q) {
-    document.getElementById('quizBody').style.display = 'none';
-    document.getElementById('quizComplete').style.display = 'block';
-    document.getElementById('finalScore').textContent = score + ' / ' + TOTAL_Q;
-    const pct = score / TOTAL_Q;
-    document.getElementById('finalMsg').textContent =
-      pct === 1 ? 'Perfect score! You\u2019re a geometry superstar!' :
-      pct >= 0.7 ? 'Great job! You really know your circles and symmetry!' :
-      pct >= 0.4 ? 'Good effort! Try exploring the labs again and quiz yourself once more.' :
-      'Keep practicing! The Circle Lab and Symmetry Explorer are great places to review.';
-    document.getElementById('quizProgress').style.width = '100%';
-  } else {
-    showQuestion();
-  }
+  currentQuestion++;
+  showQuestion();
 }
+
+function endQuiz() {
+  document.getElementById('quizContent').style.display = 'none';
+  document.getElementById('quizCompleteScreen').style.display = 'block';
+  document.getElementById('finalScore').textContent = score + '/10';
+  
+  let message = 'Try again to improve your score!';
+  if (score >= 9) message = 'Incredible! You're a geometry master!';
+  else if (score >= 7) message = 'Great understanding of geometry!';
+  else if (score >= 5) message = 'Good job! Keep exploring geometry!';
+  document.getElementById('scoreMessage').textContent = message;
+}
+
+function restartQuiz() {
+  document.getElementById('quizContent').style.display = 'block';
+  document.getElementById('quizCompleteScreen').style.display = 'none';
+  startQuiz();
+}
+
+startQuiz();
 </script>
 </body>
 </html>

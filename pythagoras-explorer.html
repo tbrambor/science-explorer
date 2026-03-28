@@ -1,534 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-    <title>Pythagoras Explorer - Interactive Learning</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Patrick Hand','Caveat',cursive,system-ui,sans-serif;
-            background-color: #2b3a2b;
-            color: #e8e4d9;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            background: linear-gradient(135deg, rgba(35,48,35,1) 0%, rgba(35,48,35,1) 100%);
-            border-bottom: 2px solid #f5d863;
-            padding: 1rem 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(245,216,99,0.2);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .nav-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #f5d863, #d96b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .nav-btn {
-            padding: 0.6rem 1.2rem;
-            border: 2px solid transparent;
-            background-color: #314231;
-            color: #e8e4d9;
-            cursor: pointer;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-        }
-
-        .nav-btn:hover {
-            background-color: #3d523d;
-            border-color: #d96b6b;
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.active {
-            background-color: #f5d863;
-            color: #2b3a2b;
-            border-color: #f5d863;
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-
-        section {
-            display: none;
-            animation: fadeUp 0.6s ease-out;
-        }
-
-        section.active {
-            display: block;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #f5d863, #d96b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: #8fd4a4;
-        }
-
-        h3 {
-            font-size: 1.3rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-            color: #d96b6b;
-        }
-
-        p {
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .hero-img {
-            width: 250px;
-            height: 300px;
-            border-radius: 8px;
-            border: 3px solid #8fd4a4;
-            margin: 1rem auto;
-            display: block;
-            box-shadow: 0 8px 30px rgba(143,212,164,0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .hero-img:hover {
-            transform: scale(1.05);
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .timeline-item {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #314231 0%, #3d523d 100%);
-            border-left: 4px solid #8fd4a4;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .timeline-item:hover {
-            border-left-color: #d96b6b;
-            box-shadow: 0 8px 20px rgba(217,107,107,0.2);
-            transform: translateX(5px);
-        }
-
-        .timeline-date {
-            color: #f5d863;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .card {
-            background: linear-gradient(135deg, #314231 0%, #3d523d 100%);
-            border: 2px solid #8fd4a4;
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(143,212,164,0.3);
-            border-color: #d96b6b;
-        }
-
-        .card h3 {
-            margin-top: 0;
-        }
-
-        /* Interactive Elements */
-        .control-group {
-            background: #314231;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            border: 2px solid #8fd4a4;
-        }
-
-        .control-row {
-            margin-bottom: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        label {
-            font-weight: 600;
-            color: #f5d863;
-            min-width: 100px;
-        }
-
-        input[type="range"] {
-            flex: 1;
-            min-width: 150px;
-            height: 8px;
-            border-radius: 5px;
-            background: linear-gradient(to right, #f5d863, #d96b6b);
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #d96b6b;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(217,107,107,0.5);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #d96b6b;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 0 10px rgba(217,107,107,0.5);
-        }
-
-        input[type="number"], input[type="text"] {
-            background: #3d523d;
-            color: #e8e4d9;
-            border: 2px solid #8fd4a4;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        button {
-            background: linear-gradient(135deg, #8fd4a4, #7bc495);
-            color: #2b3a2b;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(143,212,164,0.4);
-        }
-
-        button.secondary {
-            background: linear-gradient(135deg, #d96b6b, #e07c7c);
-            color: #2b3a2b;
-        }
-
-        button.secondary:hover {
-            box-shadow: 0 8px 20px rgba(217,107,107,0.4);
-        }
-
-        /* Canvas */
-        canvas {
-            border: 2px solid #8fd4a4;
-            border-radius: 8px;
-            background: #314231;
-            display: block;
-            margin: 1.5rem auto;
-            max-width: 100%;
-        }
-
-        /* Table */
-        .table-container {
-            overflow-x: auto;
-            margin: 1.5rem 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #314231;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th {
-            background: linear-gradient(135deg, #8fd4a4, #7bc495);
-            color: #2b3a2b;
-            padding: 1rem;
-            font-weight: 600;
-            text-align: left;
-        }
-
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid #3d523d;
-        }
-
-        tr:hover {
-            background: #3d523d;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Results Display */
-        .result-box {
-            background: linear-gradient(135deg, #314231 0%, #3d523d 100%);
-            border: 2px solid #d96b6b;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            font-size: 1.1rem;
-        }
-
-        .result-box.highlight {
-            border-color: #8fd4a4;
-        }
-
-        .highlight-text {
-            color: #f5d863;
-            font-weight: bold;
-        }
-
-        .triple-found {
-            background: linear-gradient(135deg, #3d523d 0%, #4a6449 100%);
-            border-color: #8fd4a4;
-            color: #8fd4a4;
-        }
-
-        /* Quiz */
-        .quiz-container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 12px;
-            background: #314231;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-            border: 2px solid #8fd4a4;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #f5d863, #d96b6b);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .question-box {
-            background: linear-gradient(135deg, #314231 0%, #3d523d 100%);
-            border: 2px solid #8fd4a4;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .question-number {
-            color: #f5d863;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .question-text {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            color: #e8e4d9;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .option {
-            padding: 1rem;
-            background: #3d523d;
-            border: 2px solid #8fd4a4;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .option:hover {
-            background: #4a6449;
-            border-color: #d96b6b;
-        }
-
-        .option.selected {
-            background: #8fd4a4;
-            color: #2b3a2b;
-            border-color: #8fd4a4;
-        }
-
-        .option.correct {
-            background: #8fd4a4;
-            color: #2b3a2b;
-            border-color: #8fd4a4;
-        }
-
-        .option.incorrect {
-            background: #d96b6b;
-            color: #fff;
-            border-color: #d96b6b;
-        }
-
-        .feedback {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: #314231;
-            border-left: 4px solid #d96b6b;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .feedback.show {
-            display: block;
-        }
-
-        .feedback.correct {
-            border-left-color: #8fd4a4;
-        }
-
-        .feedback.incorrect {
-            border-left-color: #d96b6b;
-        }
-
-        .quiz-results {
-            text-align: center;
-            background: linear-gradient(135deg, #314231 0%, #3d523d 100%);
-            border: 2px solid #d96b6b;
-            border-radius: 8px;
-            padding: 3rem;
-            margin: 2rem 0;
-        }
-
-        .score-display {
-            font-size: 3rem;
-            color: #f5d863;
-            font-weight: bold;
-            margin: 1rem 0;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            h2 {
-                font-size: 1.5rem;
-            }
-
-            .nav-container {
-                padding: 0 1rem;
-            }
-
-            .nav-btn {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.85rem;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .control-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            input[type="range"] {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .hero-img {
-                width: 200px;
-                height: 240px;
-            }
-        }
-    /* ── LANGUAGE TOGGLE ── */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>The World of Pythagoras</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;
+  --accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;
+  --radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 18px;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.4)}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:60px 20px 40px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.12) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px;display:block;margin-left:auto;margin-right:auto}
+.hero h1{font-size:clamp(32px,6vw,56px);font-weight:800;background:linear-gradient(135deg,#f5d863,#d96b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.hero .subtitle{font-size:20px;color:var(--dim)}
+.hero .life{margin-top:12px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:16px;font-size:17px;max-width:600px;margin-left:auto;margin-right:auto;color:var(--text)}
+
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .45s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:28px;border:1px solid rgba(245,216,99,.12)}
+.card h2{font-size:24px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:18px;font-size:14px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:28px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.5)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px;color:var(--text)}
+.tl-text strong{color:var(--accent)}
+
+/* ── THEOREM PROOF ── */
+.theorem-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.theorem-canvas-wrap{position:relative}
+.theorem-controls{flex:1;min-width:260px}
+.slider-group{margin-bottom:18px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.5)}
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.val-box{background:rgba(245,216,99,.08);border-radius:12px;padding:12px;text-align:center}
+.val-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.val-box .val{font-size:22px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:16px;padding:14px;background:rgba(245,216,99,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+
+/* ── CALCULATOR ── */
+.calc-group{margin-bottom:18px}
+.calc-group label{display:block;font-weight:600;margin-bottom:8px}
+input[type=number]{background:rgba(49,66,49,.8);color:var(--text);border:2px solid var(--accent3);padding:10px 12px;border-radius:6px;width:100%;font-size:14px}
+.calc-result{padding:14px;border-radius:12px;background:rgba(245,216,99,.08);border:1px solid rgba(245,216,99,.2);margin-top:14px;text-align:center;font-size:16px;font-weight:700}
+button{padding:12px 24px;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;display:inline-block;background:var(--accent);color:#000}
+button:hover{transform:scale(1.04);box-shadow:0 4px 16px rgba(245,216,99,.4)}
+
+/* ── TRIPLES ── */
+.triples-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:16px}
+.triple-card{background:rgba(245,216,99,.06);border:2px solid rgba(245,216,99,.15);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:.25s}
+.triple-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.triple-card.found{border-color:var(--accent3);background:rgba(143,212,164,.06);box-shadow:0 4px 20px rgba(143,212,164,.15)}
+.triple-num{font-size:18px;font-weight:800;margin-bottom:6px}
+.triple-check{font-size:14px;color:var(--dim)}
+.triple-result{padding:14px;background:rgba(143,212,164,.06);border-radius:12px;border:2px solid rgba(143,212,164,.2);margin-top:16px;text-align:center;color:var(--accent3);font-weight:700}
+
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.fact-card{background:rgba(245,216,99,.06);border-radius:14px;padding:20px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--accent)}
+.fact-card:nth-child(5){border-left-color:var(--accent2)}
+.fact-card:nth-child(6){border-left-color:var(--accent3)}
+.fact-card:nth-child(7){border-left-color:var(--accent)}
+.fact-card:nth-child(8){border-left-color:var(--accent2)}
+.fact-card:nth-child(9){border-left-color:var(--accent3)}
+.fact-card:nth-child(10){border-left-color:var(--accent)}
+.fact-card:nth-child(11){border-left-color:var(--accent2)}
+.fact-card:nth-child(12){border-left-color:var(--accent3)}
+.fact-icon{font-size:28px;margin-bottom:8px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:6px}
+.fact-text{font-size:14px;color:var(--dim);line-height:1.6}
+
+/* ── QUIZ ── */
+.quiz-container{max-width:700px;margin:0 auto}
+.progress-bar{width:100%;height:12px;background:rgba(49,66,49,.8);border-radius:10px;overflow:hidden;margin-bottom:2rem;border:2px solid var(--accent3)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .3s ease}
+.question-box{background:rgba(49,66,49,.8);border:2px solid var(--accent3);border-radius:8px;padding:2rem;margin-bottom:2rem}
+.question-number{color:var(--accent);font-weight:bold;margin-bottom:1rem}
+.question-text{font-size:1.2rem;margin-bottom:1.5rem;color:var(--text)}
+.answers{display:flex;flex-direction:column;gap:1rem}
+.answer{padding:1rem;background:rgba(49,66,49,.6);border:2px solid var(--accent3);border-radius:8px;cursor:pointer;transition:.3s;font-size:1rem}
+.answer:hover{background:rgba(49,66,49,.9);border-color:var(--accent2)}
+.answer.selected{background:var(--accent3);color:#000;border-color:var(--accent3)}
+.answer.correct{background:var(--accent3);color:#000;border-color:var(--accent3)}
+.answer.incorrect{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+.feedback{margin-top:1.5rem;padding:1rem;background:rgba(49,66,49,.8);border-left:4px solid var(--accent2);border-radius:8px;display:none}
+.feedback.show{display:block}
+.feedback.correct{border-left-color:var(--accent3)}
+.quiz-results{text-align:center;background:rgba(49,66,49,.8);border:2px solid var(--accent2);border-radius:8px;padding:3rem;margin:2rem 0}
+.score-display{font-size:3rem;color:var(--accent);font-weight:bold;margin:1rem 0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  nav button{padding:7px 12px;font-size:12px}
+  .card{padding:20px}
+  .portrait{width:130px;height:130px}
+  .val-grid{grid-template-columns:1fr}
+}
+/* ── LANGUAGE TOGGLE ── */
 .lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
 .lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
 .lang-toggle a:hover{background:rgba(245,216,99,.2)}
@@ -540,819 +137,413 @@
   <a href="#" class="active">EN</a>
   <a href="de/pythagoras-explorer.html">DE</a>
 </div>
-    <!-- Navigation -->
-    <nav>
+
+<!-- ════ HERO ════ -->
+<div class="hero">
+  <div class="hero-content">
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/1/1a/Kapitolinischer_Pythagoras_adjusted.jpg" alt="Bust of Pythagoras">
+    <h1>The World of Pythagoras</h1>
+    <p class="subtitle">The Father of Numbers</p>
+    <p class="life">c. 570 – c. 495 BC · Samos & Croton, Greece</p>
+    <p class="tagline">Numbers aren't just tools—they're the building blocks of reality itself. Explore the revolutionary ideas of Pythagoras through interactive experiments.</p>
+  </div>
+</div>
+
+<!-- ════ NAV ════ -->
+<nav>
   <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
-        <div class="nav-container">
-            <div class="nav-title">Pythagoras Explorer</div>
-            <div class="nav-buttons">
-                <button class="nav-btn active" onclick="showSection('his-story')">His Story</button>
-                <button class="nav-btn" onclick="showSection('theorem')">The Theorem</button>
-                <button class="nav-btn" onclick="showSection('triples')">Triples</button>
-                <button class="nav-btn" onclick="showSection('music')">Music & Math</button>
-                <button class="nav-btn" onclick="showSection('fun-facts')">Fun Facts</button>
-                <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
-            </div>
-        </div>
-    </nav>
+  <button class="active" onclick="show('story',this)">Story</button>
+  <button onclick="show('theorem',this)">Theorem Proof</button>
+  <button onclick="show('calculator',this)">Calculator</button>
+  <button onclick="show('triples',this)">Triples Explorer</button>
+  <button onclick="show('facts',this)">Fun Facts</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+</nav>
 
-    <!-- Content Sections -->
-    <div class="container">
-
-        <!-- Section 1: His Story -->
-        <section id="his-story" class="active">
-            <div class="hero">
-                <h1>Pythagoras: The Mystic Mathematician</h1>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/Kapitolinischer_Pythagoras_adjusted.jpg" alt="Bust of Pythagoras" class="hero-img">
-                <p style="font-size: 1.1rem; margin-top: 1.5rem;">One of history's most influential mathematicians and philosophers</p>
-            </div>
-
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">c. 570 BC</div>
-                    <h3>Born on the Island of Samos</h3>
-                    <p>Pythagoras was born in ancient Greece on the island of Samos. His family was wealthy, which allowed him to travel and study widely.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">Around 550 BC</div>
-                    <h3>Travels to Egypt and Babylon</h3>
-                    <p>Pythagoras left Samos and traveled to Egypt and Babylon, where he learned advanced mathematics, geometry, and astronomy from Egyptian priests and Babylonian scholars. He spent nearly 30 years there!</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">Around 530 BC</div>
-                    <h3>Founds the Pythagoreans in Croton</h3>
-                    <p>Pythagoras settled in Croton (southern Italy) and founded a secretive mathematical and philosophical society called the Pythagorean brotherhood. Members had to be initiated and kept strict vows of silence.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">The Pythagorean Rules</div>
-                    <h3>Bizarre Beliefs and Customs</h3>
-                    <p>The Pythagoreans followed strange rules: no eating beans (they believed beans contained souls!), don't pick up fallen food, don't look at a mirror next to a candle, and never turn around to look back. Math mixed with mysticism!</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">Core Philosophy</div>
-                    <h3>"All is Number"</h3>
-                    <p>Pythagoras believed that numbers were the fundamental building blocks of the universe. Everything in nature—music, planets, light—could be explained through mathematical ratios and proportions.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">Musical Discovery</div>
-                    <h3>The Mathematics of Harmony</h3>
-                    <p>Pythagoras discovered that musical notes that sound beautiful together have simple mathematical ratios (2:1, 3:2, etc.). Music is mathematics made audible! This was revolutionary—the first proof that nature follows mathematical laws.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">Famous Discovery</div>
-                    <h3>The Pythagorean Theorem</h3>
-                    <p>The theorem a² + b² = c² made Pythagoras immortal in mathematics. It may not have been his original discovery (Babylonians knew it first), but he proved it and it changed geometry forever.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">The Crisis</div>
-                    <h3>The Discovery of Irrational Numbers</h3>
-                    <p>A terrible problem: the Pythagoreans discovered that √2 (the hypotenuse of a 1-1 right triangle) cannot be expressed as a simple ratio of whole numbers. This broke their entire worldview! Legend says they drowned the member who revealed this secret.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">c. 495 BC</div>
-                    <h3>Death and Legacy</h3>
-                    <p>Pythagoras died around 495 BC. His ideas influenced everyone who came after: Plato, Euclid, and virtually all of Western mathematics. He transformed how humans think about numbers and reality itself.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 2: The Pythagorean Theorem -->
-        <section id="theorem">
-            <h2>The Pythagorean Theorem</h2>
-
-            <div style="background: linear-gradient(135deg, #314231 0%, #3d523d 100%); padding: 2rem; border-radius: 8px; border: 2px solid #8fd4a4; margin-bottom: 2rem;">
-                <h3 style="margin-top: 0;">The Rule</h3>
-                <p style="font-size: 1.2rem; margin: 0;">In a <span class="highlight-text">right triangle</span> (a triangle with one 90° angle), the square of the longest side (the hypotenuse, opposite the right angle) equals the sum of the squares of the other two sides.</p>
-                <div style="background: #3d523d; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; text-align: center;">
-                    <div style="font-size: 2rem; color: #d96b6b; font-weight: bold;">a² + b² = c²</div>
-                </div>
-            </div>
-
-            <h3>Interactive Visualization</h3>
-            <p>Adjust the sliders to change the side lengths. Watch how the theorem stays true!</p>
-
-            <div class="control-group">
-                <div class="control-row">
-                    <label for="sideA">Side a:</label>
-                    <input type="range" id="sideA" min="1" max="12" value="3" oninput="updateTheoremCanvas()">
-                    <span id="sideA-value">3</span>
-                </div>
-                <div class="control-row">
-                    <label for="sideB">Side b:</label>
-                    <input type="range" id="sideB" min="1" max="12" value="4" oninput="updateTheoremCanvas()">
-                    <span id="sideB-value">4</span>
-                </div>
-            </div>
-
-            <canvas id="theoremCanvas" width="600" height="600"></canvas>
-
-            <div class="result-box highlight">
-                <p style="margin: 0;">
-                    <span class="highlight-text" id="theorem-a">3</span>² + <span class="highlight-text" id="theorem-b">4</span>² = <span class="highlight-text" id="theorem-c">5</span>²
-                </p>
-                <p style="margin: 0.5rem 0 0 0;">
-                    <span class="highlight-text" id="theorem-calc">9 + 16 = 25</span> ✓
-                </p>
-            </div>
-
-            <h3>Visual Proof by Rearrangement</h3>
-            <p>Click the button to see an animated proof that the two smaller squares can be rearranged to perfectly fit into the larger square!</p>
-            <button class="secondary" onclick="startProofAnimation()">Show Proof Animation</button>
-
-            <canvas id="proofCanvas" width="500" height="300" style="display: none;"></canvas>
-        </section>
-
-        <!-- Section 3: Pythagorean Triples -->
-        <section id="triples">
-            <h2>Pythagorean Triples Explorer</h2>
-
-            <div style="background: linear-gradient(135deg, #314231 0%, #3d523d 100%); padding: 2rem; border-radius: 8px; border: 2px solid #8fd4a4; margin-bottom: 2rem;">
-                <h3 style="margin-top: 0;">What's a Pythagorean Triple?</h3>
-                <p>Some right triangles have sides that are ALL whole numbers! For example, a 3-4-5 triangle has whole number sides. These are called <span class="highlight-text">Pythagorean Triples</span>. They're super useful in real life for construction and design.</p>
-            </div>
-
-            <h3>Find Your Own Triple</h3>
-            <p>Enter two whole numbers (a and b) and calculate the hypotenuse (c). If c is a whole number, you've found a triple!</p>
-
-            <div class="control-group">
-                <div class="control-row">
-                    <label for="inputA">Side a:</label>
-                    <input type="number" id="inputA" min="1" value="5" style="width: 100px;">
-                </div>
-                <div class="control-row">
-                    <label for="inputB">Side b:</label>
-                    <input type="number" id="inputB" min="1" value="12" style="width: 100px;">
-                </div>
-                <button onclick="calculateTriple()">Calculate c</button>
-            </div>
-
-            <div id="tripleResult" style="display: none; margin-top: 1.5rem;">
-                <div class="result-box" id="tripleResultBox"></div>
-            </div>
-
-            <h3>Famous Pythagorean Triples</h3>
-            <p>Here are some of the most common Pythagorean triples:</p>
-            <div class="table-container">
-                <table>
-                    <tr>
-                        <th>a</th>
-                        <th>b</th>
-                        <th>c</th>
-                        <th>Note</th>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>The most famous! Used by Egyptians for pyramids</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>12</td>
-                        <td>13</td>
-                        <td>Next most common</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>15</td>
-                        <td>17</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>24</td>
-                        <td>25</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>8</td>
-                        <td>10</td>
-                        <td>Multiple of 3-4-5</td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td>12</td>
-                        <td>15</td>
-                        <td>Multiple of 3-4-5</td>
-                    </tr>
-                    <tr>
-                        <td>20</td>
-                        <td>21</td>
-                        <td>29</td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-
-            <h3>Generate Triples with a Formula</h3>
-            <p>The ancient mathematicians discovered a formula to generate infinite Pythagorean triples! Pick any two whole numbers m and n (where m > n), then:</p>
-            <div style="background: #3d523d; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; text-align: center; font-family: monospace;">
-                <div style="color: #d96b6b; font-size: 1.1rem;">a = m² - n²</div>
-                <div style="color: #d96b6b; font-size: 1.1rem;">b = 2mn</div>
-                <div style="color: #d96b6b; font-size: 1.1rem;">c = m² + n²</div>
-            </div>
-
-            <div class="control-group">
-                <div class="control-row">
-                    <label for="paramM">m (must be > n):</label>
-                    <input type="number" id="paramM" min="2" value="3" style="width: 100px;">
-                </div>
-                <div class="control-row">
-                    <label for="paramN">n:</label>
-                    <input type="number" id="paramN" min="1" value="2" style="width: 100px;">
-                </div>
-                <button onclick="generateTripleFromFormula()">Generate Triple</button>
-            </div>
-
-            <div id="formulaResult" style="display: none; margin-top: 1.5rem;">
-                <div class="result-box highlight" id="formulaResultBox"></div>
-            </div>
-        </section>
-
-        <!-- Section 4: Music & Math -->
-        <section id="music">
-            <h2>Music & Mathematics</h2>
-
-            <div style="background: linear-gradient(135deg, #314231 0%, #3d523d 100%); padding: 2rem; border-radius: 8px; border: 2px solid #8fd4a4; margin-bottom: 2rem;">
-                <h3 style="margin-top: 0;">Pythagoras's Amazing Discovery</h3>
-                <p>Pythagoras discovered something that blew people's minds: <span class="highlight-text">musical harmony is based on simple mathematical ratios</span>. When two notes have frequencies in a simple ratio (like 1:2, 2:3, or 3:4), they sound beautiful together. This was the first evidence that nature is fundamentally mathematical!</p>
-                <p style="margin-bottom: 0;">Legend says he figured this out listening to blacksmith hammers striking metal.</p>
-            </div>
-
-            <h3>Musical Intervals and Their Ratios</h3>
-            <div class="table-container">
-                <table>
-                    <tr>
-                        <th>Interval Name</th>
-                        <th>Frequency Ratio</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr>
-                        <td>Unison</td>
-                        <td>1:1</td>
-                        <td>Same note (frequencies identical)</td>
-                    </tr>
-                    <tr>
-                        <td>Octave</td>
-                        <td>2:1</td>
-                        <td>The same note but higher. The higher note vibrates twice as fast.</td>
-                    </tr>
-                    <tr>
-                        <td>Perfect Fifth</td>
-                        <td>3:2</td>
-                        <td>A very consonant interval (C to G). Used as the basis for many instruments!</td>
-                    </tr>
-                    <tr>
-                        <td>Perfect Fourth</td>
-                        <td>4:3</td>
-                        <td>Another very consonant interval (C to F)</td>
-                    </tr>
-                    <tr>
-                        <td>Major Third</td>
-                        <td>5:4</td>
-                        <td>A pleasant, major-sounding interval</td>
-                    </tr>
-                </table>
-            </div>
-
-            <h3>Hear the Ratios!</h3>
-            <p>Move the slider to change the frequency ratio between two notes. Play the tones to hear how simple ratios sound harmonious:</p>
-
-            <div class="control-group">
-                <div class="control-row">
-                    <label for="ratioSelect">Choose a ratio:</label>
-                    <select id="ratioSelect" style="background: #3d523d; color: #e8e4d9; border: 2px solid #8fd4a4; padding: 0.6rem 1rem; border-radius: 8px; font-size: 1rem;" onchange="updateRatioDisplay()">
-                        <option value="1">1:1 (Unison)</option>
-                        <option value="2">2:1 (Octave)</option>
-                        <option value="1.5">3:2 (Perfect Fifth)</option>
-                        <option value="1.33">4:3 (Perfect Fourth)</option>
-                        <option value="1.25">5:4 (Major Third)</option>
-                    </select>
-                </div>
-            </div>
-
-            <canvas id="waveformCanvas" width="600" height="200"></canvas>
-
-            <div style="display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap;">
-                <button onclick="playTone()">Play Tones</button>
-                <button class="secondary" onclick="stopTone()">Stop</button>
-            </div>
-
-            <div class="result-box highlight">
-                <p style="margin: 0;">Frequency Ratio: <span class="highlight-text" id="ratioDisplay">1:1</span></p>
-                <p style="margin-top: 0.5rem; margin-bottom: 0;">Note: Higher frequency = higher pitch</p>
-            </div>
-
-            <p style="margin-top: 2rem; font-style: italic; color: #8fd4a4;">This was one of humanity's first discoveries that nature follows mathematical rules. Everything changed from this moment!</p>
-        </section>
-
-        <!-- Section 5: Fun Facts -->
-        <section id="fun-facts">
-            <h2>Fun Facts About Pythagoras</h2>
-            <div class="cards-grid">
-                <div class="card">
-                    <h3>Ancient Knowledge</h3>
-                    <p>The Pythagorean theorem was actually known in Babylon over 1000 years before Pythagoras! But he was the first to prove it mathematically.</p>
-                </div>
-
-                <div class="card">
-                    <h3>Math Cult</h3>
-                    <p>The Pythagorean society was part math club, part religion, part mysterious cult. Members took vows of silence and kept their discoveries secret!</p>
-                </div>
-
-                <div class="card">
-                    <h3>Bean Phobia</h3>
-                    <p>The Pythagoreans refused to eat beans because they believed beans contained the souls of the dead. They called beans "the children of the gods."</p>
-                </div>
-
-                <div class="card">
-                    <h3>Deadly Secret</h3>
-                    <p>One legend says Pythagoras died because he refused to escape through a bean field during an attack. He chose death over breaking his rules!</p>
-                </div>
-
-                <div class="card">
-                    <h3>Secret Society</h3>
-                    <p>Members who revealed Pythagorean secrets were supposedly drowned in the sea. Keeping quiet about mathematical discoveries was literally a life-or-death matter!</p>
-                </div>
-
-                <div class="card">
-                    <h3>The Crisis</h3>
-                    <p>The discovery of irrational numbers (like √2) was so terrifying it was called the "alogon" or "unspeakable." It contradicted their philosophy that "all is number" (meaning whole numbers).</p>
-                </div>
-
-                <div class="card">
-                    <h3>"All is Number"</h3>
-                    <p>Pythagoras believed numbers were literally the building blocks of reality itself. Not just descriptions of nature—but nature's actual essence!</p>
-                </div>
-
-                <div class="card">
-                    <h3>Philosopher Inventor</h3>
-                    <p>Pythagoras may have been the first person to call himself a "philosopher" (lover of wisdom). The word was created to describe him!</p>
-                </div>
-
-                <div class="card">
-                    <h3>400+ Proofs</h3>
-                    <p>The Pythagorean theorem has more than 400 different proofs! No other mathematical theorem is proved so many different ways.</p>
-                </div>
-
-                <div class="card">
-                    <h3>Presidential Proof</h3>
-                    <p>James Garfield, who became a US president, discovered his own proof of the Pythagorean theorem in 1876 while serving in Congress!</p>
-                </div>
-
-                <div class="card">
-                    <h3>Egyptian Geometry</h3>
-                    <p>The 3-4-5 triangle was used by ancient Egyptians to make perfect right angles for building the pyramids. They used rope knots to measure!</p>
-                </div>
-
-                <div class="card">
-                    <h3>Blacksmith Story</h3>
-                    <p>Legend says Pythagoras discovered musical harmony by listening to blacksmith hammers of different weights. He connected sound and mathematics together!</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 6: Quiz -->
-        <section id="quiz">
-            <h2>Test Your Knowledge!</h2>
-            <p style="text-align: center; font-size: 1.1rem; margin-bottom: 2rem;">Answer 10 random questions about Pythagoras. You'll get instant feedback on each answer.</p>
-
-            <div class="quiz-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-
-                <div id="quizContent"></div>
-
-                <div id="quizResults" style="display: none;">
-                    <div class="quiz-results">
-                        <h3 style="margin-top: 0;">Quiz Complete!</h3>
-                        <div class="score-display" id="finalScore">0%</div>
-                        <p id="scoreMessage"></p>
-                        <button onclick="restartQuiz()" style="margin-top: 1.5rem;">Take Quiz Again</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — STORY
+     ═══════════════════════════════════════════ -->
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>The Life of Pythagoras</h2>
+    <p class="sub">From brilliant student to the founder of a secret society obsessed with numbers.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">570 BC</div><div class="tl-text">Born on the island of <strong>Samos</strong> in Greece. His father was a merchant, his mother encouraged his love of learning.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Age 12</div><div class="tl-text">Shows such exceptional talent that teachers encourage him to study with the best minds in Greece. Already fascinated by numbers and music.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Age 20-30</div><div class="tl-text">Travels to <strong>Egypt and Babylon</strong> to learn from priests and mathematicians. Spends years absorbing ancient wisdom about geometry and numbers.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Age 40</div><div class="tl-text">Settles in <strong>Croton, Italy</strong> and founds a secret society called the <strong>Pythagoreans</strong>. Members take vows of silence to keep discoveries secret!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Peak Years</div><div class="tl-text">The Pythagoreans become famous (and infamous) for mysterious rituals. They refuse to eat beans, believe numbers are alive, and keep mathematical proofs secret.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Age 50+</div><div class="tl-text">Proves the famous Pythagorean theorem and discovers the relationship between numbers and music—harmony has mathematical ratios!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Downfall</div><div class="tl-text">The discovery of <strong>irrational numbers</strong> (like √2) shocks the society—it contradicts the belief that "all is number" (whole numbers). Some say a Pythagorean was murdered for revealing this secret.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">495 BC</div><div class="tl-text">Dies in exile, around age 75. But his ideas live forever—the Pythagorean theorem is still taught in every math class today!</div></div>
     </div>
+  </div>
+</section>
 
-    <script>
-        // Navigation
-        function showSection(sectionId) {
-            // Hide all sections
-            const sections = document.querySelectorAll('section');
-            sections.forEach(s => s.classList.remove('active'));
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — THEOREM PROOF
+     ═══════════════════════════════════════════ -->
+<section id="sec-theorem">
+  <div class="card">
+    <h2>The Pythagorean Theorem — Visual Proof</h2>
+    <p class="sub">a² + b² = c² — One of the most important ideas in mathematics, proved geometrically.</p>
+    <p style="margin-bottom:20px;font-size:15px;">Adjust the sliders below to change the triangle's sides. Watch how the squares on each side always follow the rule: <strong>the two smaller squares' areas always add up to the big square's area!</strong></p>
+    <div class="theorem-layout">
+      <div class="theorem-canvas-wrap">
+        <canvas id="theoremCanvas" width="350" height="350"></canvas>
+      </div>
+      <div class="theorem-controls">
+        <div class="slider-group">
+          <label>Side a = <span id="sideAVal">3</span></label>
+          <input type="range" id="sideASlider" min="2" max="10" step="0.5" value="3" oninput="updateTheoremViz()">
+        </div>
+        <div class="slider-group">
+          <label>Side b = <span id="sideBVal">4</span></label>
+          <input type="range" id="sideBSlider" min="2" max="10" step="0.5" value="4" oninput="updateTheoremViz()">
+        </div>
+        <div class="val-grid">
+          <div class="val-box"><div class="lbl">Side a²</div><div class="val" style="color:var(--accent)" id="a2Val">9</div></div>
+          <div class="val-box"><div class="lbl">Side b²</div><div class="val" style="color:var(--accent2)" id="b2Val">16</div></div>
+          <div class="val-box"><div class="lbl">Sum (a²+b²)</div><div class="val" style="color:var(--accent)" id="sumVal">25</div></div>
+          <div class="val-box"><div class="lbl">Side c (hypotenuse)</div><div class="val" style="color:var(--accent3)" id="cVal">5.00</div></div>
+        </div>
+        <div class="explain-box">
+          <strong>How it works:</strong> In any right triangle, the square of the hypotenuse (longest side) equals the sum of squares of the other two sides. Try using the 3-4-5 triangle—this is the Pythagoreans' favorite!
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — CALCULATOR
+     ═══════════════════════════════════════════ -->
+<section id="sec-calculator">
+  <div class="card">
+    <h2>Right Triangle Calculator</h2>
+    <p class="sub">Enter any two sides and calculate the third using the Pythagorean theorem.</p>
+    <p style="margin-bottom:20px;font-size:15px;">This tool lets you solve for the missing side of a right triangle. Enter values for any two sides—leave one blank to find it!</p>
+    <div class="calc-group">
+      <label>Side a (one leg)</label>
+      <input type="number" id="calcA" placeholder="Enter value or leave blank" oninput="calculateTriangle()">
+    </div>
+    <div class="calc-group">
+      <label>Side b (other leg)</label>
+      <input type="number" id="calcB" placeholder="Enter value or leave blank" oninput="calculateTriangle()">
+    </div>
+    <div class="calc-group">
+      <label>Side c (hypotenuse - longest side)</label>
+      <input type="number" id="calcC" placeholder="Enter value or leave blank" oninput="calculateTriangle()">
+    </div>
+    <button onclick="calculateTriangle()" style="width:100%;margin-top:16px;">Calculate</button>
+    <div id="calcResult"></div>
+  </div>
+</section>
 
-            // Update nav buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — TRIPLES EXPLORER
+     ═══════════════════════════════════════════ -->
+<section id="sec-triples">
+  <div class="card">
+    <h2>Pythagorean Triples Explorer</h2>
+    <p class="sub">Find all right triangles where all three sides are whole numbers!</p>
+    <p style="margin-bottom:20px;font-size:15px;">A Pythagorean Triple is three whole numbers where a² + b² = c². The 3-4-5 triangle is the most famous! Enter a maximum value to see all triples up to that limit.</p>
+    <div class="calc-group">
+      <label>Find all triples with sides up to:</label>
+      <input type="number" id="tripleLimit" placeholder="Enter a number (try 50)" value="50" min="5" max="200">
+    </div>
+    <button onclick="findTriples()" style="width:100%;margin-top:16px;">Find Triples</button>
+    <div id="triplesResult"></div>
+  </div>
+</section>
 
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — FUN FACTS
+     ═══════════════════════════════════════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>Mind-Blowing Pythagoras Facts</h2>
+    <p class="sub">This philosopher and mathematician was unlike anyone else.</p>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-icon">📚</div>
+        <div class="fact-title">All is Number</div>
+        <div class="fact-text">Pythagoras believed numbers weren't just descriptions of nature—they were nature's actual essence. Everything is built from numbers!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🔐</div>
+        <div class="fact-title">Secret Society</div>
+        <div class="fact-text">The Pythagoreans were part math club, part religious cult, part super-secret society. Members took vows of silence and could be killed for revealing mathematical discoveries.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🫘</div>
+        <div class="fact-title">Bean Phobia</div>
+        <div class="fact-text">Pythagoreans refused to eat beans because they believed beans contained the souls of the dead. Some say Pythagoras died running through a bean field to escape attackers—he wouldn't cut through it!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🎵</div>
+        <div class="fact-title">Music & Math</div>
+        <div class="fact-text">Legend says Pythagoras discovered musical harmony by listening to blacksmith hammers. He proved that musical intervals are mathematical ratios—the first connection between sound and numbers!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">⚡</div>
+        <div class="fact-title">The Pythagorean Crisis</div>
+        <div class="fact-text">Discovery of irrational numbers like √2 shocked the society—they couldn't be written as whole number ratios! This contradicted "all is number." The discovery was called "alogon" (unspeakable).</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">400+</div>
+        <div class="fact-title">Over 400 Proofs</div>
+        <div class="fact-text">The Pythagorean theorem has more than 400 different mathematical proofs! No other theorem in math has been proven so many different ways.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🏛️</div>
+        <div class="fact-title">Ancient Knowledge</div>
+        <div class="fact-text">Babylonians and Egyptians knew the theorem 1000+ years before Pythagoras! But he was the first to prove it mathematically, changing mathematics forever.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🇪🇬</div>
+        <div class="fact-title">Egyptian Pyramids</div>
+        <div class="fact-text">The ancient Egyptians used the 3-4-5 right triangle to make perfect right angles for building the pyramids. They marked rope with knots to measure exact distances!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">👤</div>
+        <div class="fact-title">First Philosopher</div>
+        <div class="fact-text">Pythagoras may have been the first person to call himself a "philosopher"—lover of wisdom. The word was created to describe people like him!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🌟</div>
+        <div class="fact-title">President's Proof</div>
+        <div class="fact-text">James Garfield, who became a US President, discovered his own proof of the Pythagorean theorem in 1876 while serving in Congress! He's the only US President to publish a math proof.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">✨</div>
+        <div class="fact-title">The Most Famous Theorem</div>
+        <div class="fact-text">The Pythagorean theorem is used everywhere—construction, navigation, astronomy, computer graphics, physics. It's been discovered independently by dozens of cultures around the world.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🎓</div>
+        <div class="fact-title">Still Teaching Today</div>
+        <div class="fact-text">Over 2,500 years later, the Pythagorean theorem is still a cornerstone of geometry taught in every high school. Few ideas have lasted so long or mattered so much.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Theorem Canvas
-        function updateTheoremCanvas() {
-            const a = parseInt(document.getElementById('sideA').value);
-            const b = parseInt(document.getElementById('sideB').value);
-            const c = Math.sqrt(a * a + b * b);
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — QUIZ
+     ═══════════════════════════════════════════ -->
+<section id="sec-quiz">
+  <div class="card">
+    <h2>Test Your Knowledge!</h2>
+    <p class="sub">Answer 10 random questions about Pythagoras. You'll get instant feedback on each one.</p>
+    <div class="quiz-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div id="quizContent"></div>
+      <div id="quizResults" style="display:none;">
+        <div class="quiz-results">
+          <h3 style="margin-top:0;">Quiz Complete!</h3>
+          <div class="score-display" id="finalScore">0%</div>
+          <p id="scoreMessage"></p>
+          <button onclick="restartQuiz()" style="margin-top:1.5rem;">Take Quiz Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            document.getElementById('sideA-value').textContent = a;
-            document.getElementById('sideB-value').textContent = b;
-            document.getElementById('theorem-a').textContent = a;
-            document.getElementById('theorem-b').textContent = b;
-            document.getElementById('theorem-c').textContent = c.toFixed(2);
-            document.getElementById('theorem-calc').textContent = `${a}² + ${b}² = ${(a*a + b*b).toFixed(2)}`;
+<script>
+const quizQuestions=[
+{q:"Where was Pythagoras born?",options:["Athens","Samos","Croton","Egypt"],correct:1,explain:"Pythagoras was born on the island of Samos in Greece around 570 BC."},
+{q:"Which country did Pythagoras travel to for advanced learning?",options:["Rome","China","Egypt and Babylon","India"],correct:2,explain:"Pythagoras traveled to Egypt and Babylon to learn mathematics from priests and scholars."},
+{q:"What was the name of Pythagoras's secret society?",options:["The Philosophers","The Pythagoreans","The Numerals","The Geometers"],correct:1,explain:"The secret society was called the Pythagoreans, and members had to keep their discoveries secret."},
+{q:"What famous food did the Pythagoreans refuse to eat?",options:["Bread","Beans","Meat","Vegetables"],correct:1,explain:"The Pythagoreans refused to eat beans because they believed beans contained souls!"},
+{q:"In the Pythagorean theorem (a² + b² = c²), what is 'c'?",options:["One of the shorter sides","The hypotenuse (longest side)","The area of the triangle","The perimeter"],correct:1,explain:"In a right triangle, 'c' is the hypotenuse—the longest side opposite the right angle."},
+{q:"What is a Pythagorean Triple?",options:["Three Pythagorean brothers","A right triangle with all whole number sides","A musical chord","A secret Pythagorean ritual"],correct:1,explain:"A Pythagorean Triple is a right triangle where all three sides are whole numbers, like 3-4-5."},
+{q:"Which is a Pythagorean Triple?",options:["2-3-4","3-4-5","4-5-6","5-6-7"],correct:1,explain:"3-4-5 is the most famous Pythagorean Triple: 3² + 4² = 9 + 16 = 25 = 5²"},
+{q:"What musical interval is a 2:1 frequency ratio?",options:["A fifth","An octave","A fourth","A major third"],correct:1,explain:"A 2:1 ratio produces an octave—the same note but higher (double the frequency)."},
+{q:"What did Pythagoras believe about numbers?",options:["They were just tools","All is number—they are the building blocks of reality","They were invented by humans","They don't matter in nature"],correct:1,explain:"Pythagoras believed 'All is number'—that numbers are the fundamental essence of the universe."},
+{q:"What is √2 an example of?",options:["A Pythagorean Triple","An irrational number","A musical ratio","A whole number"],correct:1,explain:"√2 is an irrational number—it cannot be expressed as a simple ratio of whole numbers. This discovery shocked the Pythagoreans!"},
+];
 
-            const canvas = document.getElementById('theoremCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#0a0e1a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+let currentQuestion=0;
+let score=0;
+let selectedQuestions=[];
 
-            // Scale
-            const scale = Math.min((canvas.width - 100) / (c + Math.max(a, b)), (canvas.height - 100) / (c + Math.max(a, b)));
-            const startX = 50;
-            const startY = canvas.height - 50;
+function show(sectionId,btn){
+const sections=document.querySelectorAll('section');
+sections.forEach(s=>s.classList.remove('visible'));
+document.getElementById('sec-'+sectionId).classList.add('visible');
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+window.scrollTo(0,0);
+}
 
-            // Draw right triangle
-            ctx.strokeStyle = '#e0e0e0';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(startX, startY);
-            ctx.lineTo(startX + a * scale, startY);
-            ctx.lineTo(startX + a * scale, startY - b * scale);
-            ctx.closePath();
-            ctx.stroke();
+function updateTheoremViz(){
+const a=parseFloat(document.getElementById('sideASlider').value);
+const b=parseFloat(document.getElementById('sideBSlider').value);
+const c=Math.sqrt(a*a+b*b);
+document.getElementById('sideAVal').textContent=a.toFixed(1);
+document.getElementById('sideBVal').textContent=b.toFixed(1);
+document.getElementById('a2Val').textContent=(a*a).toFixed(1);
+document.getElementById('b2Val').textContent=(b*b).toFixed(1);
+document.getElementById('sumVal').textContent=(a*a+b*b).toFixed(1);
+document.getElementById('cVal').textContent=c.toFixed(2);
+drawTheorem(a,b,c);
+}
 
-            // Draw right angle indicator
-            const rectSize = 15;
-            ctx.fillStyle = '#e0e0e0';
-            ctx.fillRect(startX + a * scale - rectSize, startY - rectSize, rectSize, rectSize);
+function drawTheorem(a,b,c){
+const canvas=document.getElementById('theoremCanvas');
+const ctx=canvas.getContext('2d');
+ctx.fillStyle='#2b3a2b';
+ctx.fillRect(0,0,canvas.width,canvas.height);
+const scale=Math.min(200/(a+b),200/(a+b));
+const startX=50,startY=300;
+ctx.strokeStyle='#e8e4d9';
+ctx.lineWidth=3;
+ctx.beginPath();
+ctx.moveTo(startX,startY);
+ctx.lineTo(startX+a*scale,startY);
+ctx.lineTo(startX+a*scale,startY-b*scale);
+ctx.closePath();
+ctx.stroke();
+const rectSize=12;
+ctx.fillStyle='#e8e4d9';
+ctx.fillRect(startX+a*scale-rectSize,startY-rectSize,rectSize,rectSize);
+ctx.fillStyle='rgba(245,216,99,0.3)';
+ctx.fillRect(startX,startY,a*scale,a*scale);
+ctx.strokeStyle='#f5d863';
+ctx.lineWidth=2;
+ctx.strokeRect(startX,startY,a*scale,a*scale);
+ctx.fillStyle='rgba(217,107,107,0.3)';
+ctx.fillRect(startX+a*scale,startY-b*scale,b*scale,b*scale);
+ctx.strokeStyle='#d96b6b';
+ctx.strokeRect(startX+a*scale,startY-b*scale,b*scale,b*scale);
+ctx.fillStyle='rgba(143,212,164,0.3)';
+ctx.fillRect(startX+a*scale+b*scale*0.7,startY-b*scale-a*scale*0.7,c*scale,c*scale);
+ctx.strokeStyle='#8fd4a4';
+ctx.lineWidth=2;
+ctx.strokeRect(startX+a*scale+b*scale*0.7,startY-b*scale-a*scale*0.7,c*scale,c*scale);
+ctx.fillStyle='#e8e4d9';
+ctx.font='14px Patrick Hand';
+ctx.fillText('a',startX+a*scale/2,startY+20);
+ctx.fillText('b',startX+a*scale+15,startY-b*scale/2);
+ctx.fillText('c',startX+a*scale+50,startY-150);
+}
 
-            // Draw square on side a (blue)
-            ctx.fillStyle = 'rgba(0, 217, 255, 0.3)';
-            ctx.strokeStyle = '#00d9ff';
-            ctx.lineWidth = 2;
-            ctx.fillRect(startX, startY, a * scale, a * scale);
-            ctx.strokeRect(startX, startY, a * scale, a * scale);
-            ctx.fillStyle = '#00d9ff';
-            ctx.font = 'bold 16px Arial';
-            ctx.fillText(`a²=${a*a}`, startX + a * scale / 2 - 30, startY + a * scale / 2);
+function calculateTriangle(){
+const a=parseFloat(document.getElementById('calcA').value)||null;
+const b=parseFloat(document.getElementById('calcB').value)||null;
+const c=parseFloat(document.getElementById('calcC').value)||null;
+let result='';
+if(a&&b&&!c){
+const calcC=Math.sqrt(a*a+b*b);
+result=`<div class="calc-result">✓ Side c = ${calcC.toFixed(2)}</div>`;
+}else if(a&&c&&!b){
+const calcB=Math.sqrt(c*c-a*a);
+result=`<div class="calc-result">✓ Side b = ${calcB.toFixed(2)}</div>`;
+}else if(b&&c&&!a){
+const calcA=Math.sqrt(c*c-b*b);
+result=`<div class="calc-result">✓ Side a = ${calcA.toFixed(2)}</div>`;
+}else if(!a||!b||!c){
+result='<div class="calc-result">Enter values for any two sides to find the third!</div>';
+}
+document.getElementById('calcResult').innerHTML=result;
+}
 
-            // Draw square on side b (orange)
-            ctx.fillStyle = 'rgba(255, 102, 0, 0.3)';
-            ctx.strokeStyle = '#ff6600';
-            ctx.fillRect(startX + a * scale, startY - b * scale, b * scale, b * scale);
-            ctx.strokeRect(startX + a * scale, startY - b * scale, b * scale, b * scale);
-            ctx.fillStyle = '#ff6600';
-            ctx.fillText(`b²=${b*b}`, startX + a * scale + b * scale / 2 - 30, startY - b * scale / 2);
+function findTriples(){
+const limit=parseInt(document.getElementById('tripleLimit').value)||50;
+const triples=[];
+for(let a=3;a<=limit;a++){
+for(let b=a;b<=limit;b++){
+const c=Math.sqrt(a*a+b*b);
+if(Number.isInteger(c)&&c<=limit){
+triples.push([a,b,Math.round(c)]);
+}
+}
+}
+let html='<div class="triples-grid">';
+triples.forEach(t=>{
+html+=`<div class="triple-card found"><div class="triple-num">${t[0]}-${t[1]}-${t[2]}</div><div class="triple-check">✓ ${t[0]}² + ${t[1]}² = ${t[2]}²</div></div>`;
+});
+html+='</div>';
+if(triples.length===0){html='<div class="triple-result">No triples found up to '+limit+'</div>';}
+html+=`<div class="triple-result">Found ${triples.length} Pythagorean Triple${triples.length===1?'':'s'} up to ${limit}</div>`;
+document.getElementById('triplesResult').innerHTML=html;
+}
 
-            // Draw square on side c (green)
-            const cSquareSize = c * scale;
-            const angle = Math.atan(b / a);
-            ctx.save();
-            ctx.translate(startX, startY);
-            ctx.rotate(-angle);
-            ctx.fillStyle = 'rgba(0, 255, 150, 0.2)';
-            ctx.strokeStyle = '#00ff96';
-            ctx.lineWidth = 2;
-            ctx.fillRect(0, 0, cSquareSize, cSquareSize);
-            ctx.strokeRect(0, 0, cSquareSize, cSquareSize);
-            ctx.fillStyle = '#00ff96';
-            ctx.fillText(`c²=${(a*a + b*b).toFixed(0)}`, cSquareSize / 2 - 40, cSquareSize / 2);
-            ctx.restore();
+function initQuiz(){
+selectedQuestions=quizQuestions.sort(()=>0.5-Math.random()).slice(0,10);
+currentQuestion=0;
+score=0;
+document.getElementById('quizResults').style.display='none';
+showQuestion();
+}
 
-            // Labels
-            ctx.fillStyle = '#e0e0e0';
-            ctx.font = 'bold 14px Arial';
-            ctx.fillText(`a=${a}`, startX + a * scale / 2 - 10, startY + 25);
-            ctx.fillText(`b=${b}`, startX + a * scale + 15, startY - b * scale / 2);
-            ctx.fillText(`c=${c.toFixed(2)}`, startX + a * scale / 2 - 20, startY - b * scale / 2 - 20);
-        }
+function showQuestion(){
+const q=selectedQuestions[currentQuestion];
+const progress=((currentQuestion+1)/10)*100;
+document.getElementById('progressFill').style.width=progress+'%';
+let html=`<div class="question-box"><div class="question-number">Question ${currentQuestion+1} of 10</div><div class="question-text">${q.q}</div><div class="answers">`;
+q.options.forEach((opt,i)=>{
+html+=`<div class="answer" onclick="selectAnswer(${i})">${opt}</div>`;
+});
+html+=`</div><div class="feedback" id="feedback"></div></div>`;
+document.getElementById('quizContent').innerHTML=html;
+}
 
-        updateTheoremCanvas();
+function selectAnswer(idx){
+const q=selectedQuestions[currentQuestion];
+const answers=document.querySelectorAll('.answer');
+const feedback=document.getElementById('feedback');
+answers.forEach((ans,i)=>{
+if(i===q.correct)ans.classList.add('correct');
+ans.style.pointerEvents='none';
+});
+if(idx===q.correct){
+answers[idx].classList.add('selected');
+score++;
+feedback.className='feedback show correct';
+feedback.innerHTML=`<strong>Correct!</strong> ${q.explain}`;
+}else{
+answers[idx].classList.add('incorrect');
+feedback.className='feedback show incorrect';
+feedback.innerHTML=`<strong>Not quite.</strong> ${q.explain}`;
+}
+setTimeout(()=>{
+currentQuestion++;
+if(currentQuestion<10){
+showQuestion();
+}else{
+showResults();
+}
+},3000);
+}
 
-        function startProofAnimation() {
-            const canvas = document.getElementById('proofCanvas');
-            canvas.style.display = 'block';
-            const ctx = canvas.getContext('2d');
-            let frame = 0;
-            const maxFrames = 120;
+function showResults(){
+const percentage=Math.round((score/10)*100);
+document.getElementById('finalScore').textContent=percentage+'%';
+let message='';
+if(percentage===100)message="Perfect! You're a Pythagoras expert!";
+else if(percentage>=80)message="Excellent work! You really know your stuff!";
+else if(percentage>=60)message="Good job! You learned a lot!";
+else if(percentage>=40)message="Nice effort! Review and try again.";
+else message="Keep learning! Read through the sections again.";
+document.getElementById('scoreMessage').textContent=message;
+document.getElementById('quizContent').style.display='none';
+document.getElementById('quizResults').style.display='block';
+}
 
-            function animate() {
-                ctx.fillStyle = '#0a0e1a';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+function restartQuiz(){
+document.getElementById('quizContent').style.display='block';
+initQuiz();
+}
 
-                const progress = frame / maxFrames;
-
-                // Draw the large square
-                ctx.fillStyle = 'rgba(0, 217, 255, 0.1)';
-                ctx.strokeStyle = '#00d9ff';
-                ctx.lineWidth = 2;
-                ctx.fillRect(50, 50, 200, 200);
-                ctx.strokeRect(50, 50, 200, 200);
-
-                // Draw and animate smaller squares
-                if (progress < 0.5) {
-                    const animProgress = progress * 2;
-                    ctx.fillStyle = 'rgba(255, 102, 0, 0.4)';
-                    ctx.fillRect(50 + animProgress * 50, 50, 100, 100);
-                    ctx.fillStyle = 'rgba(0, 255, 150, 0.4)';
-                    ctx.fillRect(50, 150 + animProgress * 50, 100, 100);
-                } else {
-                    ctx.fillStyle = 'rgba(255, 102, 0, 0.4)';
-                    ctx.fillRect(100, 50, 100, 100);
-                    ctx.fillStyle = 'rgba(0, 255, 150, 0.4)';
-                    ctx.fillRect(50, 200, 100, 100);
-                }
-
-                ctx.fillStyle = '#e0e0e0';
-                ctx.font = 'bold 14px Arial';
-                ctx.fillText('The two smaller squares', 60, 280);
-                ctx.fillText('can be rearranged into the', 60, 300);
-                ctx.fillText('large square!', 60, 320);
-
-                frame++;
-                if (frame < maxFrames) {
-                    requestAnimationFrame(animate);
-                }
-            }
-            animate();
-        }
-
-        // Triples
-        function calculateTriple() {
-            const a = parseInt(document.getElementById('inputA').value);
-            const b = parseInt(document.getElementById('inputB').value);
-            if (!a || !b || a < 1 || b < 1) return;
-
-            const c = Math.sqrt(a * a + b * b);
-            const isWhole = Number.isInteger(c);
-
-            const resultBox = document.getElementById('tripleResultBox');
-            if (isWhole) {
-                resultBox.className = 'result-box triple-found';
-                resultBox.innerHTML = `<p style="margin: 0;"><span class="highlight-text">${a}-${b}-${c}</span> is a Pythagorean Triple! ✓</p><p style="margin: 0.5rem 0 0 0;">All three sides are whole numbers: ${a}² + ${b}² = ${c}²</p>`;
-            } else {
-                resultBox.className = 'result-box';
-                resultBox.innerHTML = `<p style="margin: 0;">${a}² + ${b}² = <span class="highlight-text">${c.toFixed(4)}</span></p><p style="margin: 0.5rem 0 0 0;">The hypotenuse is not a whole number, so this is not a triple.</p>`;
-            }
-            document.getElementById('tripleResult').style.display = 'block';
-        }
-
-        function generateTripleFromFormula() {
-            const m = parseInt(document.getElementById('paramM').value);
-            const n = parseInt(document.getElementById('paramN').value);
-            if (!m || !n || m <= n) {
-                alert('Please enter valid numbers where m > n');
-                return;
-            }
-
-            const a = m * m - n * n;
-            const b = 2 * m * n;
-            const c = m * m + n * n;
-
-            const resultBox = document.getElementById('formulaResultBox');
-            resultBox.innerHTML = `
-                <p style="margin: 0;">With m=${m} and n=${n}:</p>
-                <p style="margin: 0.5rem 0 0 0;">
-                    a = ${m}² - ${n}² = <span class="highlight-text">${a}</span><br>
-                    b = 2 × ${m} × ${n} = <span class="highlight-text">${b}</span><br>
-                    c = ${m}² + ${n}² = <span class="highlight-text">${c}</span>
-                </p>
-                <p style="margin: 0.5rem 0 0 0;"><span class="highlight-text">${a}-${b}-${c}</span> is a Pythagorean Triple!</p>
-                <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem;">Verify: ${a}² + ${b}² = ${a*a} + ${b*b} = ${a*a + b*b} = ${c}² ✓</p>
-            `;
-            document.getElementById('formulaResult').style.display = 'block';
-        }
-
-        // Music & Web Audio
-        let audioContext;
-        let oscillators = [];
-        let gains = [];
-
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        function updateRatioDisplay() {
-            const ratio = parseFloat(document.getElementById('ratioSelect').value);
-            let ratioText;
-            if (ratio === 1) ratioText = '1:1';
-            else if (ratio === 2) ratioText = '2:1';
-            else if (ratio === 1.5) ratioText = '3:2';
-            else if (ratio === 1.33) ratioText = '4:3';
-            else if (ratio === 1.25) ratioText = '5:4';
-
-            document.getElementById('ratioDisplay').textContent = ratioText;
-
-            // Draw waveform
-            const canvas = document.getElementById('waveformCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#0a0e1a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw two sine waves
-            ctx.strokeStyle = '#00d9ff';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            for (let x = 0; x < canvas.width; x++) {
-                const y = canvas.height / 4 + Math.sin(x / 20) * 30;
-                if (x === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.stroke();
-
-            ctx.strokeStyle = '#ff6600';
-            ctx.beginPath();
-            for (let x = 0; x < canvas.width; x++) {
-                const y = canvas.height * 3 / 4 + Math.sin(x / 20 * ratio) * 30;
-                if (x === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.stroke();
-
-            ctx.fillStyle = '#00d9ff';
-            ctx.font = '12px Arial';
-            ctx.fillText('Note 1 (base frequency)', 10, 30);
-            ctx.fillStyle = '#ff6600';
-            ctx.fillText(`Note 2 (${ratio}x frequency)`, 10, canvas.height - 10);
-        }
-
-        updateRatioDisplay();
-
-        function playTone() {
-            initAudio();
-            stopTone();
-
-            const ratio = parseFloat(document.getElementById('ratioSelect').value);
-            const baseFreq = 262; // Middle C
-
-            // Note 1
-            const osc1 = audioContext.createOscillator();
-            const gain1 = audioContext.createGain();
-            osc1.frequency.value = baseFreq;
-            osc1.type = 'sine';
-            gain1.gain.value = 0.3;
-            osc1.connect(gain1);
-            gain1.connect(audioContext.destination);
-            osc1.start();
-            oscillators.push(osc1);
-            gains.push(gain1);
-
-            // Note 2
-            const osc2 = audioContext.createOscillator();
-            const gain2 = audioContext.createGain();
-            osc2.frequency.value = baseFreq * ratio;
-            osc2.type = 'sine';
-            gain2.gain.value = 0.3;
-            osc2.connect(gain2);
-            gain2.connect(audioContext.destination);
-            osc2.start();
-            oscillators.push(osc2);
-            gains.push(gain2);
-
-            setTimeout(stopTone, 3000);
-        }
-
-        function stopTone() {
-            oscillators.forEach(osc => {
-                try { osc.stop(); } catch(e) {}
-            });
-            oscillators = [];
-            gains = [];
-        }
-
-        // Quiz
-        const quizQuestions = [
-            { q: "Where was Pythagoras born?", options: ["Athens", "Samos", "Croton", "Egypt"], correct: 1, explain: "Pythagoras was born on the island of Samos in Greece around 570 BC." },
-            { q: "Which country did Pythagoras travel to for advanced learning?", options: ["Rome", "China", "Egypt and Babylon", "India"], correct: 2, explain: "Pythagoras traveled to Egypt and Babylon to learn mathematics from priests and scholars." },
-            { q: "What was the name of Pythagoras's secret society?", options: ["The Philosophers", "The Pythagoreans", "The Numerals", "The Geometers"], correct: 1, explain: "The secret society was called the Pythagoreans, and members had to keep their discoveries secret." },
-            { q: "What famous food did the Pythagoreans refuse to eat?", options: ["Bread", "Beans", "Meat", "Vegetables"], correct: 1, explain: "The Pythagoreans refused to eat beans because they believed beans contained souls!" },
-            { q: "In the Pythagorean theorem (a² + b² = c²), what is 'c'?", options: ["One of the shorter sides", "The hypotenuse (longest side)", "The area of the triangle", "The perimeter"], correct: 1, explain: "In a right triangle, 'c' is the hypotenuse—the longest side opposite the right angle." },
-            { q: "What is a Pythagorean Triple?", options: ["Three Pythagorean brothers", "A right triangle with all whole number sides", "A musical chord", "A secret Pythagorean ritual"], correct: 1, explain: "A Pythagorean Triple is a right triangle where all three sides are whole numbers, like 3-4-5." },
-            { q: "Which is a Pythagorean Triple?", options: ["2-3-4", "3-4-5", "4-5-6", "5-6-7"], correct: 1, explain: "3-4-5 is the most famous Pythagorean Triple: 3² + 4² = 9 + 16 = 25 = 5²" },
-            { q: "What musical interval is a 2:1 frequency ratio?", options: ["A fifth", "An octave", "A fourth", "A major third"], correct: 1, explain: "A 2:1 ratio produces an octave—the same note but higher (double the frequency)." },
-            { q: "What did Pythagoras believe about numbers?", options: ["They were just tools", "All is number—they are the building blocks of reality", "They were invented by humans", "They don't matter in nature"], correct: 1, explain: "Pythagoras believed 'All is number'—that numbers are the fundamental essence of the universe." },
-            { q: "What is √2 an example of?", options: ["A Pythagorean Triple", "An irrational number", "A musical ratio", "A whole number"], correct: 1, explain: "√2 is an irrational number—it cannot be expressed as a simple ratio of whole numbers. This discovery shocked the Pythagoreans!" },
-            { q: "How many different proofs does the Pythagorean theorem have?", options: ["Around 50", "Around 100", "Over 400", "Only 3"], correct: 2, explain: "The Pythagorean theorem has over 400 different proofs—more than any other theorem in mathematics!" },
-            { q: "Which US President published a proof of the Pythagorean theorem?", options: ["George Washington", "Abraham Lincoln", "James Garfield", "John Adams"], correct: 2, explain: "James Garfield, who became a US President, discovered and published a proof of the theorem in 1876." },
-            { q: "What ancient civilization used the 3-4-5 triangle?", options: ["Greeks", "Romans", "Egyptians", "Chinese"], correct: 2, explain: "The ancient Egyptians used the 3-4-5 triangle to make perfect right angles for building the pyramids." },
-            { q: "According to legend, how did Pythagoras discover musical harmony?", options: ["By reading books", "By listening to blacksmith hammers", "By experimenting with strings", "It was revealed in a dream"], correct: 1, explain: "Legend says Pythagoras heard harmony in blacksmith's hammers and figured out the mathematical ratios behind it." },
-            { q: "What was the Pythagorean crisis?", options: ["The society was attacked", "They lost their temple", "Discovery of irrational numbers broke their worldview", "Pythagoras was exiled"], correct: 2, explain: "The discovery of irrational numbers like √2 was a crisis because Pythagoras believed everything could be expressed as whole number ratios." }
-        ];
-
-        let currentQuestion = 0;
-        let score = 0;
-        let selectedQuestions = [];
-
-        function initQuiz() {
-            // Shuffle and select 10 questions
-            selectedQuestions = quizQuestions.sort(() => 0.5 - Math.random()).slice(0, 10);
-            currentQuestion = 0;
-            score = 0;
-            document.getElementById('quizResults').style.display = 'none';
-            showQuestion();
-        }
-
-        function showQuestion() {
-            const q = selectedQuestions[currentQuestion];
-            const progress = ((currentQuestion + 1) / 10) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-
-            let html = `
-                <div class="question-box">
-                    <div class="question-number">Question ${currentQuestion + 1} of 10</div>
-                    <div class="question-text">${q.q}</div>
-                    <div class="options">
-            `;
-
-            q.options.forEach((opt, i) => {
-                html += `<div class="option" onclick="selectAnswer(${i})">${opt}</div>`;
-            });
-
-            html += `
-                    </div>
-                    <div class="feedback" id="feedback"></div>
-                </div>
-            `;
-
-            document.getElementById('quizContent').innerHTML = html;
-        }
-
-        function selectAnswer(idx) {
-            const q = selectedQuestions[currentQuestion];
-            const options = document.querySelectorAll('.option');
-            const feedback = document.getElementById('feedback');
-
-            options.forEach((opt, i) => {
-                if (i === q.correct) {
-                    opt.classList.add('correct');
-                }
-                opt.style.pointerEvents = 'none';
-            });
-
-            if (idx === q.correct) {
-                options[idx].classList.add('selected');
-                score++;
-                feedback.className = 'feedback show correct';
-                feedback.innerHTML = `<strong>Correct!</strong> ${q.explain}`;
-            } else {
-                options[idx].classList.add('incorrect');
-                feedback.className = 'feedback show incorrect';
-                feedback.innerHTML = `<strong>Not quite.</strong> ${q.explain}`;
-            }
-
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < 10) {
-                    showQuestion();
-                } else {
-                    showResults();
-                }
-            }, 3000);
-        }
-
-        function showResults() {
-            const percentage = Math.round((score / 10) * 100);
-            document.getElementById('finalScore').textContent = percentage + '%';
-
-            let message = '';
-            if (percentage === 100) message = 'Perfect score! You\'re a Pythagoras expert!';
-            else if (percentage >= 80) message = 'Excellent work! You really know your stuff!';
-            else if (percentage >= 60) message = 'Good job! You learned a lot!';
-            else if (percentage >= 40) message = 'Nice effort! Review the material and try again.';
-            else message = 'Keep learning! Read through the sections again.';
-
-            document.getElementById('scoreMessage').textContent = message;
-            document.getElementById('quizContent').style.display = 'none';
-            document.getElementById('quizResults').style.display = 'block';
-        }
-
-        function restartQuiz() {
-            document.getElementById('quizContent').style.display = 'block';
-            initQuiz();
-        }
-
-        // Initialize quiz on page load
-        window.addEventListener('load', () => {
-            initQuiz();
-        });
-    </script>
+window.addEventListener('load',()=>{
+updateTheoremViz();
+initQuiz();
+});
+</script>
 </body>
 </html>

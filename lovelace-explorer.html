@@ -1,522 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-    <title>Ada Lovelace Explorer - Discover the First Computer Programmer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Patrick Hand','Caveat',cursive, system-ui;
-            background: linear-gradient(135deg, #2b3a2b 0%, #1f2a1f 100%);
-            color: #e8e4d9;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            background: rgba(35, 48, 35, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            z-index: 1000;
-            border-bottom: 2px solid rgba(143, 212, 164, 0.3);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        nav h1 {
-            font-size: 1.8rem;
-            color: #f5d863;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px rgba(245, 216, 99, 0.5);
-        }
-
-        nav button {
-            background: linear-gradient(135deg, #8fd4a4 0%, #7bb8e0 100%);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            margin-right: 0.8rem;
-            margin-bottom: 0.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(143, 212, 164, 0.4);
-        }
-
-        nav button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(143, 212, 164, 0.6);
-        }
-
-        nav button.active {
-            background: linear-gradient(135deg, #d96b6b 0%, #f5d863 100%);
-            box-shadow: 0 6px 25px rgba(217, 107, 107, 0.6);
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        section {
-            display: none;
-            animation: fadeUp 0.6s ease-out;
-        }
-
-        section.active {
-            display: block;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Hero */
-        .hero {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(143, 212, 164, 0.1) 0%, rgba(123, 184, 224, 0.1) 100%);
-            border-radius: 15px;
-            border: 1px solid rgba(217, 107, 107, 0.3);
-        }
-
-        .hero img {
-            width: 200px;
-            height: 240px;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            border: 3px solid #f5d863;
-            box-shadow: 0 8px 30px rgba(245, 216, 99, 0.4);
-        }
-
-        .hero h2 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #f5d863 0%, #d96b6b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-            text-shadow: none;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            color: #d0d0b0;
-            line-height: 1.6;
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline-item {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: rgba(143, 212, 164, 0.1);
-            border-left: 4px solid #8fd4a4;
-            border-radius: 8px;
-            animation: fadeUp 0.6s ease-out;
-        }
-
-        .timeline-item h3 {
-            color: #f5d863;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-item .year {
-            color: #7bb8e0;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-item p {
-            color: #d0d0e0;
-            line-height: 1.6;
-        }
-
-        /* Cards */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .card {
-            background: linear-gradient(135deg, rgba(143, 212, 164, 0.15) 0%, rgba(123, 184, 224, 0.15) 100%);
-            border: 1px solid rgba(143, 212, 164, 0.4);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            animation: fadeUp 0.6s ease-out;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #f5d863;
-            box-shadow: 0 8px 25px rgba(245, 216, 99, 0.3);
-        }
-
-        .card h3 {
-            color: #f5d863;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .card p {
-            color: #d0d0e0;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        /* Interactive Labs */
-        .lab-section {
-            background: rgba(49, 66, 49, 0.8);
-            border: 2px solid rgba(143, 212, 164, 0.3);
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 1.5rem 0;
-        }
-
-        .lab-section h3 {
-            color: #7bb8e0;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .lab-section p {
-            color: #d0d0e0;
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group {
-            margin: 1.5rem 0;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        input[type="number"],
-        input[type="text"],
-        select {
-            background: rgba(74, 94, 74, 0.8);
-            border: 2px solid #8fd4a4;
-            color: #e8e4d9;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input[type="number"]:focus,
-        input[type="text"]:focus,
-        select:focus {
-            outline: none;
-            border-color: #f5d863;
-            box-shadow: 0 0 15px rgba(245, 216, 99, 0.5);
-        }
-
-        button.action-btn {
-            background: linear-gradient(135deg, #8fd4a4 0%, #7bb8e0 100%);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(143, 212, 164, 0.4);
-        }
-
-        button.action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(143, 212, 164, 0.6);
-        }
-
-        .result-display {
-            background: rgba(49, 66, 49, 0.9);
-            border: 1px solid #8fd4a4;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #f5d863;
-        }
-
-        /* Binary Visualization */
-        .binary-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .binary-bit {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .toggle-switch {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            border: 2px solid #8fd4a4;
-            background: rgba(74, 94, 74, 0.8);
-            cursor: pointer;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            color: #8fd4a4;
-        }
-
-        .toggle-switch.on {
-            background: linear-gradient(135deg, #d96b6b 0%, #f5d863 100%);
-            color: white;
-            box-shadow: 0 0 15px rgba(217, 107, 107, 0.6);
-            border-color: #f5d863;
-        }
-
-        .toggle-switch:hover {
-            transform: scale(1.05);
-        }
-
-        .bit-label {
-            color: #7bb8e0;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Sorting Visualization */
-        .bars-container {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 0.8rem;
-            height: 250px;
-            margin: 2rem 0;
-            padding: 1rem;
-            background: rgba(49, 66, 49, 0.6);
-            border-radius: 8px;
-        }
-
-        .bar {
-            flex: 1;
-            background: linear-gradient(180deg, #8fd4a4 0%, #7bb8e0 100%);
-            border-radius: 4px 4px 0 0;
-            transition: all 0.3s ease;
-            min-width: 40px;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            padding-bottom: 0.5rem;
-        }
-
-        .bar.comparing {
-            background: linear-gradient(180deg, #d96b6b 0%, #f5d863 100%);
-            box-shadow: 0 0 20px rgba(217, 107, 107, 0.6);
-        }
-
-        .bar.sorted {
-            background: linear-gradient(180deg, #8fd4a4 0%, #7bb8e0 100%);
-        }
-
-        /* Quiz */
-        .quiz-container {
-            max-width: 800px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(74, 94, 74, 0.8);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #8fd4a4 0%, #f5d863 100%);
-            transition: width 0.3s ease;
-        }
-
-        .question-card {
-            background: rgba(43, 58, 43, 0.9);
-            border: 2px solid rgba(143, 212, 164, 0.3);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .question-card h3 {
-            color: #7bb8e0;
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
-        }
-
-        .option {
-            background: rgba(74, 94, 74, 0.6);
-            border: 2px solid #8fd4a4;
-            color: #e8e4d9;
-            padding: 1rem;
-            margin: 0.8rem 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .option:hover {
-            border-color: #f5d863;
-            background: rgba(94, 118, 94, 0.8);
-        }
-
-        .option.selected {
-            background: rgba(143, 212, 164, 0.4);
-            border-color: #f5d863;
-        }
-
-        .option.correct {
-            background: rgba(143, 212, 164, 0.3);
-            border-color: #8fd4a4;
-        }
-
-        .option.incorrect {
-            background: rgba(217, 107, 107, 0.3);
-            border-color: #d96b6b;
-        }
-
-        .feedback {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            color: #e0e0e0;
-        }
-
-        .feedback.correct {
-            background: rgba(143, 212, 164, 0.2);
-            border: 1px solid #8fd4a4;
-        }
-
-        .feedback.incorrect {
-            background: rgba(217, 107, 107, 0.2);
-            border: 1px solid #d96b6b;
-        }
-
-        .quiz-score {
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(143, 212, 164, 0.2) 0%, rgba(123, 184, 224, 0.2) 100%);
-            border-radius: 12px;
-            margin-top: 2rem;
-        }
-
-        .quiz-score h2 {
-            color: #7bb8e0;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .quiz-score .score-number {
-            color: #f5d863;
-            font-size: 3rem;
-            font-weight: bold;
-        }
-
-        /* Sequence Display */
-        .sequence-display {
-            background: rgba(49, 66, 49, 0.9);
-            border: 2px solid #8fd4a4;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            min-height: 80px;
-        }
-
-        .sequence-numbers {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .sequence-num {
-            background: linear-gradient(135deg, #d96b6b 0%, #f5d863 100%);
-            color: white;
-            padding: 0.8rem 1.2rem;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(217, 107, 107, 0.4);
-        }
-
-        .sequence-logic {
-            color: #7bb8e0;
-            font-style: italic;
-            margin-top: 1rem;
-            text-align: center;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: #9ca898;
-            margin-top: 3rem;
-            border-top: 1px solid rgba(143, 212, 164, 0.2);
-        }
-
-        .step-info {
-            background: rgba(74, 94, 74, 0.8);
-            border-left: 4px solid #8fd4a4;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-            color: #d0d0d0;
-        }
-
-        .step-info strong {
-            color: #f5d863;
-        }
-    /* ── LANGUAGE TOGGLE ── */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>The World of Ada Lovelace</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;
+  --accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;
+  --radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px;display:block;margin-left:auto;margin-right:auto}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,#f5d863,#d96b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .subtitle{font-size:19px;color:var(--dim)}
+.hero .life{margin-top:10px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
+
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.4)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px}.tl-text strong{color:var(--accent)}
+
+/* ── INTERACTIVE SHARED ── */
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+.slider-group{margin-bottom:16px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(232,168,56,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:20px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+.step-explain{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.step-item{display:flex;gap:14px;align-items:flex-start}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.step-text{font-size:15px;line-height:1.6;padding-top:5px}
+
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}
+.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#f472b6}
+.fact-card:nth-child(7){border-left-color:#fb923c}
+.fact-card:nth-child(8){border-left-color:#38bdf8}
+.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}
+.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
+
+/* ── QUIZ ── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:30px;font-weight:700;color:var(--accent3);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--accent);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--accent3);background:rgba(143,212,164,.12);color:var(--accent3)}
+.answer-btn.wrong{border-color:var(--accent2);background:rgba(217,107,107,.1);color:var(--accent2)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--accent3)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--accent2)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(245,216,99,.35)}
+.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}
+.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:30px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.restart-btn:hover{transform:scale(1.05)}
+
+.action-btn{padding:10px 22px;border:2px solid var(--accent);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.2s;margin-top:12px}
+.action-btn:hover{background:var(--accent);color:#000;transform:scale(1.04)}
+
+/* Canvas styles for interactives */
+canvas{background:rgba(49,66,49,.6);border-radius:8px;margin-bottom:12px;display:block}
+
+@media(max-width:600px){
+  nav button{padding:7px 10px;font-size:11px}
+  .card{padding:18px}
+  .answers{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr}
+  .portrait{width:120px;height:120px}
+}
+/* ── LANGUAGE TOGGLE ── */
 .lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
 .lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
 .lang-toggle a:hover{background:rgba(245,216,99,.2)}
@@ -528,588 +132,485 @@
   <a href="#" class="active">EN</a>
   <a href="de/lovelace-explorer.html">DE</a>
 </div>
-    <nav>
+
+<div class="hero">
+  <div class="hero-content">
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Ada_Lovelace_portrait.jpg" alt="Ada Lovelace">
+    <h1>Ada Lovelace</h1>
+    <p class="subtitle">The First Computer Programmer</p>
+    <p class="life">1815 – 1852 · London, England</p>
+    <p class="tagline">A brilliant mathematician who envisioned computers doing far more than just numbers, and wrote the first computer program 100 years before computers existed.</p>
+  </div>
+</div>
+
+<nav>
   <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
-        <h1>Ada Lovelace Explorer</h1>
-        <button class="nav-btn active" data-section="story">Her Story</button>
-        <button class="nav-btn" data-section="binary">Binary Lab</button>
-        <button class="nav-btn" data-section="algorithm">Algorithm Stepper</button>
-        <button class="nav-btn" data-section="sequence">Sequence Generator</button>
-        <button class="nav-btn" data-section="facts">Fun Facts</button>
-        <button class="nav-btn" data-section="quiz">Quiz</button>
-    </nav>
+  <button class="active" onclick="show('story',this)">Her Story</button>
+  <button onclick="show('algorithm',this)">Algorithm Visualizer</button>
+  <button onclick="show('binary',this)">Binary & Patterns</button>
+  <button onclick="show('sequence',this)">Sequence Machine</button>
+  <button onclick="show('facts',this)">Fun Facts</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+</nav>
 
-    <div class="container">
-        <!-- SECTION 1: HER STORY -->
-        <section id="story" class="active">
-            <div class="hero">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Ada_Lovelace_portrait.jpg" alt="Ada Lovelace portrait">
-                <h2>Ada Lovelace (1815-1852)</h2>
-                <p>The World's First Computer Programmer</p>
-            </div>
-
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="year">1815</div>
-                    <h3>Born in London</h3>
-                    <p>Ada Augusta Byron was born to one of the world's most famous poets, Lord Byron. However, her father left when she was just one month old.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1815-1833</div>
-                    <h3>An Unusual Childhood</h3>
-                    <p>Her mother, worried that Ada might inherit her father's "poetic madness," insisted on math and science education instead of poetry. Ada was taught languages, mathematics, sciences, and music—an unusual education for a girl in the 1800s.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1833, Age 17</div>
-                    <h3>Meeting Charles Babbage</h3>
-                    <p>Ada attended a party where she met Charles Babbage and saw his incredible invention: the Difference Engine. This machine could perform mathematical calculations automatically. Ada became fascinated with his work.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1833-1843</div>
-                    <h3>Becoming an Analyst</h3>
-                    <p>Ada became Babbage's close friend and collaborator. She studied his designs for an even more powerful machine: the Analytical Engine—a machine that could be programmed to perform different operations. She called herself "an Analyst (& Metaphysician)."</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1843</div>
-                    <h3>A Historic Publication</h3>
-                    <p>Ada translated an article about the Analytical Engine from French to English. But she didn't stop there! She added her own notes—which were 3 times longer than the original article. Her notes included diagrams, explanations, and something revolutionary...</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1843 (Note G)</div>
-                    <h3>The First Algorithm</h3>
-                    <p>In "Note G," Ada wrote out a step-by-step set of instructions (an algorithm) for the Analytical Engine to compute Bernoulli numbers. This was the first computer program ever written! She understood that machines could follow complex instructions, not just do simple math.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1843</div>
-                    <h3>A Visionary Prediction</h3>
-                    <p>Ada predicted something no one else could imagine: computers could do FAR more than just numbers. She wrote that machines could compose music, create graphics, and manipulate other kinds of information. Over 100 years before computers existed, she saw the future!</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1843-1852</div>
-                    <h3>Illness & Legacy</h3>
-                    <p>Ada struggled with serious illnesses throughout her life. She died in 1852 at only 36 years old. Her brilliant work was nearly forgotten for 100 years until people rediscovered her contributions.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="year">1980s & Today</div>
-                    <h3>Recognition</h3>
-                    <p>Ada's legacy was finally celebrated! The U.S. Department of Defense named a programming language "Ada" in her honor in 1980. Today, she's recognized as the world's first computer programmer, and October 9th is Ada Lovelace Day, celebrating women in STEM.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: BINARY LAB -->
-        <section id="binary">
-            <div class="hero">
-                <h2>Binary Numbers Lab</h2>
-                <p>Discover how computers think in 1s and 0s</p>
-            </div>
-
-            <div class="lab-section">
-                <h3>Understanding Binary</h3>
-                <p>Computers think in a language called <strong>binary</strong> using only two digits: <strong>0</strong> (off) and <strong>1</strong> (on). Every letter, number, color, and sound on your computer is made up of combinations of 0s and 1s!</p>
-                <p>Each position in a binary number represents a power of 2: the rightmost position is 1, then 2, 4, 8, 16, 32, 128, and 256. When a position has a 1, we "turn it on" and add its value. When it has a 0, we "turn it off" and add nothing.</p>
-            </div>
-
-            <div class="lab-section">
-                <h3>Decimal to Binary Converter</h3>
-                <p>Type a number between 0-255 and watch it convert to binary!</p>
-                <div class="input-group">
-                    <input type="number" id="decimalInput" min="0" max="255" value="10" placeholder="Enter a number (0-255)">
-                    <button class="action-btn" onclick="convertDecimalToBinary()">Convert</button>
-                </div>
-                <div id="binaryResult" class="binary-display"></div>
-                <div id="decimalExplanation" class="step-info"></div>
-            </div>
-
-            <div class="lab-section">
-                <h3>Binary to Decimal: Build Your Own!</h3>
-                <p>Click the switches to turn bits on (1) or off (0). Watch the decimal number build!</p>
-                <div id="binaryBuilder" class="binary-display"></div>
-                <div class="result-display" id="binaryBuilderResult">Decimal: 0</div>
-            </div>
-
-            <div class="lab-section">
-                <h3>Letters Become Numbers</h3>
-                <p>Every letter on your keyboard is stored as a number using ASCII (a code that assigns numbers to letters). Type a letter to see its number and binary!</p>
-                <div class="input-group">
-                    <input type="text" id="asciiInput" maxlength="1" placeholder="Type a letter" value="A">
-                    <button class="action-btn" onclick="convertASCII()">Show Code</button>
-                </div>
-                <div class="result-display" id="asciiResult"></div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: ALGORITHM STEPPER -->
-        <section id="algorithm">
-            <div class="hero">
-                <h2>Algorithm Stepper</h2>
-                <p>Watch algorithms solve problems step-by-step</p>
-            </div>
-
-            <div class="lab-section">
-                <h3>What is an Algorithm?</h3>
-                <p>An <strong>algorithm</strong> is a set of step-by-step instructions for solving a problem. It's like a recipe for a cake—you follow steps in order to get a result. Ada Lovelace wrote the first algorithm ever to be executed by a machine!</p>
-            </div>
-
-            <div class="lab-section">
-                <h3>Bubble Sort: Sorting Numbers</h3>
-                <p>Watch the algorithm sort colored bars from smallest to largest. Each step compares two bars and swaps them if needed. Click "Next Step" to advance!</p>
-                <div class="input-group">
-                    <button class="action-btn" onclick="initBubbleSort()">Start Sorting</button>
-                    <button class="action-btn" onclick="nextBubbleStep()">Next Step</button>
-                </div>
-                <div id="sortBars" class="bars-container"></div>
-                <div id="sortInfo" class="step-info">Click "Start Sorting" to begin!</div>
-            </div>
-
-            <div class="lab-section">
-                <h3>Finding the Largest Number</h3>
-                <p>This algorithm scans through a list to find the biggest number. Let's watch it work step-by-step!</p>
-                <div class="input-group">
-                    <button class="action-btn" onclick="initFindMax()">Start Finding</button>
-                    <button class="action-btn" onclick="nextMaxStep()">Next Step</button>
-                </div>
-                <div id="findMaxBars" class="bars-container"></div>
-                <div id="findMaxInfo" class="step-info">Click "Start Finding" to begin!</div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: SEQUENCE GENERATOR -->
-        <section id="sequence">
-            <div class="hero">
-                <h2>Sequence Generator</h2>
-                <p>Explore patterns and create number sequences</p>
-            </div>
-
-            <div class="lab-section">
-                <h3>About Number Sequences</h3>
-                <p>Ada's algorithm computed complex Bernoulli numbers—a mathematical sequence. Algorithms are great at finding patterns and generating sequences! Let's explore some famous sequences and see the pattern behind each one.</p>
-            </div>
-
-            <div class="lab-section">
-                <h3>Pick a Sequence</h3>
-                <p>Choose one of these fascinating sequences and watch the algorithm generate numbers based on the pattern:</p>
-                <div class="input-group">
-                    <select id="sequenceSelect" onchange="generateSequence()">
-                        <option value="fibonacci">Fibonacci (each = previous two added)</option>
-                        <option value="triangular">Triangular (1, 3, 6, 10, 15...)</option>
-                        <option value="squares">Squares (1, 4, 9, 16, 25...)</option>
-                        <option value="powers">Powers of 2 (1, 2, 4, 8, 16...)</option>
-                    </select>
-                    <button class="action-btn" onclick="generateSequence()">Generate</button>
-                </div>
-                <div id="sequenceDisplay" class="sequence-display">
-                    <div class="sequence-numbers" id="sequenceNumbers"></div>
-                </div>
-                <div id="sequenceLogic" class="sequence-logic"></div>
-            </div>
-
-            <div class="lab-section">
-                <h3>Create Your Own Pattern</h3>
-                <p>Define a simple rule and watch the algorithm create a sequence!</p>
-                <div class="input-group">
-                    <label>Start at: <input type="number" id="customStart" value="3" min="0" max="100"></label>
-                    <label>Add each time: <input type="number" id="customStep" value="5" min="1" max="50"></label>
-                    <button class="action-btn" onclick="generateCustomSequence()">Create</button>
-                </div>
-                <div id="customDisplay" class="sequence-display">
-                    <div class="sequence-numbers" id="customNumbers"></div>
-                </div>
-                <div id="customLogic" class="sequence-logic"></div>
-            </div>
-        </section>
-
-        <!-- SECTION 5: FUN FACTS -->
-        <section id="facts">
-            <div class="hero">
-                <h2>Fun Facts About Ada</h2>
-                <p>Discover amazing things about the Enchantress of Numbers</p>
-            </div>
-
-            <div class="cards-grid" id="factsGrid">
-                <!-- Cards generated by JavaScript -->
-            </div>
-        </section>
-
-        <!-- SECTION 6: QUIZ -->
-        <section id="quiz">
-            <div class="hero">
-                <h2>Test Your Knowledge</h2>
-                <p>Answer 10 random questions about Ada and what you've learned</p>
-            </div>
-
-            <div class="quiz-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="quizProgress"></div>
-                </div>
-                <div id="quizContent"></div>
-            </div>
-        </section>
+<!-- ═══════════ STORY ═══════════ -->
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>The Life of Ada Lovelace</h2>
+    <p class="sub">The daughter of a famous poet, raised to be a mathematician, who became the world's first computer programmer.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1815</div><div class="tl-text">Born on December 10 in <strong>London</strong> — Ada Augusta Byron was the daughter of the famous poet Lord Byron. But her father left when she was just one month old, and her mother raised her alone.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1815–1833</div><div class="tl-text">An unusual childhood: Her mother feared Ada might inherit her father's "poetic madness," so she pushed her toward math and science instead. Ada received extraordinary education in <strong>mathematics, languages, music, and sciences</strong> — rare for any girl in the 1800s.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1833 (Age 17)</div><div class="tl-text">At a London party, Ada met the brilliant inventor <strong>Charles Babbage</strong> and saw his incredible invention: the <strong>Difference Engine</strong>, a machine that could perform mathematical calculations automatically. She became fascinated by this mechanical marvel.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1833–1843</div><div class="tl-text">Ada became Babbage's collaborator and friend. She studied his designs for an even more powerful invention: the <strong>Analytical Engine</strong> — a machine that could be programmed to perform different operations. She called herself <strong>"an Analyst & Metaphysician."</strong></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1843</div><div class="tl-text">Ada <strong>translated an article about the Analytical Engine</strong> from French to English. But she didn't stop there! She added her own notes — which were <strong>3 times longer</strong> than the original article, filled with diagrams and revolutionary explanations.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1843 (Note G)</div><div class="tl-text">In "Note G," Ada wrote <strong>the first computer program ever</strong> — step-by-step instructions for the Analytical Engine to compute Bernoulli numbers. She showed that machines could follow complex logic, not just do simple arithmetic.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1843</div><div class="tl-text">Ada made an astonishing prediction: Machines could do FAR more than numbers! She wrote that computers could <strong>compose music, create graphics, and manipulate any kind of information</strong>. Over 100 years before computers existed, she saw the future of computing.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1843–1852</div><div class="tl-text">Ada struggled with serious illnesses throughout her life. She died in 1852 at only 36 years old. Her brilliant work was nearly forgotten for 100 years until people rediscovered her as <strong>the mother of computer science</strong>.</div></div>
     </div>
+  </div>
+</section>
 
-    <footer>
-        <p>Ada Lovelace Explorer - Learn about the world's first computer programmer</p>
-        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Ada Lovelace Day is celebrated every October 9th to honor women in STEM</p>
-    </footer>
+<!-- ═══════════ ALGORITHM VISUALIZER ═══════════ -->
+<section id="sec-algorithm">
+  <div class="card">
+    <h2>Algorithm Visualizer — How Instructions Execute</h2>
+    <p class="sub">An algorithm is a step-by-step set of instructions. Watch how a simple sorting algorithm works, one step at a time.</p>
 
-    <script>
-        // Navigation
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const section = this.dataset.section;
-                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-                document.getElementById(section).classList.add('active');
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>What is an algorithm?</strong> It's a recipe — a series of exact steps to solve a problem. Ada's algorithm for Bernoulli numbers was the first algorithm written FOR a machine to follow.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Ada's insight:</strong> She realized that machines follow instructions mechanically, step-by-step. If you write clear instructions, a machine can do incredibly complex work without thinking.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>The result:</strong> This concept became the foundation of all computer programming. Every program your computer runs is an algorithm — step-by-step instructions executed perfectly.</div>
+      </div>
+    </div>
+  </div>
 
-        // BINARY LAB
-        function convertDecimalToBinary() {
-            const decimal = parseInt(document.getElementById('decimalInput').value);
-            if (isNaN(decimal) || decimal < 0 || decimal > 255) {
-                alert('Please enter a number between 0 and 255');
-                return;
-            }
-            const binary = decimal.toString(2).padStart(8, '0');
-            const result = document.getElementById('binaryResult');
-            result.innerHTML = '';
-            let explanation = '<strong>Breaking down ' + decimal + ':</strong><br>';
-            const powers = [128, 64, 32, 16, 8, 4, 2, 1];
-            let sum = 0;
-            powers.forEach((power, idx) => {
-                const bit = binary[idx];
-                const isOn = bit === '1';
-                if (isOn) sum += power;
-                const div = document.createElement('div');
-                div.className = 'binary-bit';
-                div.innerHTML = `
-                    <div class="toggle-switch ${isOn ? 'on' : ''}">${bit}</div>
-                    <div class="bit-label">${power}</div>
-                `;
-                result.appendChild(div);
-            });
-            explanation += powers.map((p, i) => binary[i] === '1' ? p : '').filter(v => v).join(' + ') + ' = ' + sum;
-            document.getElementById('decimalExplanation').innerHTML = explanation;
-        }
+  <div class="card">
+    <h2>Sorting Algorithm in Action</h2>
+    <p class="sub">Watch the steps of a sorting algorithm. Click "Execute Step" to see how it sorts numbers one comparison at a time.</p>
+    <div class="lab-layout">
+      <div><canvas id="algorithmCanvas" width="360" height="280"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Array size: <span id="arraySize" style="color:var(--accent);font-size:18px;font-weight:700">5</span></label>
+          <input type="range" id="arraySlider" min="3" max="8" step="1" value="5">
+        </div>
+        <button class="action-btn" onclick="initAlgorithm()">Reset Array</button>
+        <button class="action-btn" onclick="executeStep()">Execute Step</button>
+        <div class="stat-grid" style="margin-top:16px">
+          <div class="stat-box"><div class="lbl">Step</div><div class="val" id="algoStep">0</div></div>
+          <div class="stat-box"><div class="lbl">Sorted</div><div class="val" id="algoSorted">0</div></div>
+          <div class="stat-box"><div class="lbl">Status</div><div class="val" id="algoStatus" style="color:var(--accent3)">Ready</div></div>
+        </div>
+        <div class="explain-box">
+          <strong>How it works:</strong> Each step compares two adjacent numbers. If they're in the wrong order, they swap. Eventually all numbers are sorted!
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        function initBinaryBuilder() {
-            const builder = document.getElementById('binaryBuilder');
-            builder.innerHTML = '';
-            const powers = [128, 64, 32, 16, 8, 4, 2, 1];
-            powers.forEach((power, idx) => {
-                const div = document.createElement('div');
-                div.className = 'binary-bit';
-                const toggle = document.createElement('div');
-                toggle.className = 'toggle-switch';
-                toggle.textContent = '0';
-                toggle.dataset.power = power;
-                toggle.dataset.index = idx;
-                toggle.onclick = function() {
-                    this.classList.toggle('on');
-                    this.textContent = this.classList.contains('on') ? '1' : '0';
-                    updateBinaryBuilderResult();
-                };
-                div.appendChild(toggle);
-                const label = document.createElement('div');
-                label.className = 'bit-label';
-                label.textContent = power;
-                div.appendChild(label);
-                builder.appendChild(div);
-            });
-        }
+<!-- ═══════════ BINARY & PATTERNS ═══════════ -->
+<section id="sec-binary">
+  <div class="card">
+    <h2>Binary & Patterns — The Language of Machines</h2>
+    <p class="sub">Computers use only two symbols: 0 and 1. Everything — numbers, words, images — is encoded in binary. Ada understood this pattern-based logic.</p>
 
-        function updateBinaryBuilderResult() {
-            let sum = 0;
-            document.querySelectorAll('#binaryBuilder .toggle-switch.on').forEach(toggle => {
-                sum += parseInt(toggle.dataset.power);
-            });
-            document.getElementById('binaryBuilderResult').textContent = 'Decimal: ' + sum;
-        }
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>What is binary?</strong> It's a number system with only two digits: 0 and 1 (off and on). We normally use 10 digits (0-9), but machines use 2.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Pattern recognition:</strong> Ada realized that with 0 and 1, you can represent ANY pattern — numbers, letters, instructions. All you need is the right code.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Why it works:</strong> A machine's switches can be ON (1) or OFF (0). Binary matches how machines work. This is why all computers use binary!</div>
+      </div>
+    </div>
+  </div>
 
-        function convertASCII() {
-            const char = document.getElementById('asciiInput').value;
-            if (!char) {
-                alert('Please type a letter');
-                return;
-            }
-            const code = char.charCodeAt(0);
-            const binary = code.toString(2).padStart(8, '0');
-            const result = document.getElementById('asciiResult');
-            result.innerHTML = `<strong>"${char}"</strong> = <strong>${code}</strong> in decimal = <strong>${binary}</strong> in binary`;
-        }
+  <div class="card">
+    <h2>Convert Decimal to Binary</h2>
+    <p class="sub">Enter a decimal number (0-255) and see how it breaks down into binary. Toggle the bit switches to change the number.</p>
+    <div class="lab-layout">
+      <div><canvas id="binaryCanvas" width="360" height="280"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Decimal number: <span id="decimalVal" style="color:var(--accent);font-size:18px;font-weight:700">42</span></label>
+          <input type="range" id="decimalSlider" min="0" max="255" step="1" value="42">
+        </div>
+        <div style="margin-top:20px">
+          <label style="display:block;font-weight:600;margin-bottom:8px;font-size:15px">Binary bits (click to toggle):</label>
+          <div id="binaryGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px"></div>
+        </div>
+        <div class="stat-grid" style="margin-top:16px">
+          <div class="stat-box"><div class="lbl">Decimal</div><div class="val" id="showDecimal">42</div></div>
+          <div class="stat-box"><div class="lbl">Binary</div><div class="val" style="font-size:16px" id="showBinary">00101010</div></div>
+          <div class="stat-box"><div class="lbl">Hexadecimal</div><div class="val" style="font-size:16px" id="showHex">2A</div></div>
+          <div class="stat-box"><div class="lbl">Bits set</div><div class="val" id="bitsSet">2</div></div>
+        </div>
+        <div class="explain-box">
+          <strong>The Power of Binary:</strong> 8 binary digits (bits) can represent 256 different numbers (0-255)! More bits = bigger numbers. Click switches to see how binary changes.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // ALGORITHM STEPPER
-        let bubbleSortState = { array: [], step: 0, comparing: [], sorted: [] };
-        let findMaxState = { array: [], step: 0, current: -1, max: 0, maxIndex: -1 };
+<!-- ═══════════ SEQUENCE MACHINE ═══════════ -->
+<section id="sec-sequence">
+  <div class="card">
+    <h2>Sequence Machine — Beyond Just Numbers</h2>
+    <p class="sub">Ada's great insight: Computers don't just calculate numbers. They can follow patterns and generate sequences based on any rule you give them.</p>
 
-        function initBubbleSort() {
-            bubbleSortState.array = [5, 2, 8, 1, 9, 3].map((v, i) => ({ value: v, index: i }));
-            bubbleSortState.step = 0;
-            bubbleSortState.comparing = [];
-            bubbleSortState.sorted = [];
-            updateSortDisplay();
-            document.getElementById('sortInfo').innerHTML = '<strong>Starting bubble sort!</strong> We compare pairs of numbers and swap if needed.';
-        }
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>What's a sequence?</strong> A list of numbers following a pattern. Example: 2, 4, 6, 8, 10 (add 2 each time).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Ada's vision:</strong> She said machines could generate sequences from ANY rule — not just math. Music notes, letters, graphics — anything follows a pattern!</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Why it matters:</strong> This is how modern computers work. A rule (algorithm) generates output. Text editors, games, AI — all follow this pattern.</div>
+      </div>
+    </div>
+  </div>
 
-        function nextBubbleStep() {
-            if (bubbleSortState.step >= bubbleSortState.array.length * (bubbleSortState.array.length - 1) / 2) {
-                document.getElementById('sortInfo').innerHTML = '<strong>Sorting complete!</strong> All bars are now in order.';
-                return;
-            }
-            let swapped = false;
-            for (let i = 0; i < bubbleSortState.array.length - 1; i++) {
-                for (let j = 0; j < bubbleSortState.array.length - i - 1; j++) {
-                    if (bubbleSortState.array[j].value > bubbleSortState.array[j + 1].value) {
-                        [bubbleSortState.array[j], bubbleSortState.array[j + 1]] = [bubbleSortState.array[j + 1], bubbleSortState.array[j]];
-                        bubbleSortState.comparing = [j, j + 1];
-                        bubbleSortState.sorted = Array.from({length: bubbleSortState.array.length}, (_, i) => i >= bubbleSortState.array.length - i);
-                        document.getElementById('sortInfo').innerHTML = `<strong>Step ${bubbleSortState.step + 1}:</strong> Comparing ${bubbleSortState.array[j].value} and ${bubbleSortState.array[j + 1].value}. Swapping!`;
-                        bubbleSortState.step++;
-                        swapped = true;
-                        updateSortDisplay();
-                        return;
-                    }
-                }
-            }
-            if (!swapped) document.getElementById('sortInfo').innerHTML = '<strong>Done!</strong> All numbers sorted.';
-        }
+  <div class="card">
+    <h2>Generate Your Own Sequence</h2>
+    <p class="sub">Enter a rule like "multiply by 2 and add 1" and watch the Sequence Machine generate numbers following that pattern!</p>
+    <div class="lab-layout">
+      <div><canvas id="sequenceCanvas" width="360" height="280"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Starting number:</label>
+          <input type="number" id="seqStart" value="1" min="1" max="50" style="padding:8px;background:rgba(74,94,74,.8);border:2px solid #8fd4a4;color:#e8e4d9;border-radius:6px">
+        </div>
+        <div class="slider-group">
+          <label>Rule: x = <span id="seqMult" style="color:var(--accent)">2</span>x + <span id="seqAdd" style="color:var(--accent2)">1</span></label>
+          <input type="range" id="seqMultSlider" min="1" max="4" step="0.5" value="2" style="margin-bottom:8px">
+          <input type="range" id="seqAddSlider" min="0" max="10" step="1" value="1">
+        </div>
+        <button class="action-btn" onclick="generateSequence()">Generate Sequence</button>
+        <div class="stat-grid" style="margin-top:16px">
+          <div class="stat-box"><div class="lbl">Terms</div><div class="val" id="seqCount">8</div></div>
+          <div class="stat-box"><div class="lbl">Last Value</div><div class="val" id="seqLast">255</div></div>
+        </div>
+        <div id="seqDisplay" style="margin-top:16px;padding:12px;background:rgba(49,66,49,.9);border:2px solid #8fd4a4;border-radius:8px;font-size:14px;color:var(--text);max-height:150px;overflow-y:auto">
+          Sequence will display here...
+        </div>
+        <div class="explain-box">
+          <strong>Ada's Insight:</strong> Change the rule (multiplier and addition), and the whole sequence changes! Machines can follow any rule perfectly.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        function updateSortDisplay() {
-            const bars = document.getElementById('sortBars');
-            bars.innerHTML = '';
-            bubbleSortState.array.forEach((item, i) => {
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                if (bubbleSortState.comparing.includes(i)) bar.classList.add('comparing');
-                bar.style.height = (item.value * 15) + '%';
-                bar.textContent = item.value;
-                bars.appendChild(bar);
-            });
-        }
+<!-- ═══════════ FUN FACTS ═══════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>Mind-Blowing Ada Facts</h2>
+    <p class="sub">The woman who invented computer programming a century before computers existed.</p>
+    <div class="facts-grid">
+      <div class="fact-card"><div class="fact-icon">📝</div><div class="fact-title">First Computer Programmer</div><div class="fact-text">Ada wrote the first algorithm designed to be executed by a machine (the Analytical Engine). In 1843, she became the world's first computer programmer — 100+ years before the first digital computer existed!</div></div>
+      <div class="fact-card"><div class="fact-icon">👑</div><div class="fact-title">Daughter of a Famous Poet</div><div class="fact-text">Ada's father was Lord Byron, one of the world's most famous poets. But Ada was raised to love math and science instead of poetry. Her mother feared the "poetic madness" and insisted on a scientific education — a wise decision that changed the world!</div></div>
+      <div class="fact-card"><div class="fact-icon">🎼</div><div class="fact-title">Music & Mathematics</div><div class="fact-text">Ada loved music and studied it seriously. She believed music and math were deeply connected. She even called mathematics a "poetical science" — combining her father's poetry with her mother's mathematics!</div></div>
+      <div class="fact-card"><div class="fact-icon">🧮</div><div class="fact-title">Brilliant at Visualization</div><div class="fact-text">Ada was exceptional at visualizing complex mathematical ideas and explaining them clearly. She drew diagrams and gave detailed explanations for Babbage's inventions — helping others understand his genius.</div></div>
+      <div class="fact-card"><div class="fact-icon">💻</div><div class="fact-title">Predicted Artificial Intelligence</div><div class="fact-text">Ada wrote that machines could create graphics and manipulate symbols of all kinds. She understood that computers could do far more than just math. This was an astonishing prediction in 1843!</div></div>
+      <div class="fact-card"><div class="fact-icon">📖</div><div class="fact-title">Her Notes Were Revolutionary</div><div class="fact-text">Her translation notes on the Analytical Engine were 3 times longer than the original article! The notes contained her first algorithm (Note G) and visionary predictions about computing. They're still studied today.</div></div>
+      <div class="fact-card"><div class="fact-icon">🤝</div><div class="fact-title">Worked with Charles Babbage</div><div class="fact-text">Ada collaborated closely with the brilliant inventor Charles Babbage for 10 years. Together they explored the Analytical Engine's possibilities. Their partnership created computer science itself.</div></div>
+      <div class="fact-card"><div class="fact-icon">🎯</div><div class="fact-title">Attention to Detail</div><div class="fact-text">Ada was obsessed with accuracy and clarity. She carefully checked every detail of her algorithm and explanations. Her precision in explaining complex ideas set the standard for computer science documentation.</div></div>
+      <div class="fact-card"><div class="fact-icon">🌟</div><div class="fact-title">Rediscovered as a Genius</div><div class="fact-text">After Ada died in 1852 at only 36, her work was forgotten for nearly 100 years! In the 1950s, computer pioneers rediscovered her algorithms and realized she had invented computer programming a century too early.</div></div>
+      <div class="fact-card"><div class="fact-icon">⚡</div><div class="fact-title">Died Young but Left a Legacy</div><div class="fact-text">Ada struggled with illness her entire life and died at 36. Yet her insights about algorithms, programming, and what computers could do influenced computer science for generations. Her legacy is immortal.</div></div>
+      <div class="fact-card"><div class="fact-icon">🔬</div><div class="fact-title">Polymath & Visionary</div><div class="fact-text">Ada studied mathematics, music, science, languages, and engineering. She connected ideas across disciplines — exactly like modern AI and interdisciplinary science. She was ahead of her time in every way.</div></div>
+      <div class="fact-card"><div class="fact-icon">🏆</div><div class="fact-title">Programming Languages Named After Her</div><div class="fact-text">The U.S. Department of Defense created a programming language named "Ada" in her honor. It's one of the few programming languages named after a person — a testament to her revolutionary impact on computing!</div></div>
+    </div>
+  </div>
+</section>
 
-        function initFindMax() {
-            findMaxState.array = [3, 7, 2, 9, 4, 6];
-            findMaxState.step = 0;
-            findMaxState.current = 0;
-            findMaxState.max = findMaxState.array[0];
-            findMaxState.maxIndex = 0;
-            updateFindMaxDisplay();
-            document.getElementById('findMaxInfo').innerHTML = '<strong>Starting search!</strong> We look at each number to find the largest.';
-        }
+<!-- ═══════════ QUIZ ═══════════ -->
+<section id="sec-quiz">
+  <div class="card" id="quizCard">
+    <div class="quiz-header">
+      <h2>Ada Lovelace Challenge Quiz!</h2>
+      <div class="score-badge">Score: <span id="quizScore">0</span> / <span id="quizTotal">10</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
+    <div id="quizBody">
+      <div class="question-text" id="questionText"></div>
+      <div class="answers" id="answersDiv"></div>
+      <div class="feedback" id="feedback"></div>
+      <div style="text-align:center;"><button class="next-btn" id="nextBtn" onclick="nextQ()">Next Question →</button></div>
+    </div>
+    <div class="quiz-complete" id="quizComplete" style="display:none">
+      <h2>Quiz Complete!</h2>
+      <div class="final-score" id="finalScore"></div>
+      <p id="finalMsg" style="font-size:17px;color:var(--dim)"></p>
+      <button class="restart-btn" onclick="startQuiz()">Try Again</button>
+    </div>
+  </div>
+</section>
 
-        function nextMaxStep() {
-            if (findMaxState.current >= findMaxState.array.length - 1) {
-                document.getElementById('findMaxInfo').innerHTML = `<strong>Found it!</strong> The largest number is ${findMaxState.max}`;
-                return;
-            }
-            findMaxState.current++;
-            if (findMaxState.array[findMaxState.current] > findMaxState.max) {
-                findMaxState.max = findMaxState.array[findMaxState.current];
-                findMaxState.maxIndex = findMaxState.current;
-                document.getElementById('findMaxInfo').innerHTML = `<strong>Step ${findMaxState.current}:</strong> Found a new maximum! ${findMaxState.max} at position ${findMaxState.current}`;
-            } else {
-                document.getElementById('findMaxInfo').innerHTML = `<strong>Step ${findMaxState.current}:</strong> Checking ${findMaxState.array[findMaxState.current]}. Not larger than ${findMaxState.max}.`;
-            }
-            updateFindMaxDisplay();
-        }
+<div style="text-align:center;padding:28px 20px 50px;color:var(--dim);font-size:12px;">
+  Portrait: Ada Lovelace from Wikimedia Commons<br>
+  Built with mathematics and vision. Ada saw the future of computing.
+</div>
 
-        function updateFindMaxDisplay() {
-            const bars = document.getElementById('findMaxBars');
-            bars.innerHTML = '';
-            findMaxState.array.forEach((val, i) => {
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                if (i === findMaxState.maxIndex) bar.classList.add('sorted');
-                if (i === findMaxState.current) bar.classList.add('comparing');
-                bar.style.height = (val * 15) + '%';
-                bar.textContent = val;
-                bars.appendChild(bar);
-            });
-        }
+<script>
+/* ═══════ NAVIGATION ═══════ */
+function show(name,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+name).classList.add('visible');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='quiz'&&quizQs.length===0) startQuiz();
+}
 
-        // SEQUENCE GENERATOR
-        function generateSequence() {
-            const type = document.getElementById('sequenceSelect').value;
-            let sequence = [];
-            let logic = '';
-            if (type === 'fibonacci') {
-                sequence = [1, 1];
-                for (let i = 0; i < 8; i++) {
-                    sequence.push(sequence[i] + sequence[i + 1]);
-                }
-                logic = 'Each number = previous two numbers added together';
-            } else if (type === 'triangular') {
-                for (let i = 1; i <= 10; i++) {
-                    sequence.push((i * (i + 1)) / 2);
-                }
-                logic = 'Triangular numbers: 1, 1+2, 1+2+3, 1+2+3+4...';
-            } else if (type === 'squares') {
-                for (let i = 1; i <= 10; i++) {
-                    sequence.push(i * i);
-                }
-                logic = 'Square numbers: 1², 2², 3², 4²...';
-            } else if (type === 'powers') {
-                for (let i = 0; i < 10; i++) {
-                    sequence.push(Math.pow(2, i));
-                }
-                logic = 'Powers of 2: 2⁰, 2¹, 2², 2³...';
-            }
-            displaySequence(sequence, logic, 'sequence');
-        }
+/* ═══════ ALGORITHM VISUALIZER ═══════ */
+let algoArray=[],algoStep=0,algoComparing=-1,-algoComparing2=-1,algoDone=false;
+const algoC=document.getElementById('algorithmCanvas'),algoCtx=algoC.getContext('2d');
+const arraySlider=document.getElementById('arraySlider');
 
-        function generateCustomSequence() {
-            const start = parseInt(document.getElementById('customStart').value);
-            const step = parseInt(document.getElementById('customStep').value);
-            let sequence = [];
-            for (let i = 0; i < 10; i++) {
-                sequence.push(start + (i * step));
-            }
-            const logic = `Start at ${start}, add ${step} each time`;
-            displaySequence(sequence, logic, 'custom');
-        }
+function initAlgorithm(){
+  const size=parseInt(arraySlider.value);
+  algoArray=Array.from({length:size},()=>Math.floor(Math.random()*100)+1);
+  algoStep=0;algoComparing=-1;algoDone=false;
+  document.getElementById('arraySize').textContent=size;
+  document.getElementById('algoStep').textContent=0;
+  document.getElementById('algoStatus').textContent='Ready';
+  drawAlgorithm();
+}
 
-        function displaySequence(sequence, logic, type) {
-            const numbersDiv = document.getElementById(type === 'sequence' ? 'sequenceNumbers' : 'customNumbers');
-            numbersDiv.innerHTML = '';
-            sequence.forEach(num => {
-                const div = document.createElement('div');
-                div.className = 'sequence-num';
-                div.textContent = num;
-                numbersDiv.appendChild(div);
-            });
-            document.getElementById(type === 'sequence' ? 'sequenceLogic' : 'customLogic').textContent = logic;
-        }
+function executeStep(){
+  if(algoDone) return;
+  const n=algoArray.length;
+  let sorted=true;
+  for(let i=0;i<n-1;i++){
+    if(algoArray[i]>algoArray[i+1]){
+      sorted=false;
+      if(algoStep%2===0){algoComparing=i;algoComparing2=i+1;}else{
+        [algoArray[i],algoArray[i+1]]=[algoArray[i+1],algoArray[i]];
+        algoComparing=-1;algoComparing2=-1;
+      }
+      algoStep++;
+      break;
+    }
+  }
+  if(sorted){algoDone=true;document.getElementById('algoStatus').textContent='Sorted!';}
+  document.getElementById('algoStep').textContent=algoStep;
+  document.getElementById('algoSorted').textContent=algoArray.filter((v,i)=>i===0||algoArray[i-1]<=v).length;
+  drawAlgorithm();
+}
 
-        // FUN FACTS
-        const facts = [
-            "Daughter of Lord Byron, the most famous poet in the world",
-            "Her mother was called 'the princess of parallelograms'",
-            "At age 12, she designed a flying machine with wings",
-            "She called herself 'an Analyst (& Metaphysician)'",
-            "She predicted AI: said machines could compose music and create graphics",
-            "She saw the Analytical Engine could do more than math—a visionary idea NO ONE else had",
-            "Charles Babbage called her 'the Enchantress of Numbers'",
-            "The US Department of Defense named the Ada programming language after her in 1980",
-            "She was a countess (Countess of Lovelace)",
-            "She loved horse racing and tried to create a mathematical gambling system (it didn't work!)",
-            "Her notes were forgotten for nearly 100 years before being rediscovered",
-            "Ada Lovelace Day is celebrated every October 9th to honor women in STEM"
-        ];
+function drawAlgorithm(){
+  algoCtx.clearRect(0,0,360,280);
+  algoCtx.fillStyle='var(--text)';algoCtx.font='14px sans-serif';algoCtx.textAlign='center';
+  algoCtx.fillText('Bubble Sort Visualization',180,20);
+  const barW=320/algoArray.length;
+  const maxVal=Math.max(...algoArray);
+  for(let i=0;i<algoArray.length;i++){
+    const h=algoArray[i]/maxVal*200;
+    const x=20+i*barW;
+    const y=250-h;
+    if(i===algoComparing||i===algoComparing2){algoCtx.fillStyle='var(--accent2)';}
+    else if(algoDone){algoCtx.fillStyle='var(--accent3)';}
+    else{algoCtx.fillStyle='var(--accent)';}
+    algoCtx.fillRect(x+2,y,barW-4,h);algoCtx.fillStyle='var(--text)';algoCtx.font='11px sans-serif';
+    algoCtx.fillText(algoArray[i],x+barW/2,270);
+  }
+}
 
-        function displayFacts() {
-            const grid = document.getElementById('factsGrid');
-            grid.innerHTML = '';
-            facts.forEach(fact => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<h3>📌</h3><p>${fact}</p>`;
-                grid.appendChild(card);
-            });
-        }
+arraySlider.addEventListener('input',initAlgorithm);
+initAlgorithm();
 
-        // QUIZ
-        const quizQuestions = [
-            { q: "In what year was Ada Lovelace born?", a: "1815", opts: ["1815", "1825", "1805", "1835"] },
-            { q: "Who was Ada Lovelace's father?", a: "Lord Byron, a famous poet", opts: ["Lord Byron, a famous poet", "Isaac Newton", "Charles Babbage", "Queen Victoria's brother"] },
-            { q: "What machine did Ada see at age 17 that fascinated her?", a: "The Difference Engine", opts: ["The Difference Engine", "A printing press", "A steam locomotive", "A telescope"] },
-            { q: "What did Ada's mother encourage her to study instead of poetry?", a: "Mathematics and science", opts: ["Mathematics and science", "Music and art", "Languages only", "History and geography"] },
-            { q: "What was the name of the machine Ada worked on with Babbage?", a: "The Analytical Engine", opts: ["The Analytical Engine", "The Computing Machine", "The Number Engine", "The Calculation Device"] },
-            { q: "In what year did Ada publish her famous translation and notes?", a: "1843", opts: ["1843", "1833", "1853", "1853"] },
-            { q: "How much longer were Ada's notes compared to the original article?", a: "3 times longer", opts: ["2 times longer", "3 times longer", "5 times longer", "10 times longer"] },
-            { q: "What was the name of Ada's most famous algorithm?", a: "Note G for Bernoulli numbers", opts: ["Note G for Bernoulli numbers", "The Fibonacci Formula", "The Prime Number Algorithm", "The Encryption Code"] },
-            { q: "What did Ada predict computers could do besides math?", a: "Compose music and create graphics", opts: ["Compose music and create graphics", "Write poetry like her father", "Play chess games", "All of the above"] },
-            { q: "How old was Ada when she died?", a: "36", opts: ["36", "42", "52", "48"] },
-            { q: "What programming language was named after Ada?", a: "Ada", opts: ["Ada", "Python", "Babbage", "Lovelace"] },
-            { q: "What does binary use to represent all information?", a: "0s and 1s", opts: ["0s and 1s", "A to Z", "1 to 10", "True and False only"] },
-            { q: "What is an algorithm?", a: "A set of step-by-step instructions", opts: ["A set of step-by-step instructions", "A type of computer", "A mathematical equation", "A programming language"] },
-            { q: "What does ASCII do?", a: "Assigns numbers to letters and characters", opts: ["Assigns numbers to letters and characters", "Stores pictures", "Makes computers faster", "Encrypts passwords"] },
-            { q: "When is Ada Lovelace Day celebrated?", a: "October 9th", opts: ["October 9th", "December 10th", "March 28th", "July 4th"] }
-        ];
+/* ═══════ BINARY CONVERTER ═══════ */
+const binC=document.getElementById('binaryCanvas'),binCtx=binC.getContext('2d');
+const decSlider=document.getElementById('decimalSlider');
+let binaryBits=[0,0,0,0,0,0,0,0];
 
-        let currentQuiz = [];
-        let currentQuizIndex = 0;
-        let quizScore = 0;
+function updateBinary(){
+  const dec=parseInt(decSlider.value);
+  document.getElementById('decimalVal').textContent=dec;
+  binaryBits=dec.toString(2).padStart(8,'0').split('').map(Number);
+  renderBinaryUI();
+  drawBinary();
+}
 
-        function initQuiz() {
-            currentQuiz = [];
-            const shuffled = [...quizQuestions].sort(() => Math.random() - 0.5);
-            currentQuiz = shuffled.slice(0, 10);
-            currentQuizIndex = 0;
-            quizScore = 0;
-            displayQuizQuestion();
-        }
+function renderBinaryUI(){
+  const grid=document.getElementById('binaryGrid');
+  grid.innerHTML='';
+  const powers=[128,64,32,16,8,4,2,1];
+  for(let i=0;i<8;i++){
+    const btn=document.createElement('div');
+    btn.style.textAlign='center';
+    btn.innerHTML=`<div class="toggle-switch ${binaryBits[i]?'on':''}" onclick="toggleBit(${i})" style="width:50px;height:50px;margin:0 auto;border-radius:8px;border:2px solid #8fd4a4;background:${binaryBits[i]?'linear-gradient(135deg,#d96b6b,#f5d863)':'rgba(74,94,74,.8)'};color:${binaryBits[i]?'white':'#8fd4a4'};cursor:pointer;font-size:20px;font-weight:bold;display:flex;align-items:center;justify-content:center;transition:.3s">${binaryBits[i]}</div><div style="font-size:11px;color:var(--dim);margin-top:4px">2^${7-i}</div>`;
+    grid.appendChild(btn);
+  }
+  const dec=parseInt(binaryBits.join(''),2);
+  document.getElementById('showDecimal').textContent=dec;
+  document.getElementById('showBinary').textContent=binaryBits.join('');
+  document.getElementById('showHex').textContent=dec.toString(16).toUpperCase().padStart(2,'0');
+  document.getElementById('bitsSet').textContent=binaryBits.filter(b=>b===1).length;
+  decSlider.value=dec;
+}
 
-        function displayQuizQuestion() {
-            const content = document.getElementById('quizContent');
-            if (currentQuizIndex >= currentQuiz.length) {
-                showQuizScore();
-                return;
-            }
-            const progress = ((currentQuizIndex + 1) / currentQuiz.length) * 100;
-            document.getElementById('quizProgress').style.width = progress + '%';
-            const q = currentQuiz[currentQuizIndex];
-            const opts = q.opts.sort(() => Math.random() - 0.5);
-            let html = `
-                <div class="question-card">
-                    <h3>Question ${currentQuizIndex + 1} of ${currentQuiz.length}</h3>
-                    <h3>${q.q}</h3>
-            `;
-            opts.forEach(opt => {
-                html += `<div class="option" onclick="selectAnswer('${opt}', '${q.a}')">${opt}</div>`;
-            });
-            html += '</div>';
-            content.innerHTML = html;
-        }
+function toggleBit(idx){
+  binaryBits[idx]=1-binaryBits[idx];
+  renderBinaryUI();
+  drawBinary();
+}
 
-        function selectAnswer(selected, correct) {
-            const options = document.querySelectorAll('.option');
-            let isCorrect = selected === correct;
-            options.forEach(opt => {
-                if (opt.textContent === correct) opt.classList.add('correct');
-                if (opt.textContent === selected && !isCorrect) opt.classList.add('incorrect');
-                opt.style.pointerEvents = 'none';
-            });
-            if (isCorrect) {
-                quizScore++;
-                document.querySelector('.question-card').innerHTML += '<div class="feedback correct"><strong>Correct!</strong> Great job! 🎉</div>';
-            } else {
-                document.querySelector('.question-card').innerHTML += `<div class="feedback incorrect"><strong>Not quite!</strong> The correct answer is: ${correct}</div>`;
-            }
-            setTimeout(() => {
-                currentQuizIndex++;
-                displayQuizQuestion();
-            }, 2500);
-        }
+function drawBinary(){
+  binCtx.clearRect(0,0,360,280);
+  binCtx.fillStyle='var(--text)';binCtx.font='14px sans-serif';binCtx.textAlign='center';
+  binCtx.fillText('Binary Conversion',180,20);
+  const dec=parseInt(binaryBits.join(''),2);
+  binCtx.font='20px bold sans-serif';binCtx.fillText(dec+' =',180,60);
+  let x=40;
+  for(let i=0;i<8;i++){
+    binCtx.fillStyle=binaryBits[i]?'var(--accent)':'rgba(245,216,99,.2)';
+    binCtx.fillRect(x,80,30,30);binCtx.fillStyle='var(--text)';binCtx.font='14px bold sans-serif';binCtx.textAlign='center';
+    binCtx.fillText(binaryBits[i],x+15,105);x+=38;
+  }
+  binCtx.fillStyle='var(--dim)';binCtx.font='12px sans-serif';binCtx.textAlign='center';
+  binCtx.fillText('8 binary digits (bits) can represent 0-255!',180,200);
+}
 
-        function showQuizScore() {
-            const percentage = Math.round((quizScore / currentQuiz.length) * 100);
-            document.getElementById('quizContent').innerHTML = `
-                <div class="quiz-score">
-                    <h2>Quiz Complete!</h2>
-                    <div class="score-number">${quizScore}/${currentQuiz.length}</div>
-                    <p style="font-size: 1.2rem; color: #00ced1; margin-top: 1rem;">${percentage}% Correct</p>
-                    <p style="color: #d0d0e0; margin-top: 1rem;">${percentage >= 80 ? 'Excellent work! You really know your Ada facts!' : percentage >= 60 ? 'Good job! You learned a lot!' : 'Great effort! Keep learning about Ada!'}</p>
-                    <button class="action-btn" style="margin-top: 1.5rem;" onclick="initQuiz()">Try Again</button>
-                </div>
-            `;
-        }
+decSlider.addEventListener('input',updateBinary);
+updateBinary();
 
-        // Initialize
-        window.addEventListener('DOMContentLoaded', function() {
-            initBinaryBuilder();
-            convertDecimalToBinary();
-            displayFacts();
-            initQuiz();
-        });
-    </script>
+/* ═══════ SEQUENCE MACHINE ═══════ */
+let seqNumbers=[];
+const seqMults=document.getElementById('seqMultSlider');
+const seqAdds=document.getElementById('seqAddSlider');
+const seqC=document.getElementById('sequenceCanvas'),seqCtx=seqC.getContext('2d');
+
+function generateSequence(){
+  const start=parseInt(document.getElementById('seqStart').value)||1;
+  const mult=parseFloat(seqMults.value);
+  const add=parseInt(seqAdds.value);
+  document.getElementById('seqMult').textContent=mult;
+  document.getElementById('seqAdd').textContent=add;
+  seqNumbers=[start];
+  let current=start;
+  for(let i=0;i<7;i++){
+    current=current*mult+add;
+    if(current>999999) break;
+    seqNumbers.push(Math.round(current));
+  }
+  document.getElementById('seqCount').textContent=seqNumbers.length;
+  document.getElementById('seqLast').textContent=seqNumbers[seqNumbers.length-1];
+  const display=document.getElementById('seqDisplay');
+  display.textContent=seqNumbers.join(' → ');
+  drawSequence();
+}
+
+function drawSequence(){
+  seqCtx.clearRect(0,0,360,280);
+  seqCtx.fillStyle='var(--text)';seqCtx.font='14px sans-serif';seqCtx.textAlign='center';
+  seqCtx.fillText('Sequence Generator',180,20);
+  if(seqNumbers.length===0){seqCtx.fillText('Click "Generate Sequence" to start',180,150);return;}
+  const maxVal=Math.max(...seqNumbers);const minVal=Math.min(...seqNumbers);
+  const range=maxVal-minVal||1;
+  for(let i=0;i<seqNumbers.length;i++){
+    const normalized=(seqNumbers[i]-minVal)/range;
+    const h=normalized*200+20;const x=40+i*40;const y=250-h;
+    seqCtx.fillStyle='var(--accent)';seqCtx.fillRect(x,y,30,h);
+    seqCtx.fillStyle='var(--text)';seqCtx.font='10px sans-serif';seqCtx.textAlign='center';
+    seqCtx.fillText(seqNumbers[i],x+15,270);
+  }
+}
+
+seqMults.addEventListener('input',()=>document.getElementById('seqMult').textContent=parseFloat(seqMults.value).toFixed(1));
+seqAdds.addEventListener('input',()=>document.getElementById('seqAdd').textContent=seqAdds.value);
+generateSequence();
+
+/* ═══════ QUIZ ═══════ */
+const quizQuestions=[
+  {q:"In what year was Ada Lovelace born?",a:["1815","1825","1835","1845"],c:0},
+  {q:"Who was Ada's famous father?",a:["Charles Dickens","Lord Byron","Isaac Newton","Benjamin Franklin"],c:1},
+  {q:"What was Ada's nickname for herself?",a:["The Mathematician","An Analyst & Metaphysician","The Calculator","The Engineer"],c:1},
+  {q:"What machine did Ada work with Charles Babbage on?",a:["Difference Engine","Analytical Engine","Steam Engine","Printing Press"],c:1},
+  {q:"What was Note G?",a:["A music composition","The first computer program","A letter to her mother","A math proof"],c:1},
+  {q:"Ada predicted computers could do all BUT which?",a:["Compose music","Create graphics","Manipulate symbols","Think like humans"],c:3},
+  {q:"How old was Ada when she died?",a:["29","36","42","52"],c:1},
+  {q:"How long was Ada's translation compared to the original?",a:["Same length","2x longer","3x longer","10x longer"],c:2},
+  {q:"What field was Ada raised to pursue instead of poetry?",a:["Art","Music","Mathematics and Science","Sports"],c:2},
+  {q:"What programming language was named in Ada's honor?",a:["Python","Ada","Java","Pascal"],c:1},
+];
+let quizQs=[],qIdx=0,score=0;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startQuiz(){
+  quizQs=shuffle([...quizQuestions]);qIdx=0;score=0;
+  document.getElementById('quizBody').style.display='block';
+  document.getElementById('quizComplete').style.display='none';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  if(qIdx>=quizQs.length){endQuiz();return;}
+  const q=quizQs[qIdx];
+  document.getElementById('questionText').textContent=q.q;
+  const div=document.getElementById('answersDiv');div.innerHTML='';
+  q.a.forEach((ans,i)=>{
+    const btn=document.createElement('button');
+    btn.className='answer-btn';btn.textContent=ans;btn.onclick=()=>selectAnswer(i,q.c);
+    div.appendChild(btn);
+  });
+  document.getElementById('feedback').className='feedback';document.getElementById('feedback').textContent='';
+  document.getElementById('nextBtn').classList.remove('show');
+  updateProgress();
+}
+
+function selectAnswer(idx,correct){
+  const btns=document.querySelectorAll('.answer-btn');
+  btns.forEach((b,i)=>{b.classList.add('locked');if(i===correct) b.classList.add('correct');else if(i===idx&&i!==correct) b.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  if(idx===correct){
+    score++;fb.className='feedback show correct-fb';fb.textContent='Correct! Well done!';
+  }else{
+    fb.className='feedback show wrong-fb';fb.textContent='Not quite. The correct answer is: '+quizQs[qIdx].a[correct];
+  }
+  document.getElementById('quizScore').textContent=score;
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQ(){
+  qIdx++;loadQuestion();
+}
+
+function endQuiz(){
+  document.getElementById('quizBody').style.display='none';
+  document.getElementById('quizComplete').style.display='block';
+  const pct=Math.round(score/quizQs.length*100);
+  document.getElementById('finalScore').textContent=score+' / '+quizQs.length;
+  const msgs=["Outstanding! You're a true computer scientist!","Excellent work! Ada would be proud!","Great job! You understand Ada's legacy!","Good effort! Keep learning!","Keep trying! Read Ada's story again."];
+  const msgIdx=Math.min(Math.floor(pct/20),4);
+  document.getElementById('finalMsg').textContent=msgs[msgIdx];
+}
+
+function updateProgress(){
+  const pct=(qIdx/quizQs.length)*100;
+  document.getElementById('quizProgress').style.width=pct+'%';
+  document.getElementById('quizTotal').textContent=quizQs.length;
+}
+</script>
 </body>
 </html>

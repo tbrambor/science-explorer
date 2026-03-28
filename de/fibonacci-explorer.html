@@ -1,451 +1,96 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-    <title>Fibonacci Explorer - Interaktives Lernen</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Patrick Hand','Caveat',cursive,system-ui,sans-serif;
-            background-color: #2b3a2b;
-            color: #e8e4d9;
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
-
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            background: linear-gradient(135deg, rgba(35,48,35,1) 0%, rgba(35,48,35,1) 100%);
-            padding: 1rem 2rem;
-            border-bottom: 2px solid #8fd4a4;
-            display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        nav button {
-            background: #314231;
-            color: #8fd4a4;
-            border: 2px solid #8fd4a4;
-            padding: 0.7rem 1.2rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-size: 0.95rem;
-        }
-
-        nav button:hover {
-            background: #8fd4a4;
-            border-color: #8fd4a4;
-            color: #2b3a2b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(143, 212, 164, 0.3);
-        }
-
-        nav button.active {
-            background: #f5d863;
-            color: #2b3a2b;
-            border-color: #f5d863;
-        }
-
-        /* Sections */
-        section {
-            display: none;
-            animation: fadeUp 0.6s ease-out;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            min-height: 100vh;
-        }
-
-        section.active {
-            display: block;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #f5d863 0%, #d96b6b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: none;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-            color: #f5d863;
-        }
-
-        h3 {
-            font-size: 1.3rem;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            color: #d96b6b;
-        }
-
-        p {
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .hero-text {
-            flex: 1;
-        }
-
-        .hero-image {
-            flex: 1;
-            text-align: center;
-        }
-
-        .hero-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            border: 3px solid #8fd4a4;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Cards */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .card {
-            background: linear-gradient(135deg, #314231 0%, #314231 100%);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 2px solid #8fd4a4;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: #f5d863;
-            box-shadow: 0 8px 20px rgba(245, 216, 99, 0.2);
-        }
-
-        .card h3 {
-            margin-top: 0;
-        }
-
-        /* Interactive Elements */
-        .interactive-box {
-            background: linear-gradient(135deg, #314231 0%, #314231 100%);
-            padding: 2rem;
-            border-radius: 8px;
-            border: 2px solid #8fd4a4;
-            margin: 2rem 0;
-        }
-
-        button {
-            background: #314231;
-            color: #8fd4a4;
-            border: 2px solid #8fd4a4;
-            padding: 0.7rem 1.2rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        button:hover {
-            background: #8fd4a4;
-            color: #2b3a2b;
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .input-group {
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        input[type="range"] {
-            flex: 1;
-        }
-
-        input[type="range"] {
-            accent-color: #f5d863;
-        }
-
-        .sequence-display {
-            background: #2b3a2b;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border: 2px solid #8fd4a4;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            min-height: 60px;
-            align-items: center;
-        }
-
-        .number-tile {
-            background: linear-gradient(135deg, #8fd4a4 0%, #7bb8e0 100%);
-            border: 2px solid #f5d863;
-            padding: 0.8rem 1.2rem;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #2b3a2b;
-            animation: popIn 0.4s ease-out;
-            box-shadow: 0 4px 8px rgba(245, 216, 99, 0.2);
-        }
-
-        @keyframes popIn {
-            from {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .stat-box {
-            background: rgba(49, 66, 49, 0.5);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border-left: 4px solid #f5d863;
-        }
-
-        /* Canvas */
-        canvas {
-            border: 2px solid #8fd4a4;
-            border-radius: 8px;
-            background: #2b3a2b;
-            display: block;
-            margin: 1rem 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Quiz */
-        .quiz-container {
-            background: linear-gradient(135deg, #314231 0%, #314231 100%);
-            padding: 2rem;
-            border-radius: 8px;
-            border: 2px solid #8fd4a4;
-            margin: 1rem 0;
-        }
-
-        .question {
-            margin-bottom: 2rem;
-        }
-
-        .question p {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-        }
-
-        .options {
-            display: grid;
-            gap: 0.8rem;
-        }
-
-        .option-btn {
-            background: #2b3a2b;
-            border: 2px solid #8fd4a4;
-            color: #e8e4d9;
-            padding: 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .option-btn:hover {
-            border-color: #f5d863;
-            background: #314231;
-        }
-
-        .option-btn.selected {
-            background: #f5d863;
-            color: #2b3a2b;
-            border-color: #f5d863;
-        }
-
-        .option-btn.correct {
-            background: #8fd4a4;
-            border-color: #8fd4a4;
-            color: #2b3a2b;
-        }
-
-        .option-btn.incorrect {
-            background: #d96b6b;
-            border-color: #d96b6b;
-            color: #e8e4d9;
-        }
-
-        .feedback {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid;
-        }
-
-        .feedback.correct {
-            background: rgba(143, 212, 164, 0.2);
-            border-color: #8fd4a4;
-            color: #8fd4a4;
-        }
-
-        .feedback.incorrect {
-            background: rgba(217, 107, 107, 0.2);
-            border-color: #d96b6b;
-            color: #d96b6b;
-        }
-
-        .progress-bar {
-            background: #314231;
-            height: 8px;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            border: 1px solid #8fd4a4;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #8fd4a4, #f5d863);
-            transition: width 0.3s ease;
-        }
-
-        .quiz-result {
-            background: linear-gradient(135deg, #314231 0%, #314231 100%);
-            padding: 2rem;
-            border-radius: 8px;
-            text-align: center;
-            margin: 1rem 0;
-            border: 2px solid #f5d863;
-        }
-
-        .quiz-result h3 {
-            font-size: 2rem;
-            color: #f5d863;
-        }
-
-        .score {
-            font-size: 3rem;
-            color: #8fd4a4;
-            font-weight: bold;
-            margin: 1rem 0;
-        }
-
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline-item {
-            margin-bottom: 2rem;
-            padding-left: 2rem;
-            border-left: 3px solid #8fd4a4;
-            position: relative;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 0;
-            width: 16px;
-            height: 16px;
-            background: #f5d863;
-            border-radius: 50%;
-            border: 3px solid #2b3a2b;
-        }
-
-        .timeline-item:hover::before {
-            background: #8fd4a4;
-        }
-
-        .timeline-item h3 {
-            color: #f5d863;
-            margin-top: 0;
-        }
-
-        .timeline-item p {
-            margin: 0.5rem 0;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            h2 {
-                font-size: 1.3rem;
-            }
-
-            .hero {
-                flex-direction: column;
-            }
-
-            nav {
-                padding: 0.8rem 1rem;
-            }
-
-            nav button {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.85rem;
-            }
-
-            section {
-                padding: 1rem;
-            }
-        }
-    /* ── LANGUAGE TOGGLE ── */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>Die Welt der Fibonacci</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;--accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;--radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
+.hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px;display:block;margin-left:auto;margin-right:auto}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .subtitle{font-size:19px;color:var(--dim)}
+.hero .life{margin-top:10px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.4)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px}.tl-text strong{color:var(--accent)}
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+.slider-group{margin-bottom:16px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(245,216,99,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:20px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+.step-explain{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.step-item{display:flex;gap:14px;align-items:flex-start}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.step-text{font-size:15px;line-height:1.6;padding-top:5px}
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}
+.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#f472b6}
+.fact-card:nth-child(7){border-left-color:#fb923c}
+.fact-card:nth-child(8){border-left-color:#38bdf8}
+.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}
+.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:6px;font-weight:700;color:var(--accent3);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--accent);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--accent3);background:rgba(143,212,164,.12);color:var(--accent3)}
+.answer-btn.wrong{border-color:var(--accent2);background:rgba(217,107,107,.1);color:var(--accent2)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--accent3)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--accent2)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(245,216,99,.35)}
+.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}
+.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.restart-btn:hover{transform:scale(1.05)}
+@media(max-width:600px){nav button{padding:7px 10px;font-size:11px}.card{padding:18px}.answers{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr}.portrait{width:120px;height:120px}}
 .lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
 .lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
 .lang-toggle a:hover{background:rgba(245,216,99,.2)}
@@ -457,725 +102,202 @@
   <a href="../fibonacci-explorer.html">EN</a>
   <a href="#" class="active">DE</a>
 </div>
-<!-- Navigation -->
-    <nav id="nav">
-        <button class="nav-btn active" data-section="story">Seine Geschichte</button>
-        <button class="nav-btn" data-section="builder">Sequenz-Baumeister</button>
-        <button class="nav-btn" data-section="spiral">Goldene Spirale</button>
-        <button class="nav-btn" data-section="nature">In der Natur</button>
-        <button class="nav-btn" data-section="facts">Lustige Fakten</button>
-        <button class="nav-btn" data-section="quiz">Quiz</button>
-    </nav>
-
-    <!-- Section 1: His Story -->
-    <section id="story" class="active">
-        <div class="hero">
-            <div class="hero-text">
-                <h1>Leonardo Fibonacci: Der Mann, der alles veränderte</h1>
-                <p>
-                    Lerne Leonardo Bonacci kennen, besser bekannt als <strong>Fibonacci</strong> (was „Sohn von Bonacci" bedeutet).
-                    Er wurde um 1170 in Pisa, Italien, geboren und wurde einer der wichtigsten Mathematiker der Geschichte.
-                </p>
-                <p>
-                    Warum? Weil er Europa ein revolutionäres Zahlensystem brachte, das die Mathematik, den Handel
-                    und unsere tägliche Rechnung völlig veränderte!
-                </p>
-            </div>
-            <div class="hero-image">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Leonardo_Fibonacci.JPG/250px-Leonardo_Fibonacci.JPG"
-                     alt="Leonardo Fibonacci">
-                <p style="margin-top: 1rem; font-size: 0.9rem;">Leonardo Fibonacci (ca. 1170–1250)</p>
-            </div>
+<div class="hero">
+  <div class="hero-content">
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Leonardo_Fibonacci.JPG/250px-Leonardo_Fibonacci.JPG" alt="Leonardo Fibonacci">
+    <h1>Die Welt der Fibonacci</h1>
+    <p class="subtitle">Der Mann, der verändert hat, wie wir zählen</p>
+    <p class="life">c. 1170 – c. 1250 · Pisa, Italien</p>
+    <p class="tagline">Er brachte das Zahlensystem, das wir heute verwenden, nach Europa, entdeckte Sequenzen überall in der Natur und veränderte die Mathematik für immer.</p>
+  </div>
+</div>
+<nav>
+  <a href="../index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+  <button class="active" onclick="show('story',this)">Geschichte</button>
+  <button onclick="show('builder',this)">Sequenz-Ersteller</button>
+  <button onclick="show('golden',this)">Goldener Schnitt</button>
+  <button onclick="show('nature',this)">Natur-Muster</button>
+  <button onclick="show('facts',this)">Wissenswertes</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+</nav>
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>Das Leben von Fibonacci</h2>
+    <p class="sub">Mathematiker, Kaufmann und der Mann, der verändert hat, wie Europa zählt.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 1170</div><div class="tl-text">Geburt von <strong>Leonardo Bonacci</strong> in Pisa, Italien. Sein Vater ist ein Kaufmann, der im Mittelmeerraum handelt.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1170er–1190er</div><div class="tl-text">Leonardo reist mit seinem Vater ins Mittelmeergebiet nach <strong>Algerien, Ägypten, Syrien und Konstantinopel</strong>. Er lernt das Hindu-Arabische Zahlensystem (0–9) von arabischen Kaufleuten.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Das Problem</div><div class="tl-text">Zurück in Europa verwendet jeder <strong>Römische Ziffern</strong> (I, V, X, L, C, D, M). Multiplikation und Division sind nahezu unmöglich. Fibonacci erkennt, dass es einen besseren Weg geben muss.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1202</div><div class="tl-text">Veröffentlicht <strong><em>Liber Abaci</em></strong> (Buch der Berechnung). Dieses revolutionäre Buch führt das Hindu-Arabische Zahlensystem nach Europa ein und zeigt, wie viel einfacher Mathematik wird!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Das Kaninchen-Problem</div><div class="tl-text">In seinem Buch enthält Fibonacci ein berühmtes Rätsel über Kanin-Zucht. Die Antwort erzeugt eine magische Sequenz: <strong>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55...</strong> Jede Zahl ist die Summe der beiden vorherigen!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1200er–1250</div><div class="tl-text">Fibonaccis Ideen revolutionieren europäische Mathematik und Geschäftswelt. Sein Zahlensystem macht Buchführung, Handel und Wissenschaft möglich. Die Republik Pisa ehrt ihn.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 1250</div><div class="tl-text">Fibonacci stirbt in Pisa. Sein Erbe verändert die Mathematik für immer. Jahrhunderte später wird seine Sequenz überall in der Natur gefunden—Sonnenblumen-Spiralen, Tannenzapfen, Galaxien, sogar DNA!</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Warum Fibonacci so wichtig ist</h2>
+    <p class="sub">Er erfand nicht nur eine Sequenz. Er veränderte die Welt.</p>
+    <div class="step-explain">
+      <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Brachte bessere Mathematik nach Europa.</strong> Fibonaccis Buch führte das Hindu-Arabische Zahlensystem ein. Europa gab römische Ziffern auf, und plötzlich wurde komplexe Mathematik möglich. Bankwesen, Wissenschaft und Handel explodierten.</div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Entdeckte ein verborgenes Muster.</strong> Die Fibonacci-Sequenz erscheint überall in der Natur—spiralförmige Muscheln, Blütenblätter, Galaxien. Mathematiker entdecken heute noch neue Muster!</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>Verband Mathematik und Natur.</strong> Die Sequenz zeigt, dass die Natur mathematisch ist. Pflanzen, Tiere und sogar Galaxien folgen mathematischen Regeln. Das Universum spricht Mathematik!</div></div>
+    </div>
+  </div>
+</section>
+<section id="sec-builder">
+  <div class="card">
+    <h2>Baue die Fibonacci-Sequenz</h2>
+    <p class="sub">Die Sequenz ist einfach aber leistungsstark. Beginne mit 0 und 1. Jede neue Zahl ist die Summe der beiden vorherigen!</p>
+    <div class="step-explain">
+      <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Start:</strong> Beginne mit <strong>0</strong> und <strong>1</strong></div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Addiere:</strong> 0 + 1 = 1 → 1 + 1 = 2 → 1 + 2 = 3 → 2 + 3 = 5</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>Fortsetzung:</strong> Addiere weiter die letzten zwei Zahlen. Die Sequenz wächst unendlich!</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Interaktiver Sequenz-Ersteller</h2>
+    <p class="sub">Klicke auf die Buttons, um die Sequenz zu bauen und sie wachsen zu sehen!</p>
+    <div class="lab-layout">
+      <div id="seqContainer" style="flex:1;min-width:250px;display:flex;flex-direction:column;gap:16px">
+        <div id="sequenceDisplay" style="display:flex;flex-wrap:wrap;gap:8px;padding:16px;background:rgba(245,216,99,.08);border-radius:12px;border:1px solid rgba(245,216,99,.2);min-height:50px;align-items:center"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="addNextNum()" style="padding:10px 16px;background:var(--accent);color:#000;border:none;border-radius:6px;font-weight:600;cursor:pointer">+ Nächste</button>
+          <button onclick="speedRun()" style="padding:10px 16px;background:var(--accent2);color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer">🚀 Schnellauf</button>
+          <button onclick="resetSeq()" style="padding:10px 16px;background:var(--dim);color:#000;border:none;border-radius:6px;font-weight:600;cursor:pointer">Zurücksetzen</button>
         </div>
-
-        <h2>Zeitleiste: Ein Leben, das die Welt veränderte</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <h3>ca. 1170 — In Pisa geboren</h3>
-                <p>Leonardo Bonacci wird in Pisa, Italien, geboren. Sein Vater ist ein Kaufmann, der in Nordafrika arbeitet.</p>
-            </div>
-
-            <div class="timeline-item">
-                <h3>1170er–1190er — Reist über das Mittelmeer</h3>
-                <p>
-                    Der junge Leonardo reist mit seinem Vater nach Algerien, Ägypten, Syrien und Konstantinopel.
-                    Er trifft arabische Kaufleute und lernt etwas Unglaubliches: das indisch-arabische Zahlensystem (0, 1, 2, 3, 4, 5, 6, 7, 8, 9).
-                </p>
-            </div>
-
-            <div class="timeline-item">
-                <h3>Das Problem: Römische Ziffern</h3>
-                <p>
-                    Zurück in Europa benutzte jeder römische Ziffern: I, V, X, L, C, D, M. Versuche das selbst:
-                    <br><strong>XIV × XXIII = ?</strong>
-                    <br>Es ist fast unmöglich! Versuche, 14 × 23 nur mit römischen Ziffern zu multiplizieren.
-                    Leonardo erkannte, dass es einen besseren Weg gab.
-                </p>
-            </div>
-
-            <div class="timeline-item">
-                <h3>1202 — Veröffentlicht <em>Liber Abaci</em></h3>
-                <p>
-                    Im Alter von 32 Jahren veröffentlicht Fibonacci das „Buch der Berechnung". Dieses Buch führt
-                    die indisch-arabischen Ziffern (0–9) in Europa ein und zeigt, wie sie die Mathematik SO viel einfacher machen.
-                    Europa hatte endlich einen besseren Weg zum Rechnen!
-                </p>
-            </div>
-
-            <div class="timeline-item">
-                <h3>Das berühmte Kaninchen-Problem</h3>
-                <p>
-                    Im <em>Liber Abaci</em> beinhaltet Fibonacci ein Rätsel über Kaninchenzucht.
-                    Die Lösung führt zu einer Sequenz: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55...
-                    <br>
-                    <strong>Jede Zahl ist die Summe der beiden vorherigen!</strong> Dies wurde als Fibonacci-Sequenz bekannt,
-                    obwohl er nicht wusste, wie wichtig sie werden würde.
-                </p>
-            </div>
-
-            <div class="timeline-item">
-                <h3>1200er–1250 — Ruhm und Ehre</h3>
-                <p>
-                    Fibonaccis Ideen revolutionieren die europäische Mathematik und den Handel. Sein Zahlensystem macht
-                    Buchführung, Handel und Wissenschaft möglich. Die Republik Pisa ehrt ihn.
-                </p>
-            </div>
-
-            <div class="timeline-item">
-                <h3>ca. 1250 — Starb in Pisa</h3>
-                <p>
-                    Fibonacci stirbt, aber sein Vermächtnis lebt für immer. Heute, Jahrhunderte später,
-                    erscheint seine Sequenz und das goldene Verhältnis überall in der Natur und der Kunst. Ziemlich cool, oder?
-                </p>
-            </div>
+      </div>
+      <div class="lab-side">
+        <div class="stat-grid">
+          <div class="stat-box"><div class="lbl">Länge</div><div class="val" id="seqLen">2</div></div>
+          <div class="stat-box"><div class="lbl">Letzte Zahl</div><div class="val" id="seqLast">1</div></div>
+          <div class="stat-box"><div class="lbl">Verhältnis</div><div class="val" id="seqRatio">—</div></div>
+          <div class="stat-box"><div class="lbl">Zu φ</div><div class="val" id="seqPhi">—</div></div>
         </div>
-
-        <div class="stat-box">
-            <h3>Warum Fibonacci wichtig ist:</h3>
-            <p>
-                Fibonacci entdeckte nicht nur eine Zahlensequenz. Er half Europa, römische Ziffern abzulehnen und ein
-                System anzunehmen, das Mathematik, Wissenschaft und Handel möglich machte. Ohne ihn würde die moderne Welt nicht existieren!
-            </p>
+        <div class="explain-box"><strong>Magie:</strong> Während die Sequenz wächst, nähert sich das Verhältnis aufeinanderfolgender Zahlen dem <strong>Goldenen Schnitt (φ ≈ 1,618)</strong>. Versuche, die letzte Zahl durch die vorherige zu teilen!</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="sec-golden">
+  <div class="card">
+    <h2>Der Goldene Schnitt</h2>
+    <p class="sub">Eine magische Zahl, die überall in der Natur und Kunst erscheint.</p>
+    <div class="step-explain">
+      <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Was ist es?</strong> Der Goldene Schnitt (φ, "Phi") ist <strong>ungefähr 1,618</strong>. Es ist die Zahl, die du erhältst, wenn du eine Fibonacci-Zahl durch die vorherige teilst (bei großen Zahlen).</div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Wo erscheint es?</strong> Der Goldene Schnitt zeigt sich in Sonnenblumen-Spiralen, Muscheln, menschlichen Gesichtern, antiken Tempeln und sogar Galaxien!</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>Warum?</strong> Die Natur nutzt den Goldenen Schnitt, weil er die effizienteste, schönste Art ist, Dinge zusammenzupacken. Kein verschwendeter Platz, perfekte Balance.</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Entdecke die Goldene Spirale</h2>
+    <p class="sub">Ziehe den Schieber, um zu sehen, wie Fibonacci-Quadrate die Goldene Spirale aufbauen.</p>
+    <div class="lab-layout">
+      <canvas id="goldenCanvas" width="360" height="360" style="border-radius:var(--radius);border:1px solid rgba(245,216,99,.2)"></canvas>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Spiralen-Ebenen: <span id="goldenLevel" style="color:var(--accent);font-size:18px;font-weight:700">5</span></label>
+          <input type="range" id="goldenSlider" min="1" max="8" value="5" oninput="updateGolden(this.value)">
         </div>
-    </section>
-
-    <!-- Section 2: Sequence Builder -->
-    <section id="builder">
-        <h1>Baue die Fibonacci-Sequenz</h1>
-        <p>
-            Die Fibonacci-Sequenz ist einfach, aber kraftvoll. Beginne mit 0 und 1.
-            Jede neue Zahl ist die Summe der beiden vorherigen!
-        </p>
-
-        <div class="interactive-box">
-            <h2>Wie es funktioniert:</h2>
-            <p style="font-size: 1.2rem;">
-                <strong>0, 1</strong> → 0 + 1 = <strong>1</strong> → 1 + 1 = <strong>2</strong> → 1 + 2 = <strong>3</strong>
-                → 2 + 3 = <strong>5</strong> → 3 + 5 = <strong>8</strong> ...
-            </p>
-
-            <div class="sequence-display" id="sequenceDisplay">
-                <div class="number-tile">0</div>
-                <div class="number-tile">1</div>
-            </div>
-
-            <div>
-                <button onclick="addNextFibonacci()">Nächste Zahl hinzufügen</button>
-                <button onclick="speedRun()">🚀 Schnelllauf!</button>
-                <button onclick="resetSequence()">Zurücksetzen</button>
-            </div>
-
-            <div class="stat-box">
-                <p><strong>Sequenzlänge:</strong> <span id="sequenceLength">2</span> Zahlen</p>
-                <p><strong>Letzte Zahl:</strong> <span id="lastNumber">1</span></p>
-            </div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="lbl">Goldener Schnitt</div><div class="val" style="color:var(--accent)">1,618</div></div>
+          <div class="stat-box"><div class="lbl">Symbol</div><div class="val" style="color:var(--accent2)">φ</div></div>
+          <div class="stat-box"><div class="lbl">Natur</div><div class="val" style="color:var(--accent3)">✓</div></div>
+          <div class="stat-box"><div class="lbl">Kunst</div><div class="val" style="color:var(--blue)">✓</div></div>
         </div>
-
-        <h2>Das Geheimnis des goldenen Verhältnisses</h2>
-        <div class="interactive-box">
-            <p>
-                Hier ist etwas Magisches: Mit jeder Sequenz wird das Verhältnis aufeinanderfolgender Zahlen
-                immer näher an das goldene Verhältnis: <strong>φ (phi) ≈ 1,618...</strong>
-            </p>
-            <p>
-                Versuche, eine große Fibonacci-Zahl durch die davor zu teilen!
-            </p>
-            <div class="stat-box" id="ratioBox">
-                <p>Füge mehr Zahlen hinzu, um das goldene Verhältnis zu sehen! →</p>
-            </div>
+        <div class="explain-box">Jedes Quadrat hat eine Breite, die eine Fibonacci-Zahl ist. Die Spirale verläuft durch sie hindurch und wächst nach außen perfekt. Dieses genaue Muster erscheint in Muscheln, Hurrikanen und Galaxien!</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="sec-nature">
+  <div class="card">
+    <h2>Fibonacci in der Natur: Die interaktive Sonnenblume</h2>
+    <p class="sub">Pflanzen Samen im Goldenen Winkel (137,5°) und beobachte, wie Fibonacci-Spiralen natürlich entstehen!</p>
+    <div class="step-explain">
+      <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Der magische Winkel:</strong> Samen wachsen im Winkel von <strong>137,5°</strong> (ein Zehntel des Goldenen Schnitts). Dies wird Goldener Winkel genannt.</div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Perfekte Packung:</strong> In diesem Winkel verteilen sich Samen perfekt. Keine Überlappung, kein verschwendeter Platz. Jede Sonnenblume nutzt denselben Winkel!</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>Die Spiralen erscheinen:</strong> Wenn du die Spiralen zählst, findest du Fibonacci-Zahlen! Sonnenblumen: 21 und 34. Tannenzapfen: 5, 8 oder 13. Die Natur kannte Fibonacci, bevor wir ihn kannten!</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Baue deine Sonnenblume</h2>
+    <p class="sub">Passe den Schieber an und beobachte, wie Spiralen entstehen!</p>
+    <div class="lab-layout">
+      <canvas id="sunflowerCanvas" width="360" height="360" style="border-radius:var(--radius);border:1px solid rgba(245,216,99,.2)"></canvas>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Anzahl der Samen: <span id="seedCount" style="color:var(--accent);font-size:18px;font-weight:700">100</span></label>
+          <input type="range" id="seedSlider" min="10" max="1000" step="10" value="100" oninput="updateSunflower(this.value)">
         </div>
-    </section>
-
-    <!-- Section 3: Golden Spiral -->
-    <section id="spiral">
-        <h1>Die Goldene Spirale</h1>
-        <p>
-            Wenn du Fibonacci-Quadrate nebeneinander anordnest, kannst du eine Spirale durch sie zeichnen.
-            Diese Spirale heißt <strong>Goldene Spirale</strong> und erscheint überall in der Natur!
-        </p>
-
-        <div class="interactive-box">
-            <h2>Erkunde die Spirale</h2>
-            <p>
-                Bewege den Schieberegler, um zu sehen, wie Fibonacci-Quadrate die goldene Spirale aufbauen.
-                Die Größe jedes Quadrats ist eine Fibonacci-Zahl!
-            </p>
-            <div class="input-group">
-                <label for="spiralSlider">Spirale-Ebenen: <strong id="spiralLevel">3</strong></label>
-                <input type="range" id="spiralSlider" min="1" max="8" value="3"
-                       oninput="updateSpiral(this.value)">
-            </div>
-            <canvas id="spiralCanvas" width="600" height="600"></canvas>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="lbl">Goldener Winkel</div><div class="val">137,5°</div></div>
+          <div class="stat-box"><div class="lbl">Muster</div><div class="val" style="color:var(--accent3)">Spiralen!</div></div>
+          <div class="stat-box"><div class="lbl">Im echten Leben</div><div class="lbl" style="color:var(--dim);margin-top:3px">🌻 🌲 🐚</div></div>
         </div>
-
-        <h2>Wo Spiralen in der Natur erscheinen:</h2>
-        <div class="cards-grid">
-            <div class="card">
-                <h3>Sonnenblumen 🌻</h3>
-                <p>Sonnenblumenkerne sind in Spiralmustern angeordnet, die Fibonacci-Zahlen folgen.
-                Die meisten Sonnenblumen haben Spiralen in beide Richtungen: normalerweise 21 Spiralen auf eine Seite und 34 auf die andere.</p>
-            </div>
-            <div class="card">
-                <h3>Tannenzapfen 🌲</h3>
-                <p>Schaue dir einen Tannenzapfen genau an. Du wirst Spiralen auf- und abwärts sehen.
-                Zähle sie: normalerweise 8 Spiralen auf eine Seite und 13 auf die andere. Beide Fibonacci-Zahlen!</p>
-            </div>
-            <div class="card">
-                <h3>Nautilusmuscheln 🐚</h3>
-                <p>Die gekammerte Nautilusmuschel bildet eine perfekte goldene Spirale, während sie wächst.
-                Jede Kammer ist größer als die vorherige, folgt dem goldenen Verhältnis.</p>
-            </div>
-            <div class="card">
-                <h3>Hurrikane 🌪️</h3>
-                <p>Vom Weltall aus gesehen bilden Hurrikane und Zyklone Spiralmuster, ähnlich der goldenen Spirale.
-                Natur's mächtigste Stürme folgen mathematischen Mustern!</p>
-            </div>
-            <div class="card">
-                <h3>Galaxien 🌌</h3>
-                <p>Viele Spiralgalaxien, einschließlich unserer eigenen Milchstraße, bilden goldene Spiralen, während sie sich durch den Raum drehen.</p>
-            </div>
-            <div class="card">
-                <h3>DNA und Pflanzen 🧬</h3>
-                <p>Selbst auf der mikroskopischen Ebene folgen DNA-Spiralen und Pflanzenwachstumsmuster Fibonacci-Zahlen und dem goldenen Verhältnis.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 4: Fibonacci in Nature -->
-    <section id="nature">
-        <h1>Fibonacci in der Natur: Die interaktive Sonnenblume</h1>
-        <p>
-            Die Natur ist mathematisch! Lasse uns eine Sonnenblumenmitte erstellen, indem wir Samen im
-            <strong>goldenen Winkel (137,5°)</strong> platzieren. Dieser spezielle Winkel erzeugt automatisch Spiralmuster,
-            die Fibonacci-Zahlen folgen.
-        </p>
-
-        <div class="interactive-box">
-            <h2>Pflanzen Samen in deine Sonnenblume</h2>
-            <div class="input-group">
-                <label for="seedSlider">Anzahl der Samen: <strong id="seedCount">100</strong></label>
-                <input type="range" id="seedSlider" min="10" max="1000" step="10" value="100"
-                       oninput="updateSunflower(this.value)">
-            </div>
-            <canvas id="sunflowerCanvas" width="600" height="600"></canvas>
-
-            <div class="stat-box">
-                <p id="spiralInfo">Platziere Samen, um zu sehen, wie sich Fibonacci-Spiralen natürlich bilden!</p>
-            </div>
-        </div>
-
-        <h2>Warum der goldene Winkel funktioniert</h2>
-        <div class="stat-box">
-            <p>
-                <strong>Der goldene Winkel beträgt 137,5°</strong> (oder 360° ÷ 1,618...).
-                Wenn Samen in diesem Winkel wachsen, verteilen sie sich von selbst perfekt.
-                Keine Überfüllung, kein verschwendeter Raum — einfach effiziente Packung!
-            </p>
-            <p>
-                Dies ist der Grund, warum:
-                <br>• Sonnenblumenkerne sich in Fibonacci-Spiralen anordnen (21 und 34 Spiralen)
-                <br>• Tannenzapfen-Schuppen 5, 8 oder 13 Spiralen bilden
-                <br>• Blütenblattanzahl oft Fibonacci-Zahlen entspricht
-            </p>
-            <p>
-                Die Natur entdeckte Mathematik Millionen von Jahren vor den Menschen!
-            </p>
-        </div>
-    </section>
-
-    <!-- Section 5: Fun Facts -->
-    <section id="facts">
-        <h1>Lustige Fakten über Fibonacci und das goldene Verhältnis</h1>
-
-        <div class="cards-grid">
-            <div class="card">
-                <h3>📚 Er hat es nicht zuerst entdeckt</h3>
-                <p>Indische Mathematiker kannten diese Sequenz Jahrhunderte vor Fibonacci!
-                Aber Fibonacci führte sie in Europa ein, daher bekam sie seinen Namen.</p>
-            </div>
-
-            <div class="card">
-                <h3>🔢 Auf Wiedersehen, römische Ziffern!</h3>
-                <p>Fibonacci überzeugte Europa, 0–9 statt römischen Ziffern zu verwenden.
-                Stelle dir vor, moderne Mathematik mit nur I, V, X, L, C, D, M zu machen!</p>
-            </div>
-
-            <div class="card">
-                <h3>🏛️ Das goldene Verhältnis in der Kunst</h3>
-                <p>Viele berühmte Kunstwerke verwenden das goldene Verhältnis (1,618...).
-                Das Parthenon, die Mona Lisa und sogar moderne Logos verwenden es.</p>
-            </div>
-
-            <div class="card">
-                <h3>🎹 Musik und Klaviertasten</h3>
-                <p>Eine Klavier-Oktave hat 13 Tasten: 8 weiße Tasten und 5 schwarze Tasten.
-                Alle Fibonacci-Zahlen! Dies schafft harmonische musikalische Intervalle.</p>
-            </div>
-
-            <div class="card">
-                <h3>💪 Die Sequenz wächst SCHNELL</h3>
-                <p>Die Zahlen wachsen exponentiell. Die 50. Fibonacci-Zahl ist über 12 Milliarden!
-                Die 100. Zahl hat 21 Ziffern!</p>
-            </div>
-
-            <div class="card">
-                <h3>📅 Fibonacci-Tag</h3>
-                <p>Der 23. November (23.11) ist Fibonacci-Tag! Warum? Weil 1, 1, 2, 3
-                der Anfang der Sequenz ist. Feiere ihn!</p>
-            </div>
-
-            <div class="card">
-                <h3>🌻 Sonnenblumenkern-Anzahl</h3>
-                <p>Die meisten Sonnenblumenköpfe haben entweder 34 und 55 Spiralen, oder 55 und 89 Spiralen.
-                Alle aufeinanderfolgenden Fibonacci-Zahlen!</p>
-            </div>
-
-            <div class="card">
-                <h3>🌲 Tannenzapfen-Spiralen</h3>
-                <p>Tannenzapfen zeigen Spiralen von 8 und 13 (oder manchmal 5 und 8).
-                Jeder Zapfen folgt der Fibonacci-Sequenz!</p>
-            </div>
-
-            <div class="card">
-                <h3>💰 Veränderte das Finanzwesen für immer</h3>
-                <p>Fibonaccis Zahlensystem revolutionierte die Buchführung und den Handel.
-                Modernes Banking und Geschäfte würden ohne seine Ideen nicht existieren!</p>
-            </div>
-
-            <div class="card">
-                <h3>🔬 Forschung hört nie auf</h3>
-                <p>Wissenschaftler entdecken immer noch Fibonacci-Muster überall: in DNA, in Galaxien,
-                in wie Proteine sich falten, in wie Städte wachsen. Es ist endlos faszinierend!</p>
-            </div>
-
-            <div class="card">
-                <h3>📊 Ein ganzes Journal</h3>
-                <p>Es gibt ein akademisches Journal namens „The Fibonacci Quarterly", das ganz
-                der Forschung über Fibonacci-Zahlen gewidmet ist. Das zeigt, wie wichtig sie sind!</p>
-            </div>
-
-            <div class="card">
-                <h3>🧮 Informatik und Algorithmen</h3>
-                <p>Informatiker verwenden Fibonacci-Sequenzen, um Algorithmen zu testen und
-                Suchmethoden zu optimieren. Es ist ein grundlegendes Konzept in der Informatik.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 6: Quiz -->
-    <section id="quiz">
-        <h1>Fibonacci-Quiz-Herausforderung</h1>
-        <p>Teste dein Wissen! Beantworte Fragen über Fibonacci, das goldene Verhältnis und was du gelernt hast.</p>
-
-        <div id="quizContainer">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-            </div>
-            <div id="quizContent"></div>
-        </div>
-    </section>
-
-    <script>
-        // ===== NAVIGATION =====
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-                const sectionId = btn.dataset.section;
-                document.getElementById(sectionId).classList.add('active');
-                btn.classList.add('active');
-
-                if (sectionId === 'quiz' && !window.quizStarted) {
-                    initializeQuiz();
-                    window.quizStarted = true;
-                }
-            });
-        });
-
-        // ===== LANGUAGE TOGGLE =====
-        function changeLanguage(lang) {
-            if (lang === 'en') {
-                window.location.href = '../fibonacci-explorer.html';
-            } else {
-                // Stay on current page (German)
-                });
-                event.target.classList.add('active');
-            }
-        }
-
-        // ===== SEQUENCE BUILDER =====
-        let fib = [0, 1];
-        let a = 0, b = 1;
-
-        function addNextFibonacci() {
-            const c = a + b;
-            fib.push(c);
-            a = b;
-            b = c;
-            renderSequence();
-            updateRatio();
-        }
-
-        function speedRun() {
-            const targetLength = 20;
-            while (fib.length < targetLength) {
-                addNextFibonacci();
-            }
-        }
-
-        function resetSequence() {
-            fib = [0, 1];
-            a = 0;
-            b = 1;
-            renderSequence();
-            updateRatio();
-        }
-
-        function renderSequence() {
-            const display = document.getElementById('sequenceDisplay');
-            display.innerHTML = fib.map(n => `<div class="number-tile">${n}</div>`).join('');
-            document.getElementById('sequenceLength').textContent = fib.length;
-            document.getElementById('lastNumber').textContent = fib[fib.length - 1];
-        }
-
-        function updateRatio() {
-            if (fib.length >= 2) {
-                const last = fib[fib.length - 1];
-                const prev = fib[fib.length - 2];
-                const ratio = (last / prev).toFixed(6);
-                const phi = 1.618034;
-                document.getElementById('ratioBox').innerHTML = `
-                    <p><strong>Verhältnis der letzten zwei Zahlen:</strong> ${last} ÷ ${prev} = ${ratio}</p>
-                    <p><strong>Goldenes Verhältnis (φ):</strong> 1,618034...</p>
-                    <p><strong>Näher kommen?</strong> ${Math.abs(ratio - phi) < 0.01 ? '✓ Ja! Sehr nah!' : '✓ Füge mehr hinzu!'}</p>
-                `;
-            }
-        }
-
-        // ===== GOLDEN SPIRAL =====
-        function drawGoldenSpiral() {
-            const canvas = document.getElementById('spiralCanvas');
-            const ctx = canvas.getContext('2d');
-            const level = parseInt(document.getElementById('spiralSlider').value);
-
-            ctx.fillStyle = '#0a0e1a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const fibs = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
-            const scale = 2;
-            let x = 50, y = 50;
-
-            // Draw Fibonacci squares
-            ctx.fillStyle = 'rgba(45, 80, 22, 0.6)';
-            ctx.strokeStyle = '#2d5016';
-            ctx.lineWidth = 2;
-
-            for (let i = 0; i < Math.min(level, fibs.length); i++) {
-                const size = fibs[i] * scale;
-                if (i === 0) {
-                    ctx.fillRect(x, y, size, size);
-                    ctx.strokeRect(x, y, size, size);
-                } else if (i === 1) {
-                    ctx.fillRect(x + fibs[0] * scale, y, size, size);
-                    ctx.strokeRect(x + fibs[0] * scale, y, size, size);
-                } else {
-                    x += fibs[i - 1] * scale;
-                    ctx.fillRect(x, y, size, size);
-                    ctx.strokeRect(x, y, size, size);
-                }
-            }
-
-            // Draw golden spiral
-            ctx.strokeStyle = '#DAA520';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-
-            const cx = 50 + fibs[0] * scale;
-            const cy = 50 + fibs[0] * scale;
-            let angle = 0;
-            let radius = fibs[0] * scale / 2;
-
-            for (let i = 0; i < Math.min(level * 4, 100); i++) {
-                const x = cx + radius * Math.cos(angle);
-                const y = cy + radius * Math.sin(angle);
-
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-
-                angle += 0.1;
-                radius += 0.5;
-            }
-
-            ctx.stroke();
-
-            // Add labels
-            ctx.fillStyle = '#90EE90';
-            ctx.font = 'bold 12px Arial';
-            for (let i = 0; i < Math.min(level, 3); i++) {
-                ctx.fillText('F' + i, 55 + i * 30, 45);
-            }
-        }
-
-        function updateSpiral(value) {
-            document.getElementById('spiralLevel').textContent = value;
-            drawGoldenSpiral();
-        }
-
-        // ===== SUNFLOWER =====
-        function drawSunflower() {
-            const canvas = document.getElementById('sunflowerCanvas');
-            const ctx = canvas.getContext('2d');
-            const seedCount = parseInt(document.getElementById('seedSlider').value);
-
-            ctx.fillStyle = '#0a0e1a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const goldenAngle = 137.5 * Math.PI / 180; // Golden angle in radians
-            const maxRadius = 200;
-
-            // Draw seeds
-            let spiralCount1 = 0, spiralCount2 = 0;
-
-            for (let i = 0; i < seedCount; i++) {
-                const angle = i * goldenAngle;
-                const radius = Math.sqrt(i) * (maxRadius / Math.sqrt(seedCount));
-
-                const x = centerX + radius * Math.cos(angle);
-                const y = centerY + radius * Math.sin(angle);
-
-                // Color based on spiral position
-                const hue = (i / seedCount * 60 + 30) % 360;
-                ctx.fillStyle = `hsl(${hue}, 80%, 50%)`;
-
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Count spirals (simplified)
-                if (i === seedCount * 0.34) spiralCount1++;
-                if (i === seedCount * 0.55) spiralCount2++;
-            }
-
-            // Count major spirals
-            const estimatedFibSpirals = countFibonacciSpirals(seedCount);
-            document.getElementById('spiralInfo').innerHTML =
-                `<p><strong>Samen platziert:</strong> ${seedCount}</p>
-                 <p><strong>Spiralmuster:</strong> Natürliche Fibonacci-Anordnung!</p>
-                 <p><strong>Beachte:</strong> Der goldene Winkel (137,5°) erzeugt schöne, effiziente Spiralen.
-                 Natur's Lösung zum Raum-Packen!</p>`;
-        }
-
-        function countFibonacciSpirals(count) {
-            const fibs = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144];
-            for (let i = fibs.length - 1; i >= 0; i--) {
-                if (fibs[i] <= count) {
-                    return fibs[i];
-                }
-            }
-            return 21;
-        }
-
-        function updateSunflower(value) {
-            document.getElementById('seedCount').textContent = value;
-            drawSunflower();
-        }
-
-        // ===== QUIZ =====
-        const quizQuestions = [
-            {
-                question: "Was bedeutet ‚Fibonacci'?",
-                options: ["Zahlen", "Sohn von Bonacci", "Goldenes Verhältnis", "Spiralmuster"],
-                correct: 1,
-                explanation: "Fibonacci bedeutet ‚Sohn von Bonacci'. Sein echter Name war Leonardo Bonacci."
-            },
-            {
-                question: "In welchem Jahr veröffentlichte Fibonacci ‚Liber Abaci'?",
-                options: ["1170", "1200", "1202", "1250"],
-                correct: 2,
-                explanation: "Fibonacci veröffentlichte das ‚Buch der Berechnung' (‚Liber Abaci') 1202."
-            },
-            {
-                question: "Was ist die nächste Zahl in dieser Sequenz: 3, 5, 8, 13, ___?",
-                options: ["15", "20", "21", "25"],
-                correct: 2,
-                explanation: "In der Fibonacci-Sequenz ist jede Zahl die Summe der beiden vorherigen: 8 + 13 = 21."
-            },
-            {
-                question: "Was ist das goldene Verhältnis ungefähr gleich?",
-                options: ["1,414", "1,618", "2,718", "3,14"],
-                correct: 1,
-                explanation: "Das goldene Verhältnis (phi, φ) ist ungefähr 1,618. Es erscheint überall in der Natur!"
-            },
-            {
-                question: "Welche ist KEINE Fibonacci-Zahl?",
-                options: ["8", "13", "17", "21"],
-                correct: 2,
-                explanation: "17 ist keine Fibonacci-Zahl. Die Sequenz geht: ...13, 21..."
-            },
-            {
-                question: "Warum befürwortete Fibonacci die Verwendung von Zahlen 0–9?",
-                options: ["Sie waren einfacher zu verwenden", "Sie waren hübscher", "Alle anderen benutzten sie", "Er erfand sie"],
-                correct: 0,
-                explanation: "Das indisch-arabische Zahlensystem (0–9) machte Mathematik viel einfacher als römische Ziffern!"
-            },
-            {
-                question: "Wie viele Spiralen bilden die meisten Sonnenblumenkerne?",
-                options: ["5 und 8", "8 und 13", "21 und 34", "13 und 21"],
-                correct: 2,
-                explanation: "Die meisten Sonnenblumenköpfe haben 21 und 34 Spiralen, beide Fibonacci-Zahlen!"
-            },
-            {
-                question: "Was ist der goldene Winkel, der in der Natur für effiziente Abstände verwendet wird?",
-                options: ["90°", "120°", "137,5°", "180°"],
-                correct: 2,
-                explanation: "Der goldene Winkel beträgt 137,5°, was perfekte Fibonacci-Spiralen in Pflanzen erzeugt."
-            },
-            {
-                question: "Welche Form erzeugt die Nautilusmuschel beim Wachsen?",
-                options: ["Quadratische Spirale", "Goldene Spirale", "Kreis", "Quadrat"],
-                correct: 1,
-                explanation: "Die Nautilusmuschel wächst in einer perfekten goldenen Spirale, die dem goldenen Verhältnis folgt."
-            },
-            {
-                question: "Wie viele weiße Tasten hat eine Klavier-Oktave?",
-                options: ["5", "8", "10", "13"],
-                correct: 1,
-                explanation: "Eine Klavier-Oktave hat 8 weiße Tasten und 5 schwarze Tasten—beide Fibonacci-Zahlen!"
-            }
-        ];
-
-        function initializeQuiz() {
-            const shuffled = [...quizQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
-            window.quizState = {
-                questions: shuffled,
-                currentQ: 0,
-                score: 0,
-                answered: []
-            };
-            renderQuizQuestion();
-        }
-
-        function renderQuizQuestion() {
-            const state = window.quizState;
-            const progress = ((state.currentQ + 1) / state.questions.length) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-
-            if (state.currentQ >= state.questions.length) {
-                showQuizResult();
-                return;
-            }
-
-            const q = state.questions[state.currentQ];
-            let html = `
-                <div class="quiz-container">
-                    <p style="color: #DAA520; margin-bottom: 0.5rem;">Frage ${state.currentQ + 1} von ${state.questions.length}</p>
-                    <div class="question">
-                        <p>${q.question}</p>
-                        <div class="options">
-            `;
-
-            q.options.forEach((option, idx) => {
-                html += `<button class="option-btn" onclick="selectAnswer(${idx})">${option}</button>`;
-            });
-
-            html += `</div></div></div>`;
-            document.getElementById('quizContent').innerHTML = html;
-        }
-
-        function selectAnswer(idx) {
-            const state = window.quizState;
-            const q = state.questions[state.currentQ];
-            const isCorrect = idx === q.correct;
-
-            // Update buttons
-            document.querySelectorAll('.option-btn').forEach((btn, i) => {
-                btn.disabled = true;
-                if (i === q.correct) {
-                    btn.classList.add('correct');
-                } else if (i === idx && !isCorrect) {
-                    btn.classList.add('incorrect');
-                }
-            });
-
-            // Show feedback
-            const feedbackClass = isCorrect ? 'correct' : 'incorrect';
-            const feedbackText = isCorrect ? '✓ Richtig!' : '✗ Nicht ganz richtig';
-
-            const feedback = document.createElement('div');
-            feedback.className = `feedback ${feedbackClass}`;
-            feedback.innerHTML = `<strong>${feedbackText}</strong><br>${q.explanation}`;
-            document.querySelector('.question').appendChild(feedback);
-
-            if (isCorrect) state.score++;
-
-            setTimeout(() => {
-                state.currentQ++;
-                renderQuizQuestion();
-            }, 2500);
-        }
-
-        function showQuizResult() {
-            const state = window.quizState;
-            const percentage = Math.round((state.score / state.questions.length) * 100);
-            let message = '';
-
-            if (percentage === 100) {
-                message = "🏆 Perfekte Punktzahl! Du bist ein Fibonacci-Meister!";
-            } else if (percentage >= 80) {
-                message = "🌟 Ausgezeichnet! Du kennst Fibonacci wirklich gut!";
-            } else if (percentage >= 60) {
-                message = "✓ Gute Arbeit! Du hast viel über Fibonacci gelernt!";
-            } else {
-                message = "Weiter lernen! Fibonacci ist faszinierend!";
-            }
-
-            document.getElementById('quizContent').innerHTML = `
-                <div class="quiz-result">
-                    <h3>${message}</h3>
-                    <div class="score">${state.score}/${state.questions.length}</div>
-                    <p style="font-size: 1.2rem;">${percentage}%</p>
-                    <button onclick="resetQuiz()" style="margin-top: 1rem;">Erneut versuchen</button>
-                </div>
-            `;
-        }
-
-        function resetQuiz() {
-            window.quizStarted = false;
-            document.getElementById('quizContent').innerHTML = '';
-            initializeQuiz();
-        }
-
-        // ===== INITIAL DRAWS =====
-        window.addEventListener('load', () => {
-            drawGoldenSpiral();
-            drawSunflower();
-        });
-    </script>
+        <div class="explain-box">Der Goldene Winkel erzeugt Fibonacci-Spiralen automatisch. Die Natur nutzt dieselbe Mathematik wie du! Sonnenblumensamen, Tannenzapfen-Schuppen und Nautilus-Muscheln folgen alle diesem Muster.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="sec-facts">
+  <div class="card">
+    <h2>Wissenswertes über Fibonacci und den Goldenen Schnitt</h2>
+    <p class="sub">Erstaunliche Entdeckungen über die Sequenz, die überall erscheint.</p>
+    <div class="facts-grid">
+      <div class="fact-card"><div class="fact-icon">📚</div><div class="fact-title">Er entdeckte es nicht zuerst</div><div class="fact-text">Indische Mathematiker kannten diese Sequenz Jahrhunderte vor Fibonacci! Aber er führte sie in Europa ein, daher trägt sie seinen Namen.</div></div>
+      <div class="fact-card"><div class="fact-icon">🔢</div><div class="fact-title">Ade, römische Ziffern!</div><div class="fact-text">Fibonacci überzeugte Europa, 0–9 statt römischer Ziffern zu nutzen. Stell dir vor, XIV × XXIII mit nur Buchstaben zu multiplizieren!</div></div>
+      <div class="fact-card"><div class="fact-icon">🏛️</div><div class="fact-title">Der Goldene Schnitt in der Kunst</div><div class="fact-text">Viele berühmte Kunstwerke nutzen den Goldenen Schnitt. Das Parthenon, die Mona Lisa und moderne Logos nutzen alle φ für Schönheit und Balance.</div></div>
+      <div class="fact-card"><div class="fact-icon">🎹</div><div class="fact-title">Musik & Klaviertasten</div><div class="fact-text">Eine Oktave hat 13 Tasten: 8 weiß und 5 schwarz. Alles Fibonacci-Zahlen! Dies erzeugt harmonische musikalische Intervalle.</div></div>
+      <div class="fact-card"><div class="fact-icon">💪</div><div class="fact-title">Die Sequenz wächst SCHNELL</div><div class="fact-text">Die Zahlen wachsen exponentiell. Die 50. Fibonacci-Zahl ist über 12 Milliarden! Die 100. Zahl hat 21 Ziffern!</div></div>
+      <div class="fact-card"><div class="fact-icon">📅</div><div class="fact-title">Fibonacci-Tag</div><div class="fact-text">23. November (11/23) ist Fibonacci-Tag! Warum? Weil 1, 1, 2, 3 der Anfang der Sequenz ist. Feiere ihn!</div></div>
+      <div class="fact-card"><div class="fact-icon">🌻</div><div class="fact-title">Sonnenblumen-Spiralen</div><div class="fact-text">Die meisten Sonnenblumenkerne haben 34 und 55 Spiralen, oder 55 und 89 Spiralen. Alle aufeinanderfolgende Fibonacci-Zahlen!</div></div>
+      <div class="fact-card"><div class="fact-icon">🌲</div><div class="fact-title">Tannenzapfen-Spiralen</div><div class="fact-text">Tannenzapfen zeigen Spiralen von 8 und 13 (oder manchmal 5 und 8). Jeder Zapfen folgt der Fibonacci-Sequenz!</div></div>
+      <div class="fact-card"><div class="fact-icon">💰</div><div class="fact-title">Veränderte Finanzen für immer</div><div class="fact-text">Fibonaccis Zahlensystem revolutionierte Buchführung und Handel. Modernes Banking und Geschäfte würden ohne seine Ideen nicht existieren!</div></div>
+      <div class="fact-card"><div class="fact-icon">🔬</div><div class="fact-title">Forschung hört nie auf</div><div class="fact-text">Wissenschaftler entdecken überall Fibonacci-Muster: in DNA, Galaxien, Proteinveränderung, Stadtwachstum. Es ist endlos faszinierend!</div></div>
+      <div class="fact-card"><div class="fact-icon">📊</div><div class="fact-title">Eine ganze Zeitschrift</div><div class="fact-text">Es gibt eine akademische Zeitschrift namens "The Fibonacci Quarterly", die ganz der Fibonacci-Forschung gewidmet ist. Das zeigt, wie wichtig sie sind!</div></div>
+      <div class="fact-card"><div class="fact-icon">🧮</div><div class="fact-title">Computing & Algorithmen</div><div class="fact-text">Informatiker nutzen Fibonacci-Sequenzen zum Testen von Algorithmen und zum Optimieren von Suchmethoden. Es ist fundamental für Informatik.</div></div>
+    </div>
+  </div>
+</section>
+<section id="sec-quiz">
+  <div class="card" id="quizCard">
+    <div class="quiz-header">
+      <h2>Fibonacci-Quiz!</h2>
+      <div class="score-badge">Punktzahl: <span id="quizScore">0</span> / <span id="quizTotal">10</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
+    <div id="quizBody">
+      <div class="question-text" id="questionText"></div>
+      <div class="answers" id="answersDiv"></div>
+      <div class="feedback" id="feedback"></div>
+      <div style="text-align:center;"><button class="next-btn" id="nextBtn" onclick="nextQ()">Nächste Frage →</button></div>
+    </div>
+    <div class="quiz-complete" id="quizComplete" style="display:none">
+      <h2>Quiz abgeschlossen!</h2>
+      <div class="final-score" id="finalScore"></div>
+      <p id="finalMsg" style="font-size:17px;color:var(--dim)"></p>
+      <button class="restart-btn" onclick="startQuiz()">Nochmal versuchen</button>
+    </div>
+  </div>
+</section>
+<div style="text-align:center;padding:28px 20px 50px;color:var(--dim);font-size:12px;">
+  Portrait via Wikimedia Commons (public domain)<br>
+  Gebaut mit Mathematik und Neugier.
+</div>
+<script>
+function show(name,btn){document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));document.getElementById('sec-'+name).classList.add('visible');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(name==='quiz'&&!quizQs)startQuiz()}
+let seqArr=[0,1],seqA=0,seqB=1;
+function addNextNum(){const c=seqA+seqB;seqArr.push(c);seqA=seqB;seqB=c;renderSeq();updateSeqRatio()}
+function speedRun(){while(seqArr.length<20)addNextNum()}
+function resetSeq(){seqArr=[0,1];seqA=0;seqB=1;renderSeq();updateSeqRatio()}
+function renderSeq(){const d=document.getElementById('sequenceDisplay');d.innerHTML=seqArr.map(n=>`<div style="background:var(--accent);color:#000;padding:6px 12px;border-radius:6px;font-weight:600;font-size:14px">${n}</div>`).join('');document.getElementById('seqLen').textContent=seqArr.length;document.getElementById('seqLast').textContent=seqArr[seqArr.length-1]}
+function updateSeqRatio(){if(seqArr.length>=2){const last=seqArr[seqArr.length-1],prev=seqArr[seqArr.length-2];const ratio=(last/prev).toFixed(3);document.getElementById('seqRatio').textContent=ratio;const diff=Math.abs(ratio-1.618).toFixed(3);document.getElementById('seqPhi').textContent=diff}}
+function drawGolden(){const canvas=document.getElementById('goldenCanvas'),ctx=canvas.getContext('2d');const level=parseInt(document.getElementById('goldenSlider').value);ctx.fillStyle='rgba(43,58,43,0.8)';ctx.fillRect(0,0,canvas.width,canvas.height);const fibs=[1,1,2,3,5,8,13,21,34,55];const scale=3;let x=10,y=10;ctx.strokeStyle='rgba(245,216,99,.6)';ctx.lineWidth=2;for(let i=0;i<Math.min(level,fibs.length);i++){const sz=fibs[i]*scale;ctx.strokeRect(x,y,sz,sz);ctx.fillStyle=`rgba(245,216,99,${0.1+i*0.05})`;ctx.fillRect(x,y,sz,sz);if(i===0)x+=sz;else if(i===1)y+=sz;else{x+=sz;y=10}}ctx.strokeStyle='#DAA520';ctx.lineWidth=2.5;ctx.beginPath();let cx=fibs[0]*scale+10,cy=fibs[0]*scale+10,angle=0,r=fibs[0]*scale/2;for(let i=0;i<Math.min(level*6,120);i++){const px=cx+r*Math.cos(angle),py=cy+r*Math.sin(angle);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);angle+=0.08;r+=0.3}ctx.stroke()}
+function updateGolden(v){document.getElementById('goldenLevel').textContent=v;drawGolden()}
+function drawSunflower(){const canvas=document.getElementById('sunflowerCanvas'),ctx=canvas.getContext('2d');const count=parseInt(document.getElementById('seedSlider').value);ctx.fillStyle='rgba(43,58,43,0.8)';ctx.fillRect(0,0,canvas.width,canvas.height);const cx=canvas.width/2,cy=canvas.height/2,goldenAngle=137.5*Math.PI/180,maxR=140;for(let i=0;i<count;i++){const angle=i*goldenAngle,r=Math.sqrt(i)*(maxR/Math.sqrt(count));const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle);const hue=(i/count*240+30)%360;ctx.fillStyle=`hsl(${hue},70%,50%)`;ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fill()}}
+function updateSunflower(v){document.getElementById('seedCount').textContent=v;drawSunflower()}
+const quizQuestions=[{q:"Was bedeutet 'Fibonacci'?",o:["Zahlen","Sohn des Bonacci","Goldener Schnitt","Spiral-Muster"],c:1,e:"Fibonacci bedeutet 'Sohn des Bonacci.' Sein echte Name war Leonardo Bonacci."},{q:"In welchem Jahr veröffentlichte Fibonacci 'Liber Abaci'?",o:["1170","1200","1202","1250"],c:2,e:"Fibonacci veröffentlichte 'Liber Abaci' (Buch der Berechnung) 1202."},{q:"Was ist die nächste Zahl: 3, 5, 8, 13, ___?",o:["15","20","21","25"],c:2,e:"In der Fibonacci-Sequenz ist jede Zahl die Summe der beiden vorherigen: 8 + 13 = 21."},{q:"Was ist der Goldene Schnitt ungefähr?",o:["1,414","1,618","2,718","3,14"],c:1,e:"Der Goldene Schnitt (Phi, φ) ist ungefähr 1,618. Er erscheint überall in der Natur!"},{q:"Welche ist KEINE Fibonacci-Zahl?",o:["8","13","17","21"],c:2,e:"17 ist keine Fibonacci-Zahl. Die Sequenz geht: ...13, 21..."},{q:"Warum förderte Fibonacci Zahlen 0–9?",o:["Leichter zu verwenden","Schöner","Alle verwendeten sie","Er erfand sie"],c:0,e:"Das Hindu-Arabische Zahlensystem (0–9) machte Mathematik viel einfacher als römische Ziffern!"},{q:"Wie viele Spiralen bilden Sonnenblumensamen?",o:["5 und 8","8 und 13","21 und 34","13 und 21"],c:2,e:"Die meisten Sonnenblumenköpfe haben 21 und 34 Spiralen, beide Fibonacci-Zahlen!"},{q:"Was ist der Goldene Winkel in der Natur?",o:["90°","120°","137,5°","180°"],c:2,e:"Der Goldene Winkel ist 137,5°, der perfekte Fibonacci-Spiralen in Pflanzen erzeugt."},{q:"Welche Form erzeugt die Nautilus-Muschel?",o:["Quadrat-Spirale","Goldene Spirale","Kreis","Quadrat"],c:1,e:"Die Nautilus-Muschel wächst in einer perfekten Goldenen Spirale nach dem Goldenen Schnitt."},{q:"Wie viele weiße Tasten hat eine Klaviertoktav?",o:["5","8","10","13"],c:1,e:"Eine Klaviertoktav hat 8 weiße Tasten und 5 schwarze Tasten—beide Fibonacci-Zahlen!"}];let quizQs=null;function startQuiz(){quizQs=[...quizQuestions].sort(()=>Math.random()-0.5).slice(0,10);window.quizIdx=0;window.quizScore=0;document.getElementById('quizComplete').style.display='none';document.getElementById('quizBody').style.display='block';renderQz()}function renderQz(){const prog=((window.quizIdx+1)/quizQs.length)*100;document.getElementById('quizProgress').style.width=prog+'%';if(window.quizIdx>=quizQs.length){const pct=Math.round((window.quizScore/quizQs.length)*100);const msg=pct===100?"🏆 Perfekt! Du bist Fibonacci-Meister!":pct>=80?"🌟 Ausgezeichnet!":pct>=60?"✓ Gut gemacht!":"Weitermachen!";document.getElementById('quizComplete').style.display='block';document.getElementById('quizBody').style.display='none';document.getElementById('finalScore').textContent=window.quizScore+'/'+quizQs.length;document.getElementById('finalMsg').textContent=msg;return}const qu=quizQs[window.quizIdx];document.getElementById('questionText').textContent=`F${window.quizIdx+1}: ${qu.q}`;document.getElementById('quizScore').textContent=window.quizScore;document.getElementById('quizTotal').textContent=quizQs.length;let ans='';qu.o.forEach((o,i)=>{ans+=`<button class="answer-btn" onclick="answerQz(${i})">${o}</button>`});document.getElementById('answersDiv').innerHTML=ans;document.getElementById('feedback').classList.remove('show','correct-fb','wrong-fb');document.getElementById('nextBtn').classList.remove('show')}function answerQz(i){const qu=quizQs[window.quizIdx];const correct=i===qu.c;document.querySelectorAll('.answer-btn').forEach((b,j)=>{b.disabled=true;if(j===qu.c)b.classList.add('correct');else if(j===i&&!correct)b.classList.add('wrong')});const fb=document.getElementById('feedback');fb.classList.add('show',correct?'correct-fb':'wrong-fb');fb.innerHTML=`<strong>${correct?'✓ Richtig!':'✗ Nicht ganz richtig'}</strong><br>${qu.e}`;if(correct)window.quizScore++;document.getElementById('nextBtn').classList.add('show')}function nextQ(){window.quizIdx++;renderQz()}
+window.addEventListener('load',()=>{renderSeq();drawGolden();drawSunflower()});
+</script>
 </body>
 </html>
