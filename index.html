@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Math Explorers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;
+  --bg-light:#334433;
+  --card:#314231;
+  --card-hover:#3a5139;
+  --chalk:#e8e4d9;
+  --chalk-dim:#9ca898;
+  --yellow:#f5d863;
+  --orange:#e8985a;
+  --pink:#e87bad;
+  --blue:#7bb8e0;
+  --red:#d96b6b;
+  --green:#8fd4a4;
+  --white:#f2efe6;
+  --purple:#b89de0;
+  --cyan:#6bccc4;
+}
+body{
+  background:var(--bg);
+  color:var(--chalk);
+  font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;
+  min-height:100vh;
+  line-height:1.6;
+  position:relative;
+}
+/* Chalkboard texture overlay */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px),
+    repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(0,0,0,.02) 3px,rgba(0,0,0,.02) 6px);
+}
+/* Chalk dust smudges */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 400px 200px at 15% 20%,rgba(255,255,255,.02),transparent),
+    radial-gradient(ellipse 300px 150px at 75% 60%,rgba(255,255,255,.015),transparent),
+    radial-gradient(ellipse 350px 180px at 40% 85%,rgba(255,255,255,.018),transparent);
+}
+body>*:not(canvas){position:relative;z-index:1}
+
+/* Chalk tray */
+.tray{
+  position:fixed;bottom:0;left:0;right:0;height:18px;z-index:2;
+  background:linear-gradient(to bottom,#5a4a3a,#4a3a2a);
+  border-top:2px solid #6b5a48;
+  box-shadow:0 -4px 12px rgba(0,0,0,.3);
+}
+
+/* Hero */
+.hero{text-align:center;padding:55px 24px 35px;position:relative}
+.hero h1{
+  font-family:'Caveat',cursive;
+  font-size:clamp(42px,8vw,76px);
+  font-weight:700;
+  color:var(--white);
+  margin-bottom:6px;
+  text-shadow:2px 2px 0 rgba(0,0,0,.2),0 0 20px rgba(255,255,255,.06);
+  letter-spacing:2px;
+}
+/* Underline chalk stroke */
+.hero h1::after{
+  content:'';display:block;width:280px;max-width:80%;height:4px;margin:8px auto 0;
+  background:var(--yellow);opacity:.6;
+  border-radius:2px;
+  transform:rotate(-0.5deg);
+  box-shadow:0 0 8px rgba(245,216,99,.15);
+}
+.hero .tagline{font-size:clamp(16px,3vw,21px);color:var(--chalk-dim);max-width:580px;margin:14px auto 10px}
+.hero .count{font-size:16px;color:var(--green);font-weight:600}
+
+/* Grid */
+.grid-wrapper{max-width:1100px;margin:0 auto;padding:0 24px 80px}
+.section-label{
+  font-family:'Caveat',cursive;
+  font-size:22px;letter-spacing:2px;color:var(--chalk-dim);
+  margin:44px 0 18px;padding-left:4px;font-weight:500;
+  border-bottom:2px dashed rgba(255,255,255,.08);padding-bottom:8px;
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+
+/* Cards */
+.card{
+  background:var(--card);
+  border-radius:6px;
+  padding:24px 22px;
+  border:2px solid rgba(255,255,255,.06);
+  cursor:pointer;
+  transition:all .25s ease;
+  text-decoration:none;
+  color:var(--chalk);
+  display:flex;gap:18px;align-items:flex-start;
+  position:relative;overflow:hidden;
+}
+.card:hover{
+  background:var(--card-hover);
+  border-color:rgba(255,255,255,.15);
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .25s;
+}
+.card:hover::before{opacity:1}
+
+.icon{
+  width:58px;height:58px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;flex-shrink:0;
+  border:2px dashed rgba(255,255,255,.15);
+  background:rgba(0,0,0,.12);
+}
+.card-body{flex:1;min-width:0}
+.card-body h3{font-family:'Caveat',cursive;font-size:24px;font-weight:700;margin-bottom:2px}
+.card-body .dates{font-size:14px;font-weight:600;margin-bottom:6px;opacity:.85}
+.card-body p{font-size:15px;color:var(--chalk-dim);line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{
+  font-size:12px;padding:2px 10px;border-radius:3px;
+  background:rgba(255,255,255,.05);color:var(--chalk-dim);font-weight:500;
+  border:1px dashed rgba(255,255,255,.1);
+}
+.arrow{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:22px;color:rgba(255,255,255,.12);transition:all .25s;font-family:'Caveat',cursive}
+.card:hover .arrow{color:rgba(255,255,255,.45);right:14px}
+
+/* Card accent colors — chalk colors */
+.card[data-color="yellow"]::before{background:var(--yellow)} .card[data-color="yellow"] .icon{color:var(--yellow);border-color:rgba(245,216,99,.3)}
+.card[data-color="yellow"] .card-body h3{color:var(--yellow)} .card[data-color="yellow"] .dates{color:var(--yellow)}
+
+.card[data-color="blue"]::before{background:var(--blue)} .card[data-color="blue"] .icon{color:var(--blue);border-color:rgba(123,184,224,.3)}
+.card[data-color="blue"] .card-body h3{color:var(--blue)} .card[data-color="blue"] .dates{color:var(--blue)}
+
+.card[data-color="pink"]::before{background:var(--pink)} .card[data-color="pink"] .icon{color:var(--pink);border-color:rgba(232,123,173,.3)}
+.card[data-color="pink"] .card-body h3{color:var(--pink)} .card[data-color="pink"] .dates{color:var(--pink)}
+
+.card[data-color="orange"]::before{background:var(--orange)} .card[data-color="orange"] .icon{color:var(--orange);border-color:rgba(232,152,90,.3)}
+.card[data-color="orange"] .card-body h3{color:var(--orange)} .card[data-color="orange"] .dates{color:var(--orange)}
+
+.card[data-color="green"]::before{background:var(--green)} .card[data-color="green"] .icon{color:var(--green);border-color:rgba(143,212,164,.3)}
+.card[data-color="green"] .card-body h3{color:var(--green)} .card[data-color="green"] .dates{color:var(--green)}
+
+.card[data-color="red"]::before{background:var(--red)} .card[data-color="red"] .icon{color:var(--red);border-color:rgba(217,107,107,.3)}
+.card[data-color="red"] .card-body h3{color:var(--red)} .card[data-color="red"] .dates{color:var(--red)}
+
+.card[data-color="white"]::before{background:var(--white)} .card[data-color="white"] .icon{color:var(--white);border-color:rgba(242,239,230,.3)}
+.card[data-color="white"] .card-body h3{color:var(--white)} .card[data-color="white"] .dates{color:var(--white)}
+
+.card[data-color="purple"]::before{background:var(--purple)} .card[data-color="purple"] .icon{color:var(--purple);border-color:rgba(184,157,224,.3)}
+.card[data-color="purple"] .card-body h3{color:var(--purple)} .card[data-color="purple"] .dates{color:var(--purple)}
+
+.card[data-color="cyan"]::before{background:var(--cyan)} .card[data-color="cyan"] .icon{color:var(--cyan);border-color:rgba(107,204,196,.3)}
+.card[data-color="cyan"] .card-body h3{color:var(--cyan)} .card[data-color="cyan"] .dates{color:var(--cyan)}
+
+/* Language toggle */
+.lang-toggle{
+  position:fixed;top:14px;right:18px;z-index:10;
+  display:flex;gap:6px;
+}
+.lang-btn{
+  padding:6px 14px;border:2px dashed rgba(255,255,255,.15);border-radius:6px;
+  background:rgba(43,58,43,.85);backdrop-filter:blur(8px);
+  color:var(--chalk-dim);font-family:'Patrick Hand',cursive;font-size:15px;
+  cursor:pointer;transition:all .2s;text-decoration:none;
+}
+.lang-btn:hover,.lang-btn.active{border-color:var(--yellow);color:var(--yellow);background:rgba(43,58,43,.95)}
+
+/* Footer */
+footer{
+  text-align:center;padding:28px 24px 50px;color:var(--chalk-dim);font-size:14px;
+  border-top:2px dashed rgba(255,255,255,.06);
+}
+footer a{color:var(--yellow);text-decoration:none;opacity:.8}
+footer a:hover{opacity:1;text-decoration:underline}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp .45s ease both}
+.grid .card:nth-child(1){animation-delay:.05s}
+.grid .card:nth-child(2){animation-delay:.1s}
+.grid .card:nth-child(3){animation-delay:.14s}
+.grid .card:nth-child(4){animation-delay:.18s}
+.grid .card:nth-child(5){animation-delay:.22s}
+.grid .card:nth-child(6){animation-delay:.26s}
+.grid .card:nth-child(7){animation-delay:.3s}
+.grid .card:nth-child(8){animation-delay:.34s}
+.grid .card:nth-child(9){animation-delay:.38s}
+.grid .card:nth-child(10){animation-delay:.42s}
+.grid .card:nth-child(11){animation-delay:.46s}
+.grid .card:nth-child(12){animation-delay:.5s}
+.grid .card:nth-child(13){animation-delay:.54s}
+.grid .card:nth-child(14){animation-delay:.58s}
+.grid .card:nth-child(15){animation-delay:.62s}
+
+/* Background doodle canvas */
+#doodles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+@media(max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .hero{padding:36px 20px 24px}
+  .card{padding:18px 16px}
+  .icon{width:46px;height:46px;font-size:22px}
+  .tray{height:12px}
+}
+</style>
+</head>
+<body>
+<canvas id="doodles"></canvas>
+
+<div class="lang-toggle">
+  <a class="lang-btn active" href="index.html">EN</a>
+  <a class="lang-btn" href="de/index.html">DE</a>
+</div>
+
+<div class="hero">
+  <h1>Math Explorers</h1>
+  <p class="tagline">Interactive adventures through the greatest mathematical minds in history</p>
+  <p class="count" id="explorerCount"></p>
+</div>
+
+<div class="grid-wrapper">
+  <div class="section-label">Start Here</div>
+  <div class="grid" id="introGrid"></div>
+
+  <div class="section-label">Mathematician Explorers</div>
+  <div class="grid" id="mathGrid"></div>
+</div>
+
+<footer>
+  Made with curiosity and code &middot; <a href="https://github.com" target="_blank">View on GitHub</a>
+</footer>
+
+<div class="tray"></div>
+
+<script>
+/* ===== EXPLORER DATA ===== */
+const explorers = [
+  {
+    section: 'intro',
+    title: 'Geometry Explorer',
+    file: 'geometry-explorer.html',
+    icon: '\u25B3',
+    color: 'white',
+    dates: 'Shapes & Symmetry',
+    desc: 'Start your math journey! Explore circles, symmetry, and geometric patterns through hands-on interactives.',
+    tags: ['Circles', 'Symmetry', 'Beginner']
+  },
+  {
+    section: 'math',
+    title: 'Pythagoras',
+    file: 'pythagoras-explorer.html',
+    icon: '\u25F1',
+    color: 'yellow',
+    dates: 'c. 570\u2013495 BC',
+    desc: 'The theorem that changed everything. Visualize proofs, discover Pythagorean triples, and hear the music of mathematics.',
+    tags: ['Theorem', 'Triples', 'Music & Math']
+  },
+  {
+    section: 'math',
+    title: 'Archimedes',
+    file: 'archimedes-explorer.html',
+    icon: '\uD83D\uDCA1',
+    color: 'orange',
+    dates: 'c. 287\u2013212 BC',
+    desc: 'Eureka! Squeeze pi between polygons, balance levers, and discover why things float.',
+    tags: ['Pi', 'Levers', 'Buoyancy']
+  },
+  {
+    section: 'math',
+    title: 'Hypatia',
+    file: 'hypatia-explorer.html',
+    icon: '\u2604',
+    color: 'pink',
+    dates: 'c. 350\u2013415 AD',
+    desc: 'The first great woman mathematician. Slice cones into curves, navigate with an astrolabe, and solve ancient number puzzles.',
+    tags: ['Conic Sections', 'Astrolabe', 'Puzzles']
+  },
+  {
+    section: 'math',
+    title: 'Al-Khwarizmi',
+    file: 'alkhwarizmi-explorer.html',
+    icon: '\uD83D\uDD23',
+    color: 'orange',
+    dates: 'c. 780\u2013850 AD',
+    desc: 'The father of algebra \u2014 both "algebra" and "algorithm" come from his name! Solve equations step by step and race number systems.',
+    tags: ['Algebra', 'Algorithms', 'Number Systems']
+  },
+  {
+    section: 'math',
+    title: 'Fibonacci',
+    file: 'fibonacci-explorer.html',
+    icon: '\uD83D\uDC1A',
+    color: 'green',
+    dates: 'c. 1170\u20131250',
+    desc: 'The sequence that appears everywhere in nature. Build spirals, grow sunflowers, and find Fibonacci in the wild.',
+    tags: ['Sequences', 'Golden Spiral', 'Nature']
+  },
+  {
+    section: 'math',
+    title: 'Ren\u00E9 Descartes',
+    file: 'descartes-explorer.html',
+    icon: '\uD83D\uDCCD',
+    color: 'blue',
+    dates: '1596\u20131650',
+    desc: '"I think, therefore I am." He connected algebra and geometry by inventing the coordinate plane. Plot points, graph equations, and build shapes.',
+    tags: ['Coordinates', 'Graphing', 'Equations']
+  },
+  {
+    section: 'math',
+    title: 'Blaise Pascal',
+    file: 'pascal-explorer.html',
+    icon: '\u25B2',
+    color: 'green',
+    dates: '1623\u20131662',
+    desc: 'A triangle full of secrets! Find hidden patterns in Pascal\u2019s triangle, flip coins to discover probability, and build a mechanical calculator.',
+    tags: ['Triangle', 'Probability', 'Pascaline']
+  },
+  {
+    section: 'math',
+    title: 'Isaac Newton',
+    file: 'newton-explorer.html',
+    icon: '\uD83C\uDF4E',
+    color: 'red',
+    dates: '1643\u20131727',
+    desc: 'Gravity, light, and calculus. Drop objects, split white light through a prism, and touch your first derivative.',
+    tags: ['Gravity', 'Prism & Light', 'Calculus']
+  },
+  {
+    section: 'math',
+    title: 'Leonhard Euler',
+    file: 'euler-explorer.html',
+    icon: '\u03C0',
+    color: 'purple',
+    dates: '1707\u20131783',
+    desc: 'The most prolific mathematician ever. Discover his famous identity, cross the impossible bridges, and build polyhedra.',
+    tags: ['Identity', 'Graph Theory', 'Polyhedra']
+  },
+  {
+    section: 'math',
+    title: 'Carl Friedrich Gauss',
+    file: 'gauss-explorer.html',
+    icon: '\u222E',
+    color: 'blue',
+    dates: '1777\u20131855',
+    desc: 'The "Prince of Mathematicians." Watch his famous sum trick, count primes, and shape the bell curve.',
+    tags: ['Sum Trick', 'Primes', 'Bell Curve']
+  },
+  {
+    section: 'math',
+    title: 'Ada Lovelace',
+    file: 'lovelace-explorer.html',
+    icon: '\u2328',
+    color: 'cyan',
+    dates: '1815\u20131852',
+    desc: 'The world\'s first computer programmer. Toggle binary bits, step through algorithms, and generate number sequences.',
+    tags: ['Binary', 'Algorithms', 'Sequences']
+  },
+  {
+    section: 'math',
+    title: 'Srinivasa Ramanujan',
+    file: 'ramanujan-explorer.html',
+    icon: '\u221E',
+    color: 'yellow',
+    dates: '1887\u20131920',
+    desc: 'A self-taught genius who saw infinity. Explore taxicab numbers, race series to pi, and build magic squares.',
+    tags: ['1729', 'Infinite Series', 'Magic Squares']
+  },
+  {
+    section: 'math',
+    title: 'Alan Turing',
+    file: 'turing-explorer.html',
+    icon: '\uD83D\uDD10',
+    color: 'red',
+    dates: '1912\u20131954',
+    desc: 'The father of computer science and WWII codebreaker. Crack ciphers, run a Turing machine, and take the Turing test.',
+    tags: ['Codebreaking', 'Turing Machine', 'Turing Test']
+  },
+  {
+    section: 'math',
+    title: 'Benoit Mandelbrot',
+    file: 'mandelbrot-explorer.html',
+    icon: '\uD83C\uDF00',
+    color: 'purple',
+    dates: '1924\u20132010',
+    desc: 'The man who discovered fractals \u2014 infinite patterns hidden everywhere. Zoom into the Mandelbrot set, measure impossible coastlines, and grow fractal trees.',
+    tags: ['Fractals', 'Mandelbrot Set', 'Self-Similarity']
+  }
+];
+
+/* ===== RENDER CARDS ===== */
+const introGrid = document.getElementById('introGrid');
+const mathGrid = document.getElementById('mathGrid');
+
+let activeCount = 0;
+explorers.forEach(e => {
+  const isComingSoon = !e.file;
+  if (!isComingSoon) activeCount++;
+
+  const a = document.createElement(isComingSoon ? 'div' : 'a');
+  if (!isComingSoon) a.href = e.file;
+  a.className = 'card';
+  a.dataset.color = e.color;
+  if (isComingSoon) a.style.opacity = '0.35';
+  a.style.cursor = isComingSoon ? 'default' : 'pointer';
+
+  a.innerHTML = `
+    <div class="icon">${e.icon}</div>
+    <div class="card-body">
+      <h3>${e.title}</h3>
+      <div class="dates">${e.dates}</div>
+      <p>${e.desc}</p>
+      <div class="tags">${e.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    </div>
+    ${isComingSoon ? '' : '<div class="arrow">\u203A</div>'}
+  `;
+
+  (e.section === 'intro' ? introGrid : mathGrid).appendChild(a);
+});
+
+document.getElementById('explorerCount').textContent = activeCount + ' interactive explorers and counting\u2026';
+
+/* ===== CHALK DOODLES BACKGROUND ===== */
+const canvas = document.getElementById('doodles');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = document.documentElement.scrollHeight;
+}
+
+// Math doodles scattered across the chalkboard
+function drawDoodles() {
+  resize();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const doodles = [
+    // formulas & symbols
+    { text: 'E = mc\u00B2', x: 0.06, y: 0.08 },
+    { text: 'a\u00B2 + b\u00B2 = c\u00B2', x: 0.82, y: 0.05 },
+    { text: '\u03C0 \u2248 3.14159...', x: 0.88, y: 0.18 },
+    { text: '\u2211', x: 0.04, y: 0.25 },
+    { text: '\u221A2', x: 0.92, y: 0.32 },
+    { text: 'n! = n(n-1)...', x: 0.07, y: 0.42 },
+    { text: '\u222B f(x)dx', x: 0.85, y: 0.45 },
+    { text: 'i\u00B2 = -1', x: 0.05, y: 0.58 },
+    { text: '\u03C6 = 1.618...', x: 0.89, y: 0.6 },
+    { text: 'F = ma', x: 0.04, y: 0.74 },
+    { text: '\u0394y/\u0394x', x: 0.91, y: 0.76 },
+    { text: '1+1=2', x: 0.08, y: 0.88 },
+    { text: '\u221E', x: 0.87, y: 0.9 },
+  ];
+
+  ctx.font = '16px "Caveat", cursive';
+  ctx.textAlign = 'center';
+
+  doodles.forEach(d => {
+    const x = d.x * canvas.width;
+    const y = d.y * canvas.height;
+    // Very faint, like old chalk marks
+    ctx.fillStyle = 'rgba(200,210,195,' + (0.06 + Math.random() * 0.04) + ')';
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate((Math.random() - 0.5) * 0.15);
+    ctx.fillText(d.text, 0, 0);
+    ctx.restore();
+  });
+
+  // Scatter some tiny shapes
+  const shapes = 25;
+  for (let i = 0; i < shapes; i++) {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    const r = 3 + Math.random() * 8;
+    ctx.strokeStyle = 'rgba(200,210,195,' + (0.03 + Math.random() * 0.03) + ')';
+    ctx.lineWidth = 1;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(Math.random() * Math.PI);
+
+    const shapeType = Math.floor(Math.random() * 4);
+    ctx.beginPath();
+    if (shapeType === 0) {
+      // circle
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+    } else if (shapeType === 1) {
+      // triangle
+      ctx.moveTo(0, -r); ctx.lineTo(-r, r); ctx.lineTo(r, r); ctx.closePath();
+    } else if (shapeType === 2) {
+      // square
+      ctx.rect(-r/2, -r/2, r, r);
+    } else {
+      // plus
+      ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.moveTo(0, -r); ctx.lineTo(0, r);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+window.addEventListener('resize', drawDoodles);
+drawDoodles();
+// Redraw on scroll to cover full page height
+let scrollTimeout;
+window.addEventListener('scroll', () => {
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(drawDoodles, 100);
+});
+</script>
+</body>
+</html>

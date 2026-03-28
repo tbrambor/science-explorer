@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <title>Ada Lovelace Explorer - Discover the First Computer Programmer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Patrick Hand','Caveat',cursive, system-ui;
+            background: linear-gradient(135deg, #2b3a2b 0%, #1f2a1f 100%);
+            color: #e8e4d9;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(35, 48, 35, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(143, 212, 164, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        nav h1 {
+            font-size: 1.8rem;
+            color: #f5d863;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(245, 216, 99, 0.5);
+        }
+
+        nav button {
+            background: linear-gradient(135deg, #8fd4a4 0%, #7bb8e0 100%);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            margin-right: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(143, 212, 164, 0.4);
+        }
+
+        nav button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(143, 212, 164, 0.6);
+        }
+
+        nav button.active {
+            background: linear-gradient(135deg, #d96b6b 0%, #f5d863 100%);
+            box-shadow: 0 6px 25px rgba(217, 107, 107, 0.6);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            display: none;
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(143, 212, 164, 0.1) 0%, rgba(123, 184, 224, 0.1) 100%);
+            border-radius: 15px;
+            border: 1px solid rgba(217, 107, 107, 0.3);
+        }
+
+        .hero img {
+            width: 200px;
+            height: 240px;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border: 3px solid #f5d863;
+            box-shadow: 0 8px 30px rgba(245, 216, 99, 0.4);
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #f5d863 0%, #d96b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: none;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #d0d0b0;
+            line-height: 1.6;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(143, 212, 164, 0.1);
+            border-left: 4px solid #8fd4a4;
+            border-radius: 8px;
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        .timeline-item h3 {
+            color: #f5d863;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item .year {
+            color: #7bb8e0;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item p {
+            color: #d0d0e0;
+            line-height: 1.6;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(143, 212, 164, 0.15) 0%, rgba(123, 184, 224, 0.15) 100%);
+            border: 1px solid rgba(143, 212, 164, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #f5d863;
+            box-shadow: 0 8px 25px rgba(245, 216, 99, 0.3);
+        }
+
+        .card h3 {
+            color: #f5d863;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .card p {
+            color: #d0d0e0;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Interactive Labs */
+        .lab-section {
+            background: rgba(49, 66, 49, 0.8);
+            border: 2px solid rgba(143, 212, 164, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .lab-section h3 {
+            color: #7bb8e0;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .lab-section p {
+            color: #d0d0e0;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            background: rgba(74, 94, 74, 0.8);
+            border: 2px solid #8fd4a4;
+            color: #e8e4d9;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #f5d863;
+            box-shadow: 0 0 15px rgba(245, 216, 99, 0.5);
+        }
+
+        button.action-btn {
+            background: linear-gradient(135deg, #8fd4a4 0%, #7bb8e0 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(143, 212, 164, 0.4);
+        }
+
+        button.action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(143, 212, 164, 0.6);
+        }
+
+        .result-display {
+            background: rgba(49, 66, 49, 0.9);
+            border: 1px solid #8fd4a4;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #f5d863;
+        }
+
+        /* Binary Visualization */
+        .binary-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .binary-bit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid #8fd4a4;
+            background: rgba(74, 94, 74, 0.8);
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: #8fd4a4;
+        }
+
+        .toggle-switch.on {
+            background: linear-gradient(135deg, #d96b6b 0%, #f5d863 100%);
+            color: white;
+            box-shadow: 0 0 15px rgba(217, 107, 107, 0.6);
+            border-color: #f5d863;
+        }
+
+        .toggle-switch:hover {
+            transform: scale(1.05);
+        }
+
+        .bit-label {
+            color: #7bb8e0;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Sorting Visualization */
+        .bars-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 0.8rem;
+            height: 250px;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(49, 66, 49, 0.6);
+            border-radius: 8px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, #8fd4a4 0%, #7bb8e0 100%);
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            padding-bottom: 0.5rem;
+        }
+
+        .bar.comparing {
+            background: linear-gradient(180deg, #d96b6b 0%, #f5d863 100%);
+            box-shadow: 0 0 20px rgba(217, 107, 107, 0.6);
+        }
+
+        .bar.sorted {
+            background: linear-gradient(180deg, #8fd4a4 0%, #7bb8e0 100%);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            max-width: 800px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(74, 94, 74, 0.8);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8fd4a4 0%, #f5d863 100%);
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: rgba(43, 58, 43, 0.9);
+            border: 2px solid rgba(143, 212, 164, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-card h3 {
+            color: #7bb8e0;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .option {
+            background: rgba(74, 94, 74, 0.6);
+            border: 2px solid #8fd4a4;
+            color: #e8e4d9;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #f5d863;
+            background: rgba(94, 118, 94, 0.8);
+        }
+
+        .option.selected {
+            background: rgba(143, 212, 164, 0.4);
+            border-color: #f5d863;
+        }
+
+        .option.correct {
+            background: rgba(143, 212, 164, 0.3);
+            border-color: #8fd4a4;
+        }
+
+        .option.incorrect {
+            background: rgba(217, 107, 107, 0.3);
+            border-color: #d96b6b;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            color: #e0e0e0;
+        }
+
+        .feedback.correct {
+            background: rgba(143, 212, 164, 0.2);
+            border: 1px solid #8fd4a4;
+        }
+
+        .feedback.incorrect {
+            background: rgba(217, 107, 107, 0.2);
+            border: 1px solid #d96b6b;
+        }
+
+        .quiz-score {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(143, 212, 164, 0.2) 0%, rgba(123, 184, 224, 0.2) 100%);
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+
+        .quiz-score h2 {
+            color: #7bb8e0;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-score .score-number {
+            color: #f5d863;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        /* Sequence Display */
+        .sequence-display {
+            background: rgba(49, 66, 49, 0.9);
+            border: 2px solid #8fd4a4;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            min-height: 80px;
+        }
+
+        .sequence-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sequence-num {
+            background: linear-gradient(135deg, #d96b6b 0%, #f5d863 100%);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(217, 107, 107, 0.4);
+        }
+
+        .sequence-logic {
+            color: #7bb8e0;
+            font-style: italic;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #9ca898;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(143, 212, 164, 0.2);
+        }
+
+        .step-info {
+            background: rgba(74, 94, 74, 0.8);
+            border-left: 4px solid #8fd4a4;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            color: #d0d0d0;
+        }
+
+        .step-info strong {
+            color: #f5d863;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+        <h1>Ada Lovelace Explorer</h1>
+        <button class="nav-btn active" data-section="story">Her Story</button>
+        <button class="nav-btn" data-section="binary">Binary Lab</button>
+        <button class="nav-btn" data-section="algorithm">Algorithm Stepper</button>
+        <button class="nav-btn" data-section="sequence">Sequence Generator</button>
+        <button class="nav-btn" data-section="facts">Fun Facts</button>
+        <button class="nav-btn" data-section="quiz">Quiz</button>
+    </nav>
+
+    <div class="container">
+        <!-- SECTION 1: HER STORY -->
+        <section id="story" class="active">
+            <div class="hero">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Ada_Lovelace_portrait.jpg" alt="Ada Lovelace portrait">
+                <h2>Ada Lovelace (1815-1852)</h2>
+                <p>The World's First Computer Programmer</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="year">1815</div>
+                    <h3>Born in London</h3>
+                    <p>Ada Augusta Byron was born to one of the world's most famous poets, Lord Byron. However, her father left when she was just one month old.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1815-1833</div>
+                    <h3>An Unusual Childhood</h3>
+                    <p>Her mother, worried that Ada might inherit her father's "poetic madness," insisted on math and science education instead of poetry. Ada was taught languages, mathematics, sciences, and music—an unusual education for a girl in the 1800s.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1833, Age 17</div>
+                    <h3>Meeting Charles Babbage</h3>
+                    <p>Ada attended a party where she met Charles Babbage and saw his incredible invention: the Difference Engine. This machine could perform mathematical calculations automatically. Ada became fascinated with his work.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1833-1843</div>
+                    <h3>Becoming an Analyst</h3>
+                    <p>Ada became Babbage's close friend and collaborator. She studied his designs for an even more powerful machine: the Analytical Engine—a machine that could be programmed to perform different operations. She called herself "an Analyst (& Metaphysician)."</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1843</div>
+                    <h3>A Historic Publication</h3>
+                    <p>Ada translated an article about the Analytical Engine from French to English. But she didn't stop there! She added her own notes—which were 3 times longer than the original article. Her notes included diagrams, explanations, and something revolutionary...</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1843 (Note G)</div>
+                    <h3>The First Algorithm</h3>
+                    <p>In "Note G," Ada wrote out a step-by-step set of instructions (an algorithm) for the Analytical Engine to compute Bernoulli numbers. This was the first computer program ever written! She understood that machines could follow complex instructions, not just do simple math.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1843</div>
+                    <h3>A Visionary Prediction</h3>
+                    <p>Ada predicted something no one else could imagine: computers could do FAR more than just numbers. She wrote that machines could compose music, create graphics, and manipulate other kinds of information. Over 100 years before computers existed, she saw the future!</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1843-1852</div>
+                    <h3>Illness & Legacy</h3>
+                    <p>Ada struggled with serious illnesses throughout her life. She died in 1852 at only 36 years old. Her brilliant work was nearly forgotten for 100 years until people rediscovered her contributions.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="year">1980s & Today</div>
+                    <h3>Recognition</h3>
+                    <p>Ada's legacy was finally celebrated! The U.S. Department of Defense named a programming language "Ada" in her honor in 1980. Today, she's recognized as the world's first computer programmer, and October 9th is Ada Lovelace Day, celebrating women in STEM.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: BINARY LAB -->
+        <section id="binary">
+            <div class="hero">
+                <h2>Binary Numbers Lab</h2>
+                <p>Discover how computers think in 1s and 0s</p>
+            </div>
+
+            <div class="lab-section">
+                <h3>Understanding Binary</h3>
+                <p>Computers think in a language called <strong>binary</strong> using only two digits: <strong>0</strong> (off) and <strong>1</strong> (on). Every letter, number, color, and sound on your computer is made up of combinations of 0s and 1s!</p>
+                <p>Each position in a binary number represents a power of 2: the rightmost position is 1, then 2, 4, 8, 16, 32, 128, and 256. When a position has a 1, we "turn it on" and add its value. When it has a 0, we "turn it off" and add nothing.</p>
+            </div>
+
+            <div class="lab-section">
+                <h3>Decimal to Binary Converter</h3>
+                <p>Type a number between 0-255 and watch it convert to binary!</p>
+                <div class="input-group">
+                    <input type="number" id="decimalInput" min="0" max="255" value="10" placeholder="Enter a number (0-255)">
+                    <button class="action-btn" onclick="convertDecimalToBinary()">Convert</button>
+                </div>
+                <div id="binaryResult" class="binary-display"></div>
+                <div id="decimalExplanation" class="step-info"></div>
+            </div>
+
+            <div class="lab-section">
+                <h3>Binary to Decimal: Build Your Own!</h3>
+                <p>Click the switches to turn bits on (1) or off (0). Watch the decimal number build!</p>
+                <div id="binaryBuilder" class="binary-display"></div>
+                <div class="result-display" id="binaryBuilderResult">Decimal: 0</div>
+            </div>
+
+            <div class="lab-section">
+                <h3>Letters Become Numbers</h3>
+                <p>Every letter on your keyboard is stored as a number using ASCII (a code that assigns numbers to letters). Type a letter to see its number and binary!</p>
+                <div class="input-group">
+                    <input type="text" id="asciiInput" maxlength="1" placeholder="Type a letter" value="A">
+                    <button class="action-btn" onclick="convertASCII()">Show Code</button>
+                </div>
+                <div class="result-display" id="asciiResult"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ALGORITHM STEPPER -->
+        <section id="algorithm">
+            <div class="hero">
+                <h2>Algorithm Stepper</h2>
+                <p>Watch algorithms solve problems step-by-step</p>
+            </div>
+
+            <div class="lab-section">
+                <h3>What is an Algorithm?</h3>
+                <p>An <strong>algorithm</strong> is a set of step-by-step instructions for solving a problem. It's like a recipe for a cake—you follow steps in order to get a result. Ada Lovelace wrote the first algorithm ever to be executed by a machine!</p>
+            </div>
+
+            <div class="lab-section">
+                <h3>Bubble Sort: Sorting Numbers</h3>
+                <p>Watch the algorithm sort colored bars from smallest to largest. Each step compares two bars and swaps them if needed. Click "Next Step" to advance!</p>
+                <div class="input-group">
+                    <button class="action-btn" onclick="initBubbleSort()">Start Sorting</button>
+                    <button class="action-btn" onclick="nextBubbleStep()">Next Step</button>
+                </div>
+                <div id="sortBars" class="bars-container"></div>
+                <div id="sortInfo" class="step-info">Click "Start Sorting" to begin!</div>
+            </div>
+
+            <div class="lab-section">
+                <h3>Finding the Largest Number</h3>
+                <p>This algorithm scans through a list to find the biggest number. Let's watch it work step-by-step!</p>
+                <div class="input-group">
+                    <button class="action-btn" onclick="initFindMax()">Start Finding</button>
+                    <button class="action-btn" onclick="nextMaxStep()">Next Step</button>
+                </div>
+                <div id="findMaxBars" class="bars-container"></div>
+                <div id="findMaxInfo" class="step-info">Click "Start Finding" to begin!</div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SEQUENCE GENERATOR -->
+        <section id="sequence">
+            <div class="hero">
+                <h2>Sequence Generator</h2>
+                <p>Explore patterns and create number sequences</p>
+            </div>
+
+            <div class="lab-section">
+                <h3>About Number Sequences</h3>
+                <p>Ada's algorithm computed complex Bernoulli numbers—a mathematical sequence. Algorithms are great at finding patterns and generating sequences! Let's explore some famous sequences and see the pattern behind each one.</p>
+            </div>
+
+            <div class="lab-section">
+                <h3>Pick a Sequence</h3>
+                <p>Choose one of these fascinating sequences and watch the algorithm generate numbers based on the pattern:</p>
+                <div class="input-group">
+                    <select id="sequenceSelect" onchange="generateSequence()">
+                        <option value="fibonacci">Fibonacci (each = previous two added)</option>
+                        <option value="triangular">Triangular (1, 3, 6, 10, 15...)</option>
+                        <option value="squares">Squares (1, 4, 9, 16, 25...)</option>
+                        <option value="powers">Powers of 2 (1, 2, 4, 8, 16...)</option>
+                    </select>
+                    <button class="action-btn" onclick="generateSequence()">Generate</button>
+                </div>
+                <div id="sequenceDisplay" class="sequence-display">
+                    <div class="sequence-numbers" id="sequenceNumbers"></div>
+                </div>
+                <div id="sequenceLogic" class="sequence-logic"></div>
+            </div>
+
+            <div class="lab-section">
+                <h3>Create Your Own Pattern</h3>
+                <p>Define a simple rule and watch the algorithm create a sequence!</p>
+                <div class="input-group">
+                    <label>Start at: <input type="number" id="customStart" value="3" min="0" max="100"></label>
+                    <label>Add each time: <input type="number" id="customStep" value="5" min="1" max="50"></label>
+                    <button class="action-btn" onclick="generateCustomSequence()">Create</button>
+                </div>
+                <div id="customDisplay" class="sequence-display">
+                    <div class="sequence-numbers" id="customNumbers"></div>
+                </div>
+                <div id="customLogic" class="sequence-logic"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: FUN FACTS -->
+        <section id="facts">
+            <div class="hero">
+                <h2>Fun Facts About Ada</h2>
+                <p>Discover amazing things about the Enchantress of Numbers</p>
+            </div>
+
+            <div class="cards-grid" id="factsGrid">
+                <!-- Cards generated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- SECTION 6: QUIZ -->
+        <section id="quiz">
+            <div class="hero">
+                <h2>Test Your Knowledge</h2>
+                <p>Answer 10 random questions about Ada and what you've learned</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quizProgress"></div>
+                </div>
+                <div id="quizContent"></div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Ada Lovelace Explorer - Learn about the world's first computer programmer</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Ada Lovelace Day is celebrated every October 9th to honor women in STEM</p>
+    </footer>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const section = this.dataset.section;
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // BINARY LAB
+        function convertDecimalToBinary() {
+            const decimal = parseInt(document.getElementById('decimalInput').value);
+            if (isNaN(decimal) || decimal < 0 || decimal > 255) {
+                alert('Please enter a number between 0 and 255');
+                return;
+            }
+            const binary = decimal.toString(2).padStart(8, '0');
+            const result = document.getElementById('binaryResult');
+            result.innerHTML = '';
+            let explanation = '<strong>Breaking down ' + decimal + ':</strong><br>';
+            const powers = [128, 64, 32, 16, 8, 4, 2, 1];
+            let sum = 0;
+            powers.forEach((power, idx) => {
+                const bit = binary[idx];
+                const isOn = bit === '1';
+                if (isOn) sum += power;
+                const div = document.createElement('div');
+                div.className = 'binary-bit';
+                div.innerHTML = `
+                    <div class="toggle-switch ${isOn ? 'on' : ''}">${bit}</div>
+                    <div class="bit-label">${power}</div>
+                `;
+                result.appendChild(div);
+            });
+            explanation += powers.map((p, i) => binary[i] === '1' ? p : '').filter(v => v).join(' + ') + ' = ' + sum;
+            document.getElementById('decimalExplanation').innerHTML = explanation;
+        }
+
+        function initBinaryBuilder() {
+            const builder = document.getElementById('binaryBuilder');
+            builder.innerHTML = '';
+            const powers = [128, 64, 32, 16, 8, 4, 2, 1];
+            powers.forEach((power, idx) => {
+                const div = document.createElement('div');
+                div.className = 'binary-bit';
+                const toggle = document.createElement('div');
+                toggle.className = 'toggle-switch';
+                toggle.textContent = '0';
+                toggle.dataset.power = power;
+                toggle.dataset.index = idx;
+                toggle.onclick = function() {
+                    this.classList.toggle('on');
+                    this.textContent = this.classList.contains('on') ? '1' : '0';
+                    updateBinaryBuilderResult();
+                };
+                div.appendChild(toggle);
+                const label = document.createElement('div');
+                label.className = 'bit-label';
+                label.textContent = power;
+                div.appendChild(label);
+                builder.appendChild(div);
+            });
+        }
+
+        function updateBinaryBuilderResult() {
+            let sum = 0;
+            document.querySelectorAll('#binaryBuilder .toggle-switch.on').forEach(toggle => {
+                sum += parseInt(toggle.dataset.power);
+            });
+            document.getElementById('binaryBuilderResult').textContent = 'Decimal: ' + sum;
+        }
+
+        function convertASCII() {
+            const char = document.getElementById('asciiInput').value;
+            if (!char) {
+                alert('Please type a letter');
+                return;
+            }
+            const code = char.charCodeAt(0);
+            const binary = code.toString(2).padStart(8, '0');
+            const result = document.getElementById('asciiResult');
+            result.innerHTML = `<strong>"${char}"</strong> = <strong>${code}</strong> in decimal = <strong>${binary}</strong> in binary`;
+        }
+
+        // ALGORITHM STEPPER
+        let bubbleSortState = { array: [], step: 0, comparing: [], sorted: [] };
+        let findMaxState = { array: [], step: 0, current: -1, max: 0, maxIndex: -1 };
+
+        function initBubbleSort() {
+            bubbleSortState.array = [5, 2, 8, 1, 9, 3].map((v, i) => ({ value: v, index: i }));
+            bubbleSortState.step = 0;
+            bubbleSortState.comparing = [];
+            bubbleSortState.sorted = [];
+            updateSortDisplay();
+            document.getElementById('sortInfo').innerHTML = '<strong>Starting bubble sort!</strong> We compare pairs of numbers and swap if needed.';
+        }
+
+        function nextBubbleStep() {
+            if (bubbleSortState.step >= bubbleSortState.array.length * (bubbleSortState.array.length - 1) / 2) {
+                document.getElementById('sortInfo').innerHTML = '<strong>Sorting complete!</strong> All bars are now in order.';
+                return;
+            }
+            let swapped = false;
+            for (let i = 0; i < bubbleSortState.array.length - 1; i++) {
+                for (let j = 0; j < bubbleSortState.array.length - i - 1; j++) {
+                    if (bubbleSortState.array[j].value > bubbleSortState.array[j + 1].value) {
+                        [bubbleSortState.array[j], bubbleSortState.array[j + 1]] = [bubbleSortState.array[j + 1], bubbleSortState.array[j]];
+                        bubbleSortState.comparing = [j, j + 1];
+                        bubbleSortState.sorted = Array.from({length: bubbleSortState.array.length}, (_, i) => i >= bubbleSortState.array.length - i);
+                        document.getElementById('sortInfo').innerHTML = `<strong>Step ${bubbleSortState.step + 1}:</strong> Comparing ${bubbleSortState.array[j].value} and ${bubbleSortState.array[j + 1].value}. Swapping!`;
+                        bubbleSortState.step++;
+                        swapped = true;
+                        updateSortDisplay();
+                        return;
+                    }
+                }
+            }
+            if (!swapped) document.getElementById('sortInfo').innerHTML = '<strong>Done!</strong> All numbers sorted.';
+        }
+
+        function updateSortDisplay() {
+            const bars = document.getElementById('sortBars');
+            bars.innerHTML = '';
+            bubbleSortState.array.forEach((item, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                if (bubbleSortState.comparing.includes(i)) bar.classList.add('comparing');
+                bar.style.height = (item.value * 15) + '%';
+                bar.textContent = item.value;
+                bars.appendChild(bar);
+            });
+        }
+
+        function initFindMax() {
+            findMaxState.array = [3, 7, 2, 9, 4, 6];
+            findMaxState.step = 0;
+            findMaxState.current = 0;
+            findMaxState.max = findMaxState.array[0];
+            findMaxState.maxIndex = 0;
+            updateFindMaxDisplay();
+            document.getElementById('findMaxInfo').innerHTML = '<strong>Starting search!</strong> We look at each number to find the largest.';
+        }
+
+        function nextMaxStep() {
+            if (findMaxState.current >= findMaxState.array.length - 1) {
+                document.getElementById('findMaxInfo').innerHTML = `<strong>Found it!</strong> The largest number is ${findMaxState.max}`;
+                return;
+            }
+            findMaxState.current++;
+            if (findMaxState.array[findMaxState.current] > findMaxState.max) {
+                findMaxState.max = findMaxState.array[findMaxState.current];
+                findMaxState.maxIndex = findMaxState.current;
+                document.getElementById('findMaxInfo').innerHTML = `<strong>Step ${findMaxState.current}:</strong> Found a new maximum! ${findMaxState.max} at position ${findMaxState.current}`;
+            } else {
+                document.getElementById('findMaxInfo').innerHTML = `<strong>Step ${findMaxState.current}:</strong> Checking ${findMaxState.array[findMaxState.current]}. Not larger than ${findMaxState.max}.`;
+            }
+            updateFindMaxDisplay();
+        }
+
+        function updateFindMaxDisplay() {
+            const bars = document.getElementById('findMaxBars');
+            bars.innerHTML = '';
+            findMaxState.array.forEach((val, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                if (i === findMaxState.maxIndex) bar.classList.add('sorted');
+                if (i === findMaxState.current) bar.classList.add('comparing');
+                bar.style.height = (val * 15) + '%';
+                bar.textContent = val;
+                bars.appendChild(bar);
+            });
+        }
+
+        // SEQUENCE GENERATOR
+        function generateSequence() {
+            const type = document.getElementById('sequenceSelect').value;
+            let sequence = [];
+            let logic = '';
+            if (type === 'fibonacci') {
+                sequence = [1, 1];
+                for (let i = 0; i < 8; i++) {
+                    sequence.push(sequence[i] + sequence[i + 1]);
+                }
+                logic = 'Each number = previous two numbers added together';
+            } else if (type === 'triangular') {
+                for (let i = 1; i <= 10; i++) {
+                    sequence.push((i * (i + 1)) / 2);
+                }
+                logic = 'Triangular numbers: 1, 1+2, 1+2+3, 1+2+3+4...';
+            } else if (type === 'squares') {
+                for (let i = 1; i <= 10; i++) {
+                    sequence.push(i * i);
+                }
+                logic = 'Square numbers: 1², 2², 3², 4²...';
+            } else if (type === 'powers') {
+                for (let i = 0; i < 10; i++) {
+                    sequence.push(Math.pow(2, i));
+                }
+                logic = 'Powers of 2: 2⁰, 2¹, 2², 2³...';
+            }
+            displaySequence(sequence, logic, 'sequence');
+        }
+
+        function generateCustomSequence() {
+            const start = parseInt(document.getElementById('customStart').value);
+            const step = parseInt(document.getElementById('customStep').value);
+            let sequence = [];
+            for (let i = 0; i < 10; i++) {
+                sequence.push(start + (i * step));
+            }
+            const logic = `Start at ${start}, add ${step} each time`;
+            displaySequence(sequence, logic, 'custom');
+        }
+
+        function displaySequence(sequence, logic, type) {
+            const numbersDiv = document.getElementById(type === 'sequence' ? 'sequenceNumbers' : 'customNumbers');
+            numbersDiv.innerHTML = '';
+            sequence.forEach(num => {
+                const div = document.createElement('div');
+                div.className = 'sequence-num';
+                div.textContent = num;
+                numbersDiv.appendChild(div);
+            });
+            document.getElementById(type === 'sequence' ? 'sequenceLogic' : 'customLogic').textContent = logic;
+        }
+
+        // FUN FACTS
+        const facts = [
+            "Daughter of Lord Byron, the most famous poet in the world",
+            "Her mother was called 'the princess of parallelograms'",
+            "At age 12, she designed a flying machine with wings",
+            "She called herself 'an Analyst (& Metaphysician)'",
+            "She predicted AI: said machines could compose music and create graphics",
+            "She saw the Analytical Engine could do more than math—a visionary idea NO ONE else had",
+            "Charles Babbage called her 'the Enchantress of Numbers'",
+            "The US Department of Defense named the Ada programming language after her in 1980",
+            "She was a countess (Countess of Lovelace)",
+            "She loved horse racing and tried to create a mathematical gambling system (it didn't work!)",
+            "Her notes were forgotten for nearly 100 years before being rediscovered",
+            "Ada Lovelace Day is celebrated every October 9th to honor women in STEM"
+        ];
+
+        function displayFacts() {
+            const grid = document.getElementById('factsGrid');
+            grid.innerHTML = '';
+            facts.forEach(fact => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<h3>📌</h3><p>${fact}</p>`;
+                grid.appendChild(card);
+            });
+        }
+
+        // QUIZ
+        const quizQuestions = [
+            { q: "In what year was Ada Lovelace born?", a: "1815", opts: ["1815", "1825", "1805", "1835"] },
+            { q: "Who was Ada Lovelace's father?", a: "Lord Byron, a famous poet", opts: ["Lord Byron, a famous poet", "Isaac Newton", "Charles Babbage", "Queen Victoria's brother"] },
+            { q: "What machine did Ada see at age 17 that fascinated her?", a: "The Difference Engine", opts: ["The Difference Engine", "A printing press", "A steam locomotive", "A telescope"] },
+            { q: "What did Ada's mother encourage her to study instead of poetry?", a: "Mathematics and science", opts: ["Mathematics and science", "Music and art", "Languages only", "History and geography"] },
+            { q: "What was the name of the machine Ada worked on with Babbage?", a: "The Analytical Engine", opts: ["The Analytical Engine", "The Computing Machine", "The Number Engine", "The Calculation Device"] },
+            { q: "In what year did Ada publish her famous translation and notes?", a: "1843", opts: ["1843", "1833", "1853", "1853"] },
+            { q: "How much longer were Ada's notes compared to the original article?", a: "3 times longer", opts: ["2 times longer", "3 times longer", "5 times longer", "10 times longer"] },
+            { q: "What was the name of Ada's most famous algorithm?", a: "Note G for Bernoulli numbers", opts: ["Note G for Bernoulli numbers", "The Fibonacci Formula", "The Prime Number Algorithm", "The Encryption Code"] },
+            { q: "What did Ada predict computers could do besides math?", a: "Compose music and create graphics", opts: ["Compose music and create graphics", "Write poetry like her father", "Play chess games", "All of the above"] },
+            { q: "How old was Ada when she died?", a: "36", opts: ["36", "42", "52", "48"] },
+            { q: "What programming language was named after Ada?", a: "Ada", opts: ["Ada", "Python", "Babbage", "Lovelace"] },
+            { q: "What does binary use to represent all information?", a: "0s and 1s", opts: ["0s and 1s", "A to Z", "1 to 10", "True and False only"] },
+            { q: "What is an algorithm?", a: "A set of step-by-step instructions", opts: ["A set of step-by-step instructions", "A type of computer", "A mathematical equation", "A programming language"] },
+            { q: "What does ASCII do?", a: "Assigns numbers to letters and characters", opts: ["Assigns numbers to letters and characters", "Stores pictures", "Makes computers faster", "Encrypts passwords"] },
+            { q: "When is Ada Lovelace Day celebrated?", a: "October 9th", opts: ["October 9th", "December 10th", "March 28th", "July 4th"] }
+        ];
+
+        let currentQuiz = [];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+
+        function initQuiz() {
+            currentQuiz = [];
+            const shuffled = [...quizQuestions].sort(() => Math.random() - 0.5);
+            currentQuiz = shuffled.slice(0, 10);
+            currentQuizIndex = 0;
+            quizScore = 0;
+            displayQuizQuestion();
+        }
+
+        function displayQuizQuestion() {
+            const content = document.getElementById('quizContent');
+            if (currentQuizIndex >= currentQuiz.length) {
+                showQuizScore();
+                return;
+            }
+            const progress = ((currentQuizIndex + 1) / currentQuiz.length) * 100;
+            document.getElementById('quizProgress').style.width = progress + '%';
+            const q = currentQuiz[currentQuizIndex];
+            const opts = q.opts.sort(() => Math.random() - 0.5);
+            let html = `
+                <div class="question-card">
+                    <h3>Question ${currentQuizIndex + 1} of ${currentQuiz.length}</h3>
+                    <h3>${q.q}</h3>
+            `;
+            opts.forEach(opt => {
+                html += `<div class="option" onclick="selectAnswer('${opt}', '${q.a}')">${opt}</div>`;
+            });
+            html += '</div>';
+            content.innerHTML = html;
+        }
+
+        function selectAnswer(selected, correct) {
+            const options = document.querySelectorAll('.option');
+            let isCorrect = selected === correct;
+            options.forEach(opt => {
+                if (opt.textContent === correct) opt.classList.add('correct');
+                if (opt.textContent === selected && !isCorrect) opt.classList.add('incorrect');
+                opt.style.pointerEvents = 'none';
+            });
+            if (isCorrect) {
+                quizScore++;
+                document.querySelector('.question-card').innerHTML += '<div class="feedback correct"><strong>Correct!</strong> Great job! 🎉</div>';
+            } else {
+                document.querySelector('.question-card').innerHTML += `<div class="feedback incorrect"><strong>Not quite!</strong> The correct answer is: ${correct}</div>`;
+            }
+            setTimeout(() => {
+                currentQuizIndex++;
+                displayQuizQuestion();
+            }, 2500);
+        }
+
+        function showQuizScore() {
+            const percentage = Math.round((quizScore / currentQuiz.length) * 100);
+            document.getElementById('quizContent').innerHTML = `
+                <div class="quiz-score">
+                    <h2>Quiz Complete!</h2>
+                    <div class="score-number">${quizScore}/${currentQuiz.length}</div>
+                    <p style="font-size: 1.2rem; color: #00ced1; margin-top: 1rem;">${percentage}% Correct</p>
+                    <p style="color: #d0d0e0; margin-top: 1rem;">${percentage >= 80 ? 'Excellent work! You really know your Ada facts!' : percentage >= 60 ? 'Good job! You learned a lot!' : 'Great effort! Keep learning about Ada!'}</p>
+                    <button class="action-btn" style="margin-top: 1.5rem;" onclick="initQuiz()">Try Again</button>
+                </div>
+            `;
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            initBinaryBuilder();
+            convertDecimalToBinary();
+            displayFacts();
+            initQuiz();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>Die Welt des Blaise Pascal</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;--accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;--radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
+.lang-toggle{display:flex;gap:6px;margin-left:auto;margin-right:12px}
+.lang-btn{padding:7px 12px;font-size:12px;border:1px solid rgba(245,216,99,.3);border-radius:4px;background:transparent;color:var(--dim);cursor:pointer;transition:.2s}
+.lang-btn.active{background:var(--accent2);color:#fff;border-color:var(--accent2)}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .subtitle{font-size:19px;color:var(--dim)}
+.hero .life{margin-top:10px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
+
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.4)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px}.tl-text strong{color:var(--accent)}
+
+/* ── INTERACTIVE SHARED ── */
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+.slider-group{margin-bottom:16px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(245,216,99,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:20px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+.step-explain{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.step-item{display:flex;gap:14px;align-items:flex-start}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.step-text{font-size:15px;line-height:1.6;padding-top:5px}
+
+/* ── PATTERN BUTTONS ── */
+.pattern-btns{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;justify-content:center}
+.pattern-btn{padding:10px 18px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.25s}
+.pattern-btn:hover{border-color:var(--accent)}
+.pattern-btn.active{background:var(--accent);border-color:var(--accent);color:#000}
+
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}
+.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#f472b6}
+.fact-card:nth-child(7){border-left-color:#fb923c}
+.fact-card:nth-child(8){border-left-color:#38bdf8}
+.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}
+.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
+
+/* ── QUIZ ── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:6px;font-weight:700;color:var(--accent3);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--accent);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--accent3);background:rgba(143,212,164,.12);color:var(--accent3)}
+.answer-btn.wrong{border-color:var(--accent2);background:rgba(217,107,107,.1);color:var(--accent2)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--accent3)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--accent2)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(245,216,99,.35)}
+.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}
+.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.restart-btn:hover{transform:scale(1.05)}
+
+@media(max-width:600px){
+  nav button{padding:7px 10px;font-size:11px}
+  .card{padding:18px}
+  .answers{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr}
+  .portrait{width:120px;height:120px}
+  .lang-toggle{margin-right:6px;margin-left:auto}
+  .lang-btn{padding:6px 10px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Blaise_pascal.jpg" alt="Blaise Pascal">
+    <h1>Die Welt von Blaise Pascal</h1>
+    <p class="subtitle">Ein brillanter Verstand, ein Riese der Mathematik und Wahrscheinlichkeit</p>
+    <p class="life">1623 – 1662 · Clermont-Ferrand, Frankreich</p>
+    <p class="tagline">Er erfand einen Rechner mit 19 Jahren, entdeckte mit Fermat die Wahrscheinlichkeitstheorie, bewies, dass Luft Gewicht hat – und gab dann alles auf, um sich dem Glauben zu widmen.</p>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+  <button class="active" onclick="show('story',this)">Seine Geschichte</button>
+  <button onclick="show('triangle',this)">Pascals Dreieck</button>
+  <button onclick="show('probability',this)">Wahrscheinlichkeits-Labor</button>
+  <button onclick="show('pascaline',this)">Die Pascaline</button>
+  <button onclick="show('facts',this)">Interessante Fakten</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+  <div class="lang-toggle">
+    <a href="../pascal-explorer.html" class="lang-btn">EN</a>
+    <button class="lang-btn active">DE</button>
+  </div>
+</nav>
+
+<!-- ═══════════ STORY ═══════════ -->
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>Das Leben von Blaise Pascal</h2>
+    <p class="sub">Ein Wunderkind, das zu einem der größten Köpfe der Geschichte wurde – und dann alles aufgab.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">19. Juni 1623</div><div class="tl-text">Wurde in <strong>Clermont-Ferrand, Frankreich</strong> geboren. Sein Vater, Étienne Pascal, war Mathematiker und Richter. Seine Mutter starb, als er erst 3 Jahre alt war.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Mit 16 Jahren (1639)</div><div class="tl-text">Bewies einen wichtigen <strong>geometrischen Satz</strong> – das „Mysterium-Hexagon-Theorem". Das allein würde ihn berühmt gemacht haben. Er war erst ein Teenager!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Mit 19 Jahren (1642)</div><div class="tl-text">Erfand die <strong>Pascaline-Rechenmaschine</strong> – eine Maschine zum Addieren und Subtrahieren von Zahlen. Er baute sie, um seinem Vater bei monotonen Steuerberechnungen zu helfen. Eine der ersten Rechenmaschinen überhaupt!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Mit 23 Jahren (1646)</div><div class="tl-text">Führte das <strong>Puy-de-Dôme-Experiment</strong> über Luftdruck durch. Er bewies, dass <strong>Luft Gewicht hat</strong> – eine Entdeckung, die die wissenschaftliche Welt damals schockierte.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1654</div><div class="tl-text">Arbeitete mit dem Mathematiker <strong>Pierre de Fermat</strong> an einem Glücksspielproblem und erfand die <strong>Wahrscheinlichkeitstheorie</strong>. Sie fanden heraus, wie man Geld fair teilt, wenn ein Spiel unterbrochen wird.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">23. November 1654</div><div class="tl-text">Hatte eine <strong>religiöse Umwandlung</strong>. Er starb fast in einem Kutschenunfall und glaubte, Gott habe ihn gerettet. Er beschloss, die Wissenschaft aufzugeben und sich dem Glauben zu widmen.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Mit 39 Jahren (1662)</div><div class="tl-text">Starb am <strong>19. August</strong> in Paris, wahrscheinlich an Magenkrebs. Obwohl er die Mathematik aufgab, lebte seine Arbeit weiter und veränderte die Welt.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TRIANGLE ═══════════ -->
+<section id="sec-triangle">
+  <div class="card">
+    <h2>Pascals Dreieck – Zahlen verstecken Muster</h2>
+    <p class="sub">Eine einfache Anordnung von Zahlen, bei der jede die Summe der beiden oben ist. Aber es enthält geheime mathematische Muster!</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Die Regel:</strong> Starten Sie mit 1en an den Rändern. Jede andere Zahl ist die Summe der beiden Zahlen, die sie von oben berühren.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Beispiel:</strong> In der dritten Reihe ist die mittlere Zahl 1 + 1 = 2. In der vierten Reihe ist die erste Mitte 2 + 1 = 3.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Verborgene Muster:</strong> Jede Diagonale enthält Fibonacci-Zahlen, Reihensummen sind Potenzen von 2, und das Ungerade-Gerade-Muster bildet ein Sierpinski-Dreieck!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Erkunde Pascals Dreieck</h2>
+    <p class="sub">Ziehe den Schieberegler, um mehr Reihen hinzuzufügen. Klicke auf die Schaltflächen, um verborgene Muster zu zeigen!</p>
+    <div class="lab-layout">
+      <div><canvas id="triangleCanvas" width="380" height="400"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Anzahl der Reihen: <span id="rowsVal" style="color:var(--accent);font-size:18px;font-weight:700">8</span></label>
+          <input type="range" id="rowsSlider" min="5" max="15" step="1" value="8">
+        </div>
+        <div class="pattern-btns" id="patternBtns"></div>
+        <div class="explain-box">
+          <strong>Klicke auf ein Muster oben</strong>, um es im Dreieck hervorzuheben. <span style="color:var(--accent3)">Grün</span> = Fibonacci-Diagonale. <span style="color:var(--accent2)">Rot</span> = Potenzen von 2. <span style="color:var(--blue)">Blau</span> = Gerade Zahlen (Sierpinski).
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PROBABILITY ═══════════ -->
+<section id="sec-probability">
+  <div class="card">
+    <h2>Das Wahrscheinlichkeits-Labor</h2>
+    <p class="sub">Pascal und Fermat lösten ein Problem über faire Teilung beim Glücksspiel – und erfanden die Wahrscheinlichkeitstheorie.</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Das Problem:</strong> Zwei Freunde spielen ein Spiel und setzen gleiche Beträge. Wenn sie mitten im Spiel aufhören, wie teilen sie das Geld fair?</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Die Lösung:</strong> Pascal und Fermat erkannten, dass sie die <em>Wahrscheinlichkeit</em> berechnen konnten, dass jeder Spieler gewinnt, wenn das Spiel weitergehen würde.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Das Ergebnis:</strong> Teile den Einsatz nach ihren Gewinnwahrscheinlichkeiten. Das schuf die Wahrscheinlichkeitstheorie – die Grundlage der modernen Statistik!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Münzwurf-Simulator</h2>
+    <p class="sub">Wirf eine Münze viele Male. Beobachte, wie sich die Ergebnisse 50/50 annähern, je mehr du wirfst.</p>
+    <div class="lab-layout">
+      <div><canvas id="probCanvas" width="380" height="320"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Anzahl der Würfe: <span id="flipsVal" style="color:var(--accent);font-size:18px;font-weight:700">10</span></label>
+          <input type="range" id="flipsSlider" min="1" max="200" step="1" value="10">
+        </div>
+        <button onclick="runFlips()" style="width:100%;padding:12px;border:none;border-radius:6px;background:var(--accent);color:#000;font-weight:700;cursor:pointer;margin-bottom:16px">Werfen!</button>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="lbl">Kopf</div><div class="val" style="color:var(--accent3)" id="headsCount">0</div></div>
+          <div class="stat-box"><div class="lbl">Zahl</div><div class="val" style="color:var(--accent2)" id="tailsCount">0</div></div>
+          <div class="stat-box"><div class="lbl">Kopf %</div><div class="val" style="color:var(--accent)" id="headsPercent">—</div></div>
+          <div class="stat-box"><div class="lbl">Zahl %</div><div class="val" style="color:var(--blue)" id="tailsPercent">—</div></div>
+        </div>
+        <div class="explain-box">
+          <strong>Beobachte:</strong> Bei wenigen Würfen sind die Ergebnisse zufällig. Bei vielen Würfen nähern sich beide 50 % an!
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PASCALINE ═══════════ -->
+<section id="sec-pascaline">
+  <div class="card">
+    <h2>Die Pascaline – Der erste Rechner</h2>
+    <p class="sub">Mit 19 Jahren erfand Pascal eine mechanische Additionsmaschine, um seinem Vater zu helfen. Es war revolutionär!</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Das Problem:</strong> Pascals Vater war Steuereintreiber. Steuern zu berechnen bedeutete Stunden monotone Addition. Pascal wollte eine Maschine bauen, um es zu tun.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Die Erfindung:</strong> Die <strong>Pascaline</strong> hatte Räder mit Zahlen 0–9. Du würdest die Räder drehen, um Zahlen eingeben zu geben, und Zahnräder im Inneren würden automatisch überträgen (wie 7 + 5 addieren und einen Übertrag zur Zehnerstelle bekommen).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Ein Problem:</strong> Die Pascaline kostete ein Vermögen – etwa 30-mal so viel wie ein gutes Haus! Wenige Menschen konnten es sich leisten. Aber es zeigte, dass Maschinen menschliche Mathematik ersetzen konnten.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Probiere die Pascaline</h2>
+    <p class="sub">Addiere zwei Zahlen und beobachte, wie sich die Zahnräder drehen (Simulation).</p>
+    <div class="lab-layout">
+      <div><canvas id="pascalineCanvas" width="380" height="350"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Erste Zahl: <span id="num1Val" style="color:var(--accent);font-size:18px;font-weight:700">5</span></label>
+          <input type="range" id="num1Slider" min="0" max="99" value="5">
+        </div>
+        <div class="slider-group">
+          <label>Zweite Zahl: <span id="num2Val" style="color:var(--accent2);font-size:18px;font-weight:700">3</span></label>
+          <input type="range" id="num2Slider" min="0" max="99" value="3">
+        </div>
+        <button onclick="animateAddition()" style="width:100%;padding:12px;border:none;border-radius:6px;background:var(--accent);color:#000;font-weight:700;cursor:pointer;margin-bottom:16px">Berechnen!</button>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="lbl">Erste</div><div class="val" style="color:var(--accent)" id="displayNum1">0</div></div>
+          <div class="stat-box"><div class="lbl">Zweite</div><div class="val" style="color:var(--accent2)" id="displayNum2">0</div></div>
+          <div class="stat-box"><div class="lbl">Ergebnis</div><div class="val" style="color:var(--accent3);font-size:24px" id="displayResult">—</div></div>
+        </div>
+        <div class="explain-box">
+          <strong>Wie es funktioniert:</strong> Die Pascaline hatte gezahnte Räder. Ein Rad zu drehen würde Zahnräder einrasten, um das nächste zu drehen und die Mathematik automatisch zu machen!
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FUN FACTS ═══════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>12 atemberaubende Pascal-Fakten</h2>
+    <p class="sub">Ein Genie, das die Welt veränderte, dann aufgab.</p>
+    <div class="facts-grid">
+      <div class="fact-card"><div class="fact-icon">👶</div><div class="fact-title">Wunderkind</div><div class="fact-text">Mit 16 Jahren bewies Pascal einen großen geometrischen Satz (das Mysterium-Hexagon-Theorem). Diese Entdeckung allein würde viele Mathematiker berühmt machen – er war erst ein Teenager!</div></div>
+      <div class="fact-card"><div class="fact-icon">🧮</div><div class="fact-title">Erfand den Taschenrechner</div><div class="fact-text">Die Pascaline (1642) war eine der ersten Rechenmaschinen überhaupt, die je gebaut wurde. Sie konnte mit mechanischen Zahnrädern und Rädern addieren und subtrahieren. Moderne Taschenrechner stammen von seinem Design!</div></div>
+      <div class="fact-card"><div class="fact-icon">🎰</div><div class="fact-title">Pascals Wette</div><div class="fact-text">Ein berühmtes Argument, das Pascal über den Glauben an Gott machte: „Wenn Gott nicht existiert, verliere ich nichts. Wenn Gott existiert, gewinne ich alles. Daher sollte ich glauben." Philosophen diskutieren es heute noch!</div></div>
+      <div class="fact-card"><div class="fact-icon">⚡</div><div class="fact-title">Luft hat Gewicht!</div><div class="fact-text">Pascal bewies, dass Luft Gewicht hat und Luftdruck erzeugt. Damals dachten die meisten Menschen, leerer Raum sei unmöglich. Seine Experimente veränderten die Wissenschaft für immer.</div></div>
+      <div class="fact-card"><div class="fact-icon">😨</div><div class="fact-title">Angst vor leerem Raum</div><div class="fact-text">Pascal war besessen von der Idee des „horror vacui" – der Angst vor leerem Raum. Er führte unzählige Experimente durch, um zu beweis
+en, dass Vakuum real ist. Es trieb ihn fast zum Wahnsinn!</div></div>
+      <div class="fact-card"><div class="fact-icon">💉</div><div class="fact-title">Erfinder der Spritze</div><div class="fact-text">Pascal half, die Spritze basierend auf seinen Ideen über Luftdruck und Vakuum zu entwickeln. Moderne medizinische Spritzen basieren teilweise auf seiner Arbeit!</div></div>
+      <div class="fact-card"><div class="fact-icon">🇨🇳</div><div class="fact-title">Nicht das erste Dreieck</div><div class="fact-text">Pascals Dreieck war in China Jahrhunderte früher als „Yang Huis Dreieck" bekannt. Aber Pascal entdeckte es unabhängig und machte es so berühmt, dass sein Name haften blieb!</div></div>
+      <div class="fact-card"><div class="fact-icon">⏳</div><div class="fact-title">Nur 39 Jahre alt</div><div class="fact-text">Pascal starb mit nur 39 Jahren, wahrscheinlich an Magenkrebs. Stell dir vor, was er alles hätte erreichen können, wenn er länger gelebt hätte! In diesen 39 Jahren veränderte er Mathematik, Physik und Philosophie.</div></div>
+      <div class="fact-card"><div class="fact-icon">🙏</div><div class="fact-title">Gab alles für Gott auf</div><div class="fact-text">Nach einem fast tödlichen Kutschenunfall 1654 hatte Pascal ein religiöses Erwachen. Er gab Mathematik und Wissenschaft auf, um über Glauben und Religion zu schreiben.</div></div>
+      <div class="fact-card"><div class="fact-icon">🎲</div><div class="fact-title">Wahrscheinlichkeit aus einer Glücksspielfrage</div><div class="fact-text">Pascals Arbeit zur Wahrscheinlichkeit begann mit einer Frage: „Wie sollten zwei Spieler den Topf teilen, wenn das Spiel unterbrochen wird?" Seine Antwort schuf das ganze Gebiet der Wahrscheinlichkeitstheorie!</div></div>
+      <div class="fact-card"><div class="fact-icon">💸</div><div class="fact-title">Kostete mehr als sie wert war</div><div class="fact-text">Die Pascaline-Rechenmaschine war so teuer (etwa 30-mal der Preis eines Hauses), dass sehr wenige Menschen sie kauften. Aber sie bewies, dass tiefes Nachdenken über Probleme zu Innovation führt, nicht nur Anstrengung.</div></div>
+      <div class="fact-card"><div class="fact-icon">🚌</div><div class="fact-title">Französisches Bussystem nach ihm benannt</div><div class="fact-text">Das Pariser Bussystem hat eine Druckeinheit, die zu seinen Ehren „pascal" (Pa) genannt wird. Wetterberichte verwenden Millibar und Hektopascal (hPa) jeden Tag – Pascals Erbe überall!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<section id="sec-quiz">
+  <div class="card" id="quizCard">
+    <div class="quiz-header">
+      <h2>Pascal-Quiz!</h2>
+      <div class="score-badge">Punkte: <span id="quizScore">0</span> / <span id="quizTotal">10</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
+    <div id="quizBody">
+      <div class="question-text" id="questionText"></div>
+      <div class="answers" id="answersDiv"></div>
+      <div class="feedback" id="feedback"></div>
+      <div style="text-align:center;"><button class="next-btn" id="nextBtn" onclick="nextQ()">Nächste Frage →</button></div>
+    </div>
+    <div class="quiz-complete" id="quizComplete" style="display:none">
+      <h2>Quiz abgeschlossen!</h2>
+      <div class="final-score" id="finalScore"></div>
+      <p id="finalMsg" style="font-size:17px;color:var(--dim)"></p>
+      <button class="restart-btn" onclick="startQuiz()">Erneut versuchen</button>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center;padding:28px 20px 50px;color:var(--dim);font-size:12px;">
+  Porträt: Blaise Pascal (gemeinfrei über Wikimedia Commons)<br>
+  Erbaut mit Neugier, Berechnung und Wunder.
+</div>
+
+<script>
+/* ═══════ NAVIGATION ═══════ */
+function show(name,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+name).classList.add('visible');
+  document.querySelectorAll('nav button:not(.lang-btn)').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='quiz'&&quizQs.length===0) startQuiz();
+}
+
+/* ═══════ PASCAL'S TRIANGLE ═══════ */
+const triC=document.getElementById('triangleCanvas'),triCtx=triC.getContext('2d');
+const rowsSlider=document.getElementById('rowsSlider');
+let highlightedPattern=null;
+let pascalTriangle=[];
+
+function generatePascalTriangle(n){
+  const tri=[];
+  for(let i=0;i<n;i++){
+    tri[i]=[];
+    for(let j=0;j<=i;j++){
+      if(j===0||j===i)tri[i][j]=1;
+      else tri[i][j]=tri[i-1][j-1]+tri[i-1][j];
+    }
+  }
+  return tri;
+}
+
+function drawTriangle(){
+  const n=parseInt(rowsSlider.value);
+  pascalTriangle=generatePascalTriangle(n);
+  triCtx.clearRect(0,0,380,400);
+  triCtx.fillStyle=var("--text");
+  triCtx.font='14px sans-serif';
+  triCtx.textAlign='center';
+
+  const startY=30,rowH=28;
+  for(let i=0;i<n;i++){
+    const x0=190-(i*13);
+    const row=pascalTriangle[i];
+    for(let j=0;j<row.length;j++){
+      const val=row[j];
+      const x=x0+j*26;
+      const y=startY+i*rowH;
+
+      let color='var(--text)';
+      let bgColor='transparent';
+
+      if(highlightedPattern==='fibonacci'){
+        if(i===j){
+          color='var(--accent3)';bgColor='rgba(143,212,164,.15)';
+        }
+      } else if(highlightedPattern==='power2'){
+        let sum=0;
+        for(let k=0;k<row.length;k++)sum+=row[k];
+        if(sum===(1<<i)){color='var(--accent2)';bgColor='rgba(217,107,107,.15)'}
+      } else if(highlightedPattern==='sierpinski'){
+        if(val%2===0){color='var(--blue)';bgColor='rgba(123,184,224,.15)'}
+      }
+
+      if(bgColor!=='transparent'){
+        triCtx.fillStyle=bgColor;triCtx.fillRect(x-9,y-9,18,18);
+      }
+      triCtx.fillStyle=color;
+      triCtx.fillText(val,x,y+5);
+    }
+  }
+  triCtx.fillStyle='var(--dim)';
+  triCtx.font='12px sans-serif';
+  triCtx.textAlign='left';
+  triCtx.fillText('Jede Zahl = Summe der zwei oben',10,390);
+}
+
+function setupPatternButtons(){
+  const patterns=[
+    {id:'fibonacci',label:'Fibonacci-Diagonale',color:'--accent3'},
+    {id:'power2',label:'Potenzen von 2 (Reihensummen)',color:'--accent2'},
+    {id:'sierpinski',label:'Ungerade-Gerade-Muster',color:'--blue'}
+  ];
+  const container=document.getElementById('patternBtns');
+  patterns.forEach(p=>{
+    const b=document.createElement('button');
+    b.className='pattern-btn';
+    b.textContent=p.label;
+    b.onclick=()=>{
+      document.querySelectorAll('.pattern-btn').forEach(x=>x.classList.remove('active'));
+      if(highlightedPattern===p.id){
+        highlightedPattern=null;
+      } else {
+        highlightedPattern=p.id;
+        b.classList.add('active');
+      }
+      drawTriangle();
+    };
+    container.appendChild(b);
+  });
+}
+
+rowsSlider.addEventListener('input',drawTriangle);
+setupPatternButtons();
+drawTriangle();
+
+/* ═══════ PROBABILITY LAB ═══════ */
+const probC=document.getElementById('probCanvas'),probCtx=probC.getContext('2d');
+const flipsSlider=document.getElementById('flipsSlider');
+let headsCount=0,tailsCount=0;
+
+function drawProbChart(){
+  probCtx.clearRect(0,0,380,320);
+
+  const total=headsCount+tailsCount;
+  if(total===0){
+    probCtx.fillStyle='var(--dim)';
+    probCtx.font='16px sans-serif';
+    probCtx.textAlign='center';
+    probCtx.fillText('Klick „Werfen!" zum Starten',190,160);
+    probCtx.textAlign='start';
+    return;
+  }
+
+  // Draw bars
+  const barW=100,barH=120;
+  const x1=60,x2=220;
+  const y0=200;
+
+  const headsH=total>0?(headsCount/total)*barH:0;
+  const tailsH=total>0?(tailsCount/total)*barH:0;
+
+  // Heads bar
+  probCtx.fillStyle='rgba(143,212,164,.3)';
+  probCtx.fillRect(x1-barW/2,y0-headsH,barW,headsH);
+  probCtx.strokeStyle='var(--accent3)';
+  probCtx.lineWidth=2;
+  probCtx.strokeRect(x1-barW/2,y0-headsH,barW,headsH);
+
+  // Tails bar
+  probCtx.fillStyle='rgba(217,107,107,.3)';
+  probCtx.fillRect(x2-barW/2,y0-tailsH,barW,tailsH);
+  probCtx.strokeStyle='var(--accent2)';
+  probCtx.lineWidth=2;
+  probCtx.strokeRect(x2-barW/2,y0-tailsH,barW,tailsH);
+
+  // Labels and values
+  probCtx.fillStyle='var(--text)';
+  probCtx.font='bold 16px sans-serif';
+  probCtx.textAlign='center';
+  probCtx.fillText('Kopf',x1,y0+20);
+  probCtx.fillText('Zahl',x2,y0+20);
+
+  probCtx.font='bold 20px sans-serif';
+  probCtx.fillStyle='var(--accent3)';
+  probCtx.fillText(headsCount,x1,y0-headsH-10);
+  probCtx.fillStyle='var(--accent2)';
+  probCtx.fillText(tailsCount,x2,y0-tailsH-10);
+
+  // Expected line
+  probCtx.strokeStyle='rgba(245,216,99,.3)';
+  probCtx.lineWidth=2;
+  probCtx.setLineDash([4,4]);
+  probCtx.beginPath();
+  probCtx.moveTo(20,y0-barH/2);
+  probCtx.lineTo(320,y0-barH/2);
+  probCtx.stroke();
+  probCtx.setLineDash([]);
+  probCtx.fillStyle='rgba(245,216,99,.5)';
+  probCtx.font='11px sans-serif';
+  probCtx.textAlign='left';
+  probCtx.fillText('Erwartet 50%',25,y0-barH/2-5);
+}
+
+function runFlips(){
+  const n=parseInt(flipsSlider.value);
+  headsCount=0;tailsCount=0;
+  for(let i=0;i<n;i++){
+    if(Math.random()<0.5)headsCount++;
+    else tailsCount++;
+  }
+  const total=headsCount+tailsCount;
+  document.getElementById('headsCount').textContent=headsCount;
+  document.getElementById('tailsCount').textContent=tailsCount;
+  document.getElementById('headsPercent').textContent=((headsCount/total)*100).toFixed(1)+'%';
+  document.getElementById('tailsPercent').textContent=((tailsCount/total)*100).toFixed(1)+'%';
+  drawProbChart();
+}
+
+flipsSlider.addEventListener('input',()=>{
+  document.getElementById('flipsVal').textContent=flipsSlider.value;
+});
+
+drawProbChart();
+
+/* ═══════ PASCALINE ═══════ */
+const pascC=document.getElementById('pascalineCanvas'),pascCtx=pascC.getContext('2d');
+const num1Slider=document.getElementById('num1Slider'),num2Slider=document.getElementById('num2Slider');
+let animationStep=0;
+
+function drawPascaline(){
+  pascCtx.clearRect(0,0,380,350);
+
+  // Frame
+  pascCtx.fillStyle='rgba(100,130,100,.15)';
+  pascCtx.fillRect(20,40,340,200);
+  pascCtx.strokeStyle='rgba(245,216,99,.3)';
+  pascCtx.lineWidth=2;
+  pascCtx.strokeRect(20,40,340,200);
+
+  // Wheels/Dials
+  const dialY=130,spacing=85;
+  const n1=parseInt(num1Slider.value);
+  const n2=parseInt(num2Slider.value);
+
+  // Left wheel (first number)
+  pascCtx.fillStyle='rgba(245,216,99,.2)';
+  pascCtx.beginPath();
+  pascCtx.arc(70,dialY,35,0,Math.PI*2);
+  pascCtx.fill();
+  pascCtx.strokeStyle='var(--accent)';
+  pascCtx.lineWidth=2;
+  pascCtx.stroke();
+
+  pascCtx.fillStyle='var(--accent)';
+  pascCtx.font='bold 20px sans-serif';
+  pascCtx.textAlign='center';
+  pascCtx.fillText(String(n1).padStart(2,'0'),70,dialY+7);
+
+  // Gear teeth
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2*i/8;
+    const x=70+Math.cos(a)*38;
+    const y=dialY+Math.sin(a)*38;
+    pascCtx.fillStyle='rgba(245,216,99,.4)';
+    pascCtx.fillRect(x-2,y-3,4,6);
+  }
+
+  // Middle wheel (second number)
+  pascCtx.fillStyle='rgba(217,107,107,.2)';
+  pascCtx.beginPath();
+  pascCtx.arc(190,dialY,35,0,Math.PI*2);
+  pascCtx.fill();
+  pascCtx.strokeStyle='var(--accent2)';
+  pascCtx.lineWidth=2;
+  pascCtx.stroke();
+
+  pascCtx.fillStyle='var(--accent2)';
+  pascCtx.font='bold 20px sans-serif';
+  pascCtx.textAlign='center';
+  pascCtx.fillText(String(n2).padStart(2,'0'),190,dialY+7);
+
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2*i/8;
+    const x=190+Math.cos(a)*38;
+    const y=dialY+Math.sin(a)*38;
+    pascCtx.fillStyle='rgba(217,107,107,.4)';
+    pascCtx.fillRect(x-2,y-3,4,6);
+  }
+
+  // Right wheel (result)
+  const result=(n1+n2)%100;
+  pascCtx.fillStyle='rgba(143,212,164,.2)';
+  pascCtx.beginPath();
+  pascCtx.arc(310,dialY,35,0,Math.PI*2);
+  pascCtx.fill();
+  pascCtx.strokeStyle='var(--accent3)';
+  pascCtx.lineWidth=2;
+  pascCtx.stroke();
+
+  pascCtx.fillStyle='var(--accent3)';
+  pascCtx.font='bold 20px sans-serif';
+  pascCtx.textAlign='center';
+  pascCtx.fillText(String(result).padStart(2,'0'),310,dialY+7);
+
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2*i/8;
+    const x=310+Math.cos(a)*38;
+    const y=dialY+Math.sin(a)*38;
+    pascCtx.fillStyle='rgba(143,212,164,.4)';
+    pascCtx.fillRect(x-2,y-3,4,6);
+  }
+
+  // Labels
+  pascCtx.fillStyle='var(--dim)';
+  pascCtx.font='12px sans-serif';
+  pascCtx.textAlign='center';
+  pascCtx.fillText('Erste',70,270);
+  pascCtx.fillText('Zweite',190,270);
+  pascCtx.fillText('Ergebnis',310,270);
+
+  // Plus/Equals signs
+  pascCtx.fillStyle='var(--text)';
+  pascCtx.font='28px sans-serif';
+  pascCtx.fillText('+',130,dialY+10);
+  pascCtx.fillText('=',250,dialY+10);
+
+  document.getElementById('displayNum1').textContent=n1;
+  document.getElementById('displayNum2').textContent=n2;
+  document.getElementById('displayResult').textContent=result;
+}
+
+function animateAddition(){
+  animationStep=0;
+  const animate=()=>{
+    animationStep++;
+    drawPascaline();
+    if(animationStep<20)setTimeout(animate,50);
+  };
+  animate();
+}
+
+num1Slider.addEventListener('input',()=>{
+  document.getElementById('num1Val').textContent=num1Slider.value;
+  drawPascaline();
+});
+
+num2Slider.addEventListener('input',()=>{
+  document.getElementById('num2Val').textContent=num2Slider.value;
+  drawPascaline();
+});
+
+drawPascaline();
+
+/* ═══════ QUIZ ═══════ */
+let quizQs=[],qIdx=0,score=0;
+const TOTAL=10;
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function genQuestions(){
+  const pool=[
+    {q:'In welchem Jahr wurde Blaise Pascal geboren?',correct:'1623',opts:['1623','1642','1654','1662'],ex:'Pascal wurde am 19. Juni 1623 in Clermont-Ferrand, Frankreich geboren. Er lebte nur 39 Jahre.'},
+    {q:'Was erfand Pascal mit 19 Jahren?',correct:'Die Pascaline-Rechenmaschine',opts:['Die Pascaline-Rechenmaschine','Eine Dampfmaschine','Das Thermometer','Ein Teleskop'],ex:'Die Pascaline (1642) war eine der ersten Rechenmaschinen überhaupt. Sie konnte mit Zahnrädern und Rädern addieren und subtrahieren.'},
+    {q:'Welchen berühmten Satz bewies Pascal mit 16 Jahren?',correct:'Das Mysterium-Hexagon-Theorem',opts:['Das Mysterium-Hexagon-Theorem','Den Satz des Pythagoras','Fermats letzten Satz','Den Primzahlsatz'],ex:'Mit nur 16 Jahren bewies Pascal das Mysterium-Hexagon-Theorem – eine großartige Entdeckung in der Geometrie. Das allein würde ihn berühmt gemacht haben!'},
+    {q:'Welches Experiment bewies, dass Luft Gewicht hat?',correct:'Das Puy-de-Dôme-Experiment',opts:['Das Puy-de-Dôme-Experiment','Der Apfelfalltest','Der Pendeltest','Der Lichtstrahlentest'],ex:'Pascals Puy-de-Dôme-Experiment (1646) bewies, dass Luft Gewicht hat und Luftdruck erzeugt. Das war damals revolutionär!'},
+    {q:'Mit wem arbeitete Pascal, um die Wahrscheinlichkeitstheorie zu erfinden?',correct:'Pierre de Fermat',opts:['Pierre de Fermat','Isaac Newton','Galileo Galilei','René Descartes'],ex:'1654 lösten Pascal und Fermat ein Glücksspielproblem zusammen, das die Wahrscheinlichkeitstheorie schuf – die Grundlage der Statistik!'},
+    {q:'Was verursachte Pascals religiöse Umwandlung?',correct:'Ein fast tödlicher Kutschenunfall',opts:['Ein fast tödlicher Kutschenunfall','Das Lesen eines religiösen Buches','Ein Traum von Gott','Der Tod seines Vaters'],ex:'Am 23. November 1654 starb Pascal fast in einem Kutschenunfall. Er glaubte, Gott habe ihn gerettet, was zu seiner religiösen Umwandlung führte.'},
+    {q:'Welche Regel bestimmt jede Zahl in Pascals Dreieck?',correct:'Summe der zwei oben',opts:['Summe der zwei oben','Summe der zwei unten','Produkt der Nachbarn','Immer das Gleiche'],ex:'Jede Zahl in Pascals Dreieck ist die Summe der beiden Zahlen, die sie von oben berühren. Das schafft wunderbare mathematische Muster!'},
+    {q:'Welchem Muster folgen die Diagonalsummen in Pascals Dreieck?',correct:'Fibonacci-Zahlen',opts:['Fibonacci-Zahlen','Primzahlen','Vollkommene Quadrate','Potenzen von 2'],ex:'Die Diagonalsummen von Pascals Dreieck erzeugen die Fibonacci-Folge: 1, 1, 2, 3, 5, 8, 13, 21...'},
+    {q:'Womit sind gleich die Summen jeder Reihe in Pascals Dreieck?',correct:'Potenzen von 2',opts:['Potenzen von 2','Dreieckszahlen','Fakultäten','Fibonacci-Zahlen'],ex:'Reihe 1 summiert sich zu 1 (2⁰), Reihe 2 zu 2 (2¹), Reihe 3 zu 4 (2²), Reihe 4 zu 8 (2³), und so weiter.'},
+    {q:'Wie half das Glücksspielproblem, die Wahrscheinlichkeitstheorie zu schaffen?',correct:'Sie berechneten faire Aufteilung der Einsätze nach Gewinnchancen',opts:['Sie berechneten faire Aufteilung der Einsätze nach Gewinnchancen','Sie erfanden Würfel','Sie erstellten Wettquoten','Sie machten eine Formel für Glück'],ex:'Wenn ein Spiel früh endete, wie sollten Spieler den Pott teilen? Pascal und Fermat erkannten, dass sie die Gewinnwahrscheinlichkeit jedes Spielers berechnen konnten!'},
+    {q:'Was war ein großes Problem mit der Pascaline-Rechenmaschine?',correct:'Sie war extrem teuer',opts:['Sie war extrem teuer','Sie funktionierte nicht','Sie war zu schwer','Menschen verstanden sie nicht'],ex:'Die Pascaline kostete etwa 30-mal so viel wie ein Haus! Sehr wenige Menschen konnten sich das leisten, daher wurde sie nicht populär.'},
+    {q:'Worum geht es in Pascals Wette?',correct:'Glaube an Gott',opts:['Glaube an Gott','Die Natur der Zeit','Die Größe des Universums','Die Kraft der Wissenschaft'],ex:'„Wenn Gott nicht existiert, verliere ich nichts. Wenn Gott existiert, gewinne ich alles. Daher sollte ich glauben." – Pascals Wette'},
+    {q:'Wovor hatte Pascal Angst?',correct:'Leerer Raum (Horror Vacui)',opts:['Leerer Raum (Horror Vacui)','Dunkelheit','Höhen','Die Zahl 13'],ex:'Pascal war besessen von der Idee des leeren Raums (Vakuum). Er führte unzählige Experimente durch – es trieb ihn fast zum Wahnsinn!'},
+    {q:'Wozu führte Pascals Arbeit über Luftdruck?',correct:'Die Spritze',opts:['Die Spritze','Das Thermometer','Das Barometer','Das Teleskop'],ex:'Basierend auf Pascals Ideen über Luftdruck und Vakuum wurden frühe Spritzen entwickelt. Moderne Spritzen nutzen diese Prinzipien heute noch!'},
+    {q:'In welchem Alter starb Pascal?',correct:'39',opts:['39','50','62','75'],ex:'Pascal starb am 19. August 1662 mit nur 39 Jahren, wahrscheinlich an Magenkrebs. Stell dir vor, was er noch hätte tun können!'},
+    {q:'Entdeckte Pascal das Dreieck zuerst?',correct:'Nein, es war Jahrhunderte früher in China bekannt',opts:['Nein, es war Jahrhunderte früher in China bekannt','Ja, Pascal war der Erste','Nein, Fermat entdeckte es','Nein, die alten Griechen kannten es'],ex:'Yang Hui in China entdeckte das gleiche Muster Jahrhunderte vor Pascal. Aber Pascal studierte es intensiv und machte es so berühmt, dass sein Name haften blieb!'},
+  ];
+  return shuffle(pool).slice(0,TOTAL);
+}
+
+function startQuiz(){
+  quizQs=genQuestions();qIdx=0;score=0;
+  document.getElementById('quizScore').textContent=0;
+  document.getElementById('quizTotal').textContent=TOTAL;
+  document.getElementById('quizBody').style.display='block';
+  document.getElementById('quizComplete').style.display='none';
+  showQ();
+}
+
+function showQ(){
+  const q=quizQs[qIdx];
+  document.getElementById('questionText').textContent=(qIdx+1)+'. '+q.q;
+  document.getElementById('quizProgress').style.width=((qIdx/TOTAL)*100)+'%';
+  document.getElementById('feedback').className='feedback';document.getElementById('feedback').style.display='none';
+  document.getElementById('nextBtn').className='next-btn';
+  const div=document.getElementById('answersDiv');div.innerHTML='';
+  shuffle(q.opts).forEach(opt=>{
+    const b=document.createElement('button');b.className='answer-btn';b.textContent=opt;
+    b.onclick=()=>checkA(opt,q);div.appendChild(b);
+  });
+}
+
+function checkA(chosen,q){
+  document.querySelectorAll('.answer-btn').forEach(b=>{
+    b.classList.add('locked');b.style.pointerEvents='none';
+    if(b.textContent===q.correct)b.classList.add('correct');
+    if(b.textContent===chosen&&chosen!==q.correct)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  if(chosen===q.correct){score++;fb.className='feedback correct-fb show';fb.innerHTML='<strong>Richtig!</strong> '+q.ex}
+  else{fb.className='feedback wrong-fb show';fb.innerHTML='<strong>Nicht ganz.</strong> '+q.ex}
+  document.getElementById('quizScore').textContent=score;
+  document.getElementById('nextBtn').className='next-btn show';
+}
+
+function nextQ(){
+  qIdx++;
+  if(qIdx>=TOTAL){
+    document.getElementById('quizBody').style.display='none';
+    document.getElementById('quizComplete').style.display='block';
+    document.getElementById('finalScore').textContent=score+' / '+TOTAL;
+    const p=score/TOTAL;
+    document.getElementById('finalMsg').textContent=p===1?'Perfekt! Pascal selbst würde beeindruckt sein!':p>=.7?'Großartig! Du kennst Pascal in- und auswendig!':p>=.4?'Gute Leistung! Probiere die interaktiven Abschnitte aus und nimm das Quiz erneut.':'Weiter erkunden! Das Dreieck und Wahrscheinlichkeitslabor sind großartig zum Wiederholen.';
+    document.getElementById('quizProgress').style.width='100%';
+  } else showQ();
+}
+
+window.addEventListener('resize', function(){
+  drawTriangle();
+  drawPascaline();
+  drawProbChart();
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  console.log('Pascal Explorer geladen erfolgreich');
+});
+
+document.addEventListener('keydown', function(e){
+  const buttons=document.querySelectorAll('nav button:not(.lang-btn)');
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'){
+    const active=document.querySelector('nav button.active');
+    const index=Array.from(buttons).indexOf(active);
+    if(index<buttons.length-1)buttons[index+1].click();
+  } else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){
+    const active=document.querySelector('nav button.active');
+    const index=Array.from(buttons).indexOf(active);
+    if(index>0)buttons[index-1].click();
+  }
+});
+</script>
+</body>
+</html>

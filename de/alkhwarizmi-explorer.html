@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>Die Welt von Al-Khwarizmi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;--accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;--radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
+
+/* ── LANG TOGGLE ── */
+.lang-toggle{position:absolute;right:20px;display:flex;gap:6px}
+.lang-btn{padding:6px 12px;border:1px solid rgba(245,216,99,.3);border-radius:4px;background:transparent;color:var(--dim);font-size:12px;font-weight:600;cursor:pointer;transition:.25s}
+.lang-btn:hover{color:#fff;border-color:var(--accent)}
+.lang-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;background:linear-gradient(135deg,#f5d863,#d96b6b);border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px;display:flex;align-items:center;justify-content:center;font-size:80px}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .subtitle{font-size:19px;color:var(--dim)}
+.hero .life{margin-top:10px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
+
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.4)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px}.tl-text strong{color:var(--accent)}
+
+/* ── INTERACTIVE SHARED ── */
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+.slider-group{margin-bottom:16px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(245,216,99,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:20px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+.step-explain{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.step-item{display:flex;gap:14px;align-items:flex-start}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.step-text{font-size:15px;line-height:1.6;padding-top:5px}
+
+/* ── BUTTONS ── */
+.obj-picker{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;justify-content:center}
+.obj-btn{padding:10px 18px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.25s}
+.obj-btn:hover{border-color:var(--accent)}
+.obj-btn.active{background:var(--accent);border-color:var(--accent);color:#000}
+
+.equation-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;justify-content:center}
+.step-btn{padding:10px 16px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.25s}
+.step-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(245,216,99,.08)}
+.step-btn:disabled{opacity:.4;cursor:not-allowed}
+.step-btn.completed{background:var(--accent3);border-color:var(--accent3);color:#000}
+
+.puzzle-buttons{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;justify-content:center}
+.drag-step{padding:12px 14px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:rgba(245,216,99,.04);color:var(--text);font-size:13px;font-weight:600;cursor:move;transition:.25s}
+.drag-step:hover{border-color:var(--accent);background:rgba(245,216,99,.12)}
+.drag-step.placed{background:var(--accent3);border-color:var(--accent3);color:#000;cursor:default}
+
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}
+.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#f472b6}
+.fact-card:nth-child(7){border-left-color:#fb923c}
+.fact-card:nth-child(8){border-left-color:#38bdf8}
+.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}
+.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
+
+/* ── QUIZ ── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:6px;font-weight:700;color:var(--accent3);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--accent);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--accent3);background:rgba(143,212,164,.12);color:var(--accent3)}
+.answer-btn.wrong{border-color:var(--accent2);background:rgba(217,107,107,.1);color:var(--accent2)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--accent3)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--accent2)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(245,216,99,.35)}
+.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}
+.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.restart-btn:hover{transform:scale(1.05)}
+
+/* ── EQUATION DISPLAY ── */
+.equation-display{background:rgba(245,216,99,.08);border-radius:12px;padding:20px;margin-bottom:18px;font-family:'Times New Roman',serif;font-size:24px;font-weight:700;text-align:center;border:2px solid rgba(245,216,99,.2)}
+.equation-step{color:var(--accent);margin:8px 0}
+
+/* ── CONVERTER LAYOUT ── */
+.converter-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:600px){
+  .converter-grid{grid-template-columns:1fr}
+  .answers{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr}
+  .portrait{width:120px;height:120px}
+  nav button{padding:7px 10px;font-size:11px}
+  .card{padding:18px}
+  .lang-toggle{position:static;margin-top:10px}
+}
+
+.converter-box{background:rgba(245,216,99,.06);border-radius:12px;padding:14px;text-align:center;border:1px solid rgba(245,216,99,.2)}
+.converter-box label{display:block;font-size:12px;color:var(--dim);text-transform:uppercase;margin-bottom:8px}
+.converter-box input{width:100%;padding:8px;background:rgba(245,216,99,.1);border:1px solid rgba(245,216,99,.2);border-radius:6px;color:var(--accent);font-weight:700;text-align:center;font-size:14px}
+.converter-result{font-size:16px;font-weight:700;color:var(--accent);margin-top:8px;word-break:break-all}
+
+.race-timer{font-size:32px;font-weight:800;text-align:center;margin:14px 0;color:var(--accent)}
+.race-result{text-align:center;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;margin-top:14px;font-size:15px}
+
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <button class="lang-btn" onclick="switchLang('../alkhwarizmi-explorer.html')">EN</button>
+  <button class="lang-btn active" onclick="switchLang('self')">DE</button>
+</div>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="portrait">📚</div>
+    <h1>Die Welt von Al-Khwarizmi</h1>
+    <p class="subtitle">Das Genie, das Algebra und Algorithmen erfand</p>
+    <p class="life">ca. 780 – ca. 850 n. Chr. · Chwarezm (modernes Usbekistan)</p>
+    <p class="tagline">Er erfand eine völlig neue Methode, Matheaufgaben Schritt für Schritt zu lösen, führte die Welt in die Null und Hindu-arabische Ziffern ein, und sein Name wurde zum Wort „Algorithmus". Seine Ideen prägen die ganze moderne Mathematik und Informatik.</p>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+  <button class="active" onclick="show('story',this)">Seine Geschichte</button>
+  <button onclick="show('algebra',this)">Algebra Labor</button>
+  <button onclick="show('numbers',this)">Zahlensystem</button>
+  <button onclick="show('algorithms',this)">Algorithmus-Baum</button>
+  <button onclick="show('facts',this)">Spaßfakten</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+</nav>
+
+<!-- ═══════════ STORY ═══════════ -->
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>Das Leben von Al-Khwarizmi</h2>
+    <p class="sub">Mathematiker, Astronom und Erfinder der Algebra — die Grundlage aller modernen Mathematik und Informatik.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">ca. 780 n. Chr.</div><div class="tl-text">Geburt in <strong>Chwarezm</strong>, einer großen Stadt in Zentralasien (heutiges Usbekistan). Eines der wichtigsten Wissenszentren der islamischen Welt.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">ca. 820 n. Chr.</div><div class="tl-text">Umzug nach <strong>Bagdad</strong> und Beitritt zum <strong>Haus der Weisheit</strong> — eine unglaubliche Bibliothek und Forschungszentrum, gegründet von Kalif al-Ma'mun. Es war wie eine alte Universität, ein Ort, an dem die weltweit besten Gelehrten zusammenarbeiteten.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">ca. 820 n. Chr.</div><div class="tl-text">Schreiben von <strong>„Al-Kitab al-Mukhtasar"</strong> (Das Buch über die Berechnung durch Vervollständigung und Ausgleich). Dies war DAS erste Algebra-Lehrbuch. Das Wort „Algebra" kommt von „al-jabr", eine Schlüsseltechnik in seinem Buch!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">ca. 820-830 n. Chr.</div><div class="tl-text">Ein Buch über <strong>Hindu-arabische Ziffern</strong> (0, 1, 2, 3...) und Dezimal-Mathematik in die islamische Welt einführen. Vorher benutzten die meisten Leute römische Ziffern oder Rechentische. Seine Arbeit verbreitete sich schließlich nach Europa und veränderte die Mathematik für immer.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">ca. 825 n. Chr.</div><div class="tl-text">Schreiben über <strong>Geografie und Astronomie</strong>, einschließlich Arbeiten, die bei der Schätzung des <strong>Erdumfangs</strong> halfen — erstaunlich nah am tatsächlichen Wert!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Sein ganzes Leben lang</div><div class="tl-text">Entwickeln von <strong>Schritt-für-Schritt-Methoden</strong> zur Lösung aller Arten von mathematischen Problemen. Sein systematischer Ansatz — sein Name <strong>„Al-Khwarizmi" — wurde die Basis für das Wort „Algorithmus"</strong> in jeder Programmiersprache.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">ca. 850 n. Chr.</div><div class="tl-text">Gestorben in Bagdad. Obwohl sein Leben relativ kurz war, lebten seine Ideen weiter. Sein Algebra-Lehrbuch wurde über 500 Jahre lang an europäischen Universitäten verwendet!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ALGEBRA ═══════════ -->
+<section id="sec-algebra">
+  <div class="card">
+    <h2>Algebra Labor — Gleichungen Schritt für Schritt lösen</h2>
+    <p class="sub">Al-Khwarizmi erfand systematische Schritt-für-Schritt-Methoden zur Lösung von Gleichungen. Das bedeutet „Algebra": Schritte nutzen, um auszugleichen und zu lösen!</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Das Problem:</strong> Bevor Al-Khwarizmi kam, war das Lösen von Gleichungen chaotisch und verwirrend. Es gab keine klaren Regeln — verschiedene Zivilisationen hatten unterschiedliche Methoden.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Seine Lösung:</strong> Al-Khwarizmi erfand eine systematische Methode. „Al-jabr" bedeutet „Vervollständigung" oder „Wiederherstellung" — die Idee, dass du das, was du auf einer Seite einer Gleichung machst, auch auf der anderen Seite machen musst.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Die Magie der Algebra:</strong> Jetzt kann jeder Schüler Gleichungen mit denselben klaren Schritten lösen. Kein Raten. Keine Verwirrung. Folg einfach dem Rezept!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Versuch es selbst — Löse die Gleichung!</h2>
+    <p class="sub">Klick auf die Schritt-Knöpfe, um die Gleichung zu vereinfachen. Jeder Klick führt eine algebraische Operation aus.</p>
+    <div class="lab-layout">
+      <div style="flex:1;min-width:300px">
+        <div class="equation-display" id="equationDisplay">2x + 6 = 14</div>
+        <div class="equation-buttons" id="stepButtons"></div>
+        <div class="stat-grid" style="margin-top:18px">
+          <div class="stat-box"><div class="lbl">Aufgabe #</div><div class="val" id="problemNum">1 / 5</div></div>
+          <div class="stat-box"><div class="lbl">Deine Antwort</div><div class="val" id="yourAnswer">—</div></div>
+        </div>
+        <div class="explain-box" id="algebraExplain" style="margin-top:18px">
+          <strong>Versuch es:</strong> Diese Gleichung hat x auf einer Seite und Zahlen auf der anderen. Nutze die Schritte darunter, um x zu isolieren und die Antwort zu finden!
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ NUMBER SYSTEM ═══════════ -->
+<section id="sec-numbers">
+  <div class="card">
+    <h2>Die Zahlen-Revolution — Hindu-arabische Ziffern</h2>
+    <p class="sub">Al-Khwarizmi führte die 0, 1, 2, 3... in die Welt ein. Kannst du dir vorstellen, XIV × XXIII zu multiplizieren?</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Davor:</strong> Die meisten Leute benutzten römische Ziffern (I, II, III, IV, V...) oder Rechentische (wie ein Abakus). Mathe zu machen war langsam und schwer. Versuch XIV × XXIII ohne Taschenrechner zu multiplizieren!</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Al-Khwarizmis Entdeckung:</strong> In Indien hatten Mathematiker bereits ein neues System erfunden: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9. Ein Dezimalsystem, wo die Position jeder Ziffer wichtig ist. Al-Khwarizmi sah die Kraft dieses Systems und führte es in die islamische Welt ein.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Die Magie:</strong> Jetzt ist 2 × 3 = 6. Einfach! Mit dem neuen System wurde Multiplikation schnell und leicht. Bis zum 13. Jahrhundert hatten sich diese „Hindu-arabischen Ziffern" über seine Schriften nach Europa verbreitet und ersetzten überall die römischen Ziffern.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Zahlenkonverter Labor</h2>
+    <p class="sub">Gib eine Zahl ein und sieh, wie sie in verschiedenen Systemen aussieht. Hindu-arabische Ziffern sind das, was wir heute verwenden!</p>
+
+    <div style="margin-bottom:20px">
+      <label style="font-weight:600;margin-bottom:8px;display:block">Gib eine Zahl ein (1-999):</label>
+      <input type="number" id="numberInput" min="1" max="999" value="42" style="width:100%;padding:10px;font-size:16px;border-radius:6px;border:2px solid rgba(245,216,99,.2);background:rgba(245,216,99,.08);color:var(--accent);font-weight:700;text-align:center" onchange="updateConverter()" onkeyup="updateConverter()">
+    </div>
+
+    <div class="converter-grid">
+      <div class="converter-box">
+        <label>Hindu-Arabisch</label>
+        <div class="converter-result" id="convertHA" style="font-size:28px">42</div>
+      </div>
+      <div class="converter-box">
+        <label>Römische Ziffern</label>
+        <div class="converter-result" id="convertRN" style="font-size:24px">XLII</div>
+      </div>
+      <div class="converter-box">
+        <label>Arabische Schrift</label>
+        <div class="converter-result" id="convertAR" style="font-size:24px">٤٢</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:rgba(143,212,164,.08);border:1px solid var(--accent3);margin-top:18px">
+      <h2 style="margin-bottom:8px">Schnell-Herausforderung! 🏃</h2>
+      <p class="sub" style="margin-bottom:14px">Welches System ist schneller?</p>
+      <div style="text-align:center;margin:14px 0">
+        <button onclick="startRace()" style="padding:12px 28px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer">Starte das Rennen!</button>
+      </div>
+      <div id="raceContainer" style="display:none">
+        <p style="font-size:16px;font-weight:600;margin-bottom:10px">Löse: <span id="raceQ">14 × 23 = ?</span></p>
+        <div style="display:flex;gap:14px">
+          <div style="flex:1;text-align:center;padding:14px;background:rgba(217,107,107,.08);border-radius:8px">
+            <div style="font-size:13px;color:var(--dim);margin-bottom:6px">Römische Ziffern</div>
+            <div style="font-size:24px;font-weight:700;color:var(--accent2);margin-bottom:8px">XIV × XXIII</div>
+            <div class="race-timer" id="romanTime">—</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:14px;background:rgba(143,212,164,.08);border-radius:8px">
+            <div style="font-size:13px;color:var(--dim);margin-bottom:6px">Hindu-Arabisch</div>
+            <div style="font-size:24px;font-weight:700;color:var(--accent3);margin-bottom:8px">14 × 23</div>
+            <div class="race-timer" id="haTime">—</div>
+          </div>
+        </div>
+        <div class="race-result" id="raceResult" style="display:none">
+          <strong id="raceMsg"></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ALGORITHMS ═══════════ -->
+<section id="sec-algorithms">
+  <div class="card">
+    <h2>Algorithmen — Das Wort, das die Welt veränderte</h2>
+    <p class="sub">Ein Algorithmus ist ein Schritt-für-Schritt-Rezept zur Lösung eines Problems. Das Wort kommt von Al-Khwarizmis Namen!</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Was ist ein Algorithmus?</strong> Es ist eine Liste von Schritten, die, wenn du sie genau befolgst, ein Problem jedes Mal löst. Wie ein Rezept für Kekse — folg den Schritten, und du bekommst Kekse.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Al-Khwarizmis Vermächtnis:</strong> Sein Name „Al-Khwarizmi" wurde zum Wort „Algorithmus" in Englisch und fast jeder Programmiersprache. Wenn du Code schreibst, schreibst du Algorithmen — du folgst seiner Tradition von Schritt-für-Schritt-Lösungen!</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Moderne Algorithmen:</strong> Google's Suchmaschine? Ein Algorithmus. TikToks Empfehlungssystem? Ein Algorithmus. Jede App, jedes Spiel und jede Website nutzt Algorithmen, die zu Al-Khwarizmis Ideen über systematische Problemlösung zurückgehen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Algorithmus-Rätsel — Ordne die Schritte richtig!</h2>
+    <p class="sub">Unten sind durcheinander gewürfelte Schritte. Kannst du sie in der richtigen Reihenfolge anordnen, um das Problem zu lösen?</p>
+
+    <div id="algorithmPuzzles"></div>
+  </div>
+</section>
+
+<!-- ═══════════ FUN FACTS ═══════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>Unglaubliche Al-Khwarizmi-Fakten</h2>
+    <p class="sub">Der Typ, der moderne Mathematik und Informatik buchstäblich prägte.</p>
+    <div class="facts-grid">
+      <div class="fact-card"><div class="fact-icon">📐</div><div class="fact-title">„Algebra" kommt aus dem Titel seines Buches</div><div class="fact-text">Das Wort „Algebra" kommt von „al-jabr", was „Vervollständigung" oder „Wiederherstellung" bedeutet. Es war eine Schlüsseltechnik in seinem berühmten Gleichungslösungs-Lehrbuch. Jedes Mal wenn jemand „Algebra" sagt, ehren sie Al-Khwarizmi.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">💻</div><div class="fact-title">„Algorithmus" kommt von seinem Namen!</div><div class="fact-text">Das Wort „Algorithmus" kommt buchstäblich von „Al-Khwarizmi". Jeder Programmierer, jedes KI-System, jeder Computer-Algorithmus ist nach ihm benannt. Seine Ideen sind buchstäblich in deinem Telefon, Computer und jeder App, die du verwendest.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🏛️</div><div class="fact-title">Haus der Weisheit — Wie ein altes Google</div><div class="fact-text">Das Haus der Weisheit in Bagdad war ein großes Forschungszentrum, wo Gelehrte die weltbesten Ideen übersetzten, schrieben und debattierten. Al-Khwarizmi war einer der Stern-Forscher dort. Leider zerstörten die Mongolen es 1258.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">0️⃣</div><div class="fact-title">Er führte NULL in die Welt ein</div><div class="fact-text">Null scheint uns offensichtlich, aber es war revolutionär! Bevor Al-Khwarizmi die Hindu-arabischen Ziffern einführte, hatten die meisten Zivilisationen kein Symbol für Null. Ohne Null wäre moderne Mathematik und Computer unmöglich.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🔢</div><div class="fact-title">Hindu-arabische Ziffern schlagen römische Ziffern</div><div class="fact-text">Versuch XIV × XXIII mit römischen Ziffern zu multiplizieren. Schmerzhaft, nicht wahr? Aber mit dem neuen Hindu-arabischen System (14 × 23) ist es leicht. Seine Arbeit, Leute von dem neuen System zu überzeugen, war eine der größten wissenschaftlichen Revolutionen überhaupt.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">📚</div><div class="fact-title">Für 500 Jahre an europäischen Universitäten verwendet</div><div class="fact-text">Al-Khwarizmis Algebra-Lehrbuch wurde ins Lateinische übersetzt und über 500 Jahre an Universitäten in ganz Europa verwendet. Schüler lernten aus seinem Lehrbuch lange nach seinem Tod und verbreiteten seine Ideen weltweit.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🌍</div><div class="fact-title">Berechnete den Erdumfang</div><div class="fact-text">Al-Khwarizmi war auch Astronom und Geograf. Er half, den Erdumfang zu berechnen, indem er mit anderen Gelehrten am Haus der Weisheit arbeitete. Ihre Antwort war erstaunlich nah am tatsächlichen Wert!</div></div>
+
+      <div class="fact-card"><div class="fact-icon">⭐</div><div class="fact-title">Machte Sternenkarten und astronomische Tabellen</div><div class="fact-text">Er erfand nicht nur Algebra — Al-Khwarizmi erstellte auch detaillierte Sternenkarten und mathematische Tabellen, die Astronomen für Jahrhunderte halfen. Er war in vielem brillant!</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🎓</div><div class="fact-title">Löste echte Probleme</div><div class="fact-text">Al-Khwarizmi schrieb über das Lösen von Erbschafts-Mathe-Problemen — wie man Vermögen fair aufteilt. Er glaubte, dass Algebra echte Probleme lösen sollte, die Leute im echten Leben hatten, nicht nur theoretische Rätsel. Dieser praktische Geist ist heute noch Teil der Mathematik.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">💡</div><div class="fact-icon">🤖</div><div class="fact-title">Alle moderne KI nutzt seine Ideen</div><div class="fact-text">Jedes KI-System, jeder Machine-Learning-Algorithmus, jedes neuronale Netzwerk — sie alle nutzen Algorithmen (nach ihm benannt!), um Informationen Schritt für Schritt zu verarbeiten. Al-Khwarizmi erfand keine Computer, aber er erfand die Logik, die sie möglich macht.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">📖</div><div class="fact-title">Seine Ideen verbreiteten sich langsam aber unaufhaltsam</div><div class="fact-text">Es dauerte Jahrhunderte, bis Hindu-arabische Ziffern römische Ziffern in Europa ersetzten. Aber sobald Leute die Kraft von Al-Khwarizmis System verstanden, gab es kein Zurück. Veränderung braucht Zeit, aber gute Ideen gewinnen immer.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🎯</div><div class="fact-title">Prägte die Grundlage aller Informatik</div><div class="fact-text">Moderne Computer funktionieren, indem sie Informationen durch Algorithmen verarbeiten — Schritt-für-Schritt-Anweisungen. Jede App, jede Website, jedes Videospiel basiert auf dem systematischen, algorithmischen Denken, das Al-Khwarizmi vor über 1.200 Jahren Vorreiter gemacht hat.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<section id="sec-quiz">
+  <div class="card" id="quizCard">
+    <div class="quiz-header">
+      <h2>Al-Khwarizmi-Quiz!</h2>
+      <div class="score-badge">Punkte: <span id="quizScore">0</span> / <span id="quizTotal">10</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
+    <div id="quizBody">
+      <div class="question-text" id="questionText"></div>
+      <div class="answers" id="answersDiv"></div>
+      <div class="feedback" id="feedback"></div>
+      <div style="text-align:center;"><button class="next-btn" id="nextBtn" onclick="nextQ()">Nächste Frage →</button></div>
+    </div>
+    <div class="quiz-complete" id="quizComplete" style="display:none">
+      <h2>Quiz fertig!</h2>
+      <div class="final-score" id="finalScore"></div>
+      <p id="finalMsg" style="font-size:17px;color:var(--dim)"></p>
+      <button class="restart-btn" onclick="startQuiz()">Nochmal versuchen</button>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center;padding:28px 20px 50px;color:var(--dim);font-size:12px;">
+  Gebaut mit Neugier über einen der größten Mathematiker der Geschichte.
+</div>
+
+<script>
+function switchLang(target) {
+  if (target === 'self') return;
+  window.location.href = target;
+}
+
+/* ═══════ NAVIGATION ═══════ */
+function show(name,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+name).classList.add('visible');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='quiz'&&quizQs.length===0) startQuiz();
+}
+
+/* ═══════ ALGEBRA SOLVER ═══════ */
+const algebraProblems=[
+  {
+    eq:"2x + 6 = 14",
+    steps:[
+      {action:"Subtrahiere 6 von beiden Seiten",result:"2x = 8",highlight:"6"},
+      {action:"Dividiere beide Seiten durch 2",result:"x = 4",highlight:"2"}
+    ],
+    answer:4
+  },
+  {
+    eq:"3x - 5 = 10",
+    steps:[
+      {action:"Addiere 5 zu beiden Seiten",result:"3x = 15",highlight:"5"},
+      {action:"Dividiere beide Seiten durch 3",result:"x = 5",highlight:"3"}
+    ],
+    answer:5
+  },
+  {
+    eq:"x + 12 = 20",
+    steps:[
+      {action:"Subtrahiere 12 von beiden Seiten",result:"x = 8",highlight:"12"}
+    ],
+    answer:8
+  },
+  {
+    eq:"4x = 24",
+    steps:[
+      {action:"Dividiere beide Seiten durch 4",result:"x = 6",highlight:"4"}
+    ],
+    answer:6
+  },
+  {
+    eq:"2x + 10 = 26",
+    steps:[
+      {action:"Subtrahiere 10 von beiden Seiten",result:"2x = 16",highlight:"10"},
+      {action:"Dividiere beide Seiten durch 2",result:"x = 8",highlight:"2"}
+    ],
+    answer:8
+  }
+];
+
+let currentAlgProblem=0;
+let completedSteps=0;
+
+function initAlgebra(){
+  const prob=algebraProblems[currentAlgProblem];
+  document.getElementById('equationDisplay').textContent=prob.eq;
+  document.getElementById('problemNum').textContent=(currentAlgProblem+1)+' / '+algebraProblems.length;
+  document.getElementById('yourAnswer').textContent='—';
+  completedSteps=0;
+
+  const btns=document.getElementById('stepButtons');
+  btns.innerHTML='';
+  prob.steps.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='step-btn';
+    btn.textContent=s.action;
+    btn.id='albtn-'+i;
+    btn.onclick=()=>solveStep(i);
+    btns.appendChild(btn);
+  });
+
+  document.getElementById('algebraExplain').innerHTML='<strong>Versuch es:</strong> Klick auf einen Schritt-Knopf, um die Gleichung zu vereinfachen. Schließ alle Schritte ab, um für x zu lösen!';
+}
+
+function solveStep(idx){
+  const prob=algebraProblems[currentAlgProblem];
+  const step=prob.steps[idx];
+  const btn=document.getElementById('albtn-'+idx);
+
+  if(btn.classList.contains('completed')) return;
+
+  btn.classList.add('completed');
+  btn.disabled=true;
+
+  document.getElementById('equationDisplay').textContent=step.result;
+  completedSteps++;
+
+  if(completedSteps===prob.steps.length){
+    document.getElementById('yourAnswer').textContent='x = '+prob.answer;
+    document.getElementById('algebraExplain').innerHTML='<strong style="color:var(--accent3)">✓ Richtig!</strong> Du hast es gelöst! Al-Khwarizmi wäre stolz. Die Antwort ist x = '+prob.answer+'.';
+    setTimeout(()=>{
+      currentAlgProblem++;
+      if(currentAlgProblem<algebraProblems.length){
+        setTimeout(initAlgebra,1200);
+      }else{
+        document.getElementById('algebraExplain').innerHTML='<strong style="color:var(--accent3)">🎉 Alle Aufgaben gelöst!</strong> Du beherrschst Al-Khwarizmis Methoden! Versuch die anderen Labs.';
+      }
+    },1500);
+  }
+}
+
+initAlgebra();
+
+/* ═══════ NUMBER CONVERTER ═══════ */
+function toRoman(num){
+  const romanMap=[{val:1000,symbol:'M'},{val:900,symbol:'CM'},{val:500,symbol:'D'},{val:400,symbol:'CD'},{val:100,symbol:'C'},{val:90,symbol:'XC'},{val:50,symbol:'L'},{val:40,symbol:'XL'},{val:10,symbol:'X'},{val:9,symbol:'IX'},{val:5,symbol:'V'},{val:4,symbol:'IV'},{val:1,symbol:'I'}];
+  let res='';
+  for(let i=0;i<romanMap.length;i++){
+    while(num>=romanMap[i].val){res+=romanMap[i].symbol;num-=romanMap[i].val}
+  }
+  return res;
+}
+
+function toArabic(num){
+  const arabicDigits=['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  return String(num).split('').map(d=>arabicDigits[parseInt(d)]).join('');
+}
+
+function updateConverter(){
+  const val=parseInt(document.getElementById('numberInput').value)||0;
+  if(val<1||val>999) return;
+  document.getElementById('convertHA').textContent=val.toString();
+  document.getElementById('convertRN').textContent=toRoman(val);
+  document.getElementById('convertAR').textContent=toArabic(val);
+}
+
+function startRace(){
+  document.getElementById('raceContainer').style.display='block';
+  document.getElementById('romanTime').textContent='⏱ Zählen...';
+  document.getElementById('haTime').textContent='⏱ Zählen...';
+  document.getElementById('raceResult').style.display='none';
+
+  setTimeout(()=>{
+    document.getElementById('romanTime').textContent='3-5 Minuten';
+    document.getElementById('haTime').textContent='10 Sekunden';
+    setTimeout(()=>{
+      document.getElementById('raceResult').style.display='block';
+      document.getElementById('raceMsg').textContent='Hindu-arabische Ziffern sind 18-30x SCHNELLER! Dies ist der Grund, warum Al-Khwarizmis System die Welt eroberte.';
+    },800);
+  },2000);
+}
+
+/* ═══════ ALGORITHM BUILDER ═══════ */
+const algoPuzzles=[
+  {
+    title:"Ist eine Zahl gerade oder ungerade?",
+    problem:"Ordne diese Schritte an, um zu prüfen, ob eine Zahl gerade oder ungerade ist",
+    steps:["Anfang","Lies eine Zahl von der Eingabe","Dividiere die Zahl durch 2","Prüfe, ob der Rest 0 ist","Wenn der Rest 0 ist, drucke GERADE","Wenn der Rest nicht 0 ist, drucke UNGERADE","Ende"],
+    correct:[0,1,2,3,4,5,6]
+  },
+  {
+    title:"Finde die größte Zahl",
+    problem:"Ordne diese Schritte an, um die größte von drei Zahlen zu finden",
+    steps:["Anfang","Lies drei Zahlen: A, B, C","Ist A größer als B?","Wenn ja, ist A größer als C?","Wenn nein, ist B größer als C?","A ist die größte","B ist die größte","C ist die größte","Ende"],
+    correct:[0,1,2,3,4,5,6,7,8]
+  },
+  {
+    title:"Geld mit Münzen wechseln",
+    problem:"Ordne diese Schritte an, um die wenigsten Münzen für einen Preis zu berechnen",
+    steps:["Anfang","Lies den zu zahlenden Betrag","Gib Vierteldollar (0,25€) bis du kannst","Gib Zehn-Cent-Münzen (0,10€) bis du kannst","Gib Fünf-Cent-Münzen (0,05€) bis du kannst","Gib Ein-Cent-Münzen (0,01€) für den Rest","Berichte die Gesamtzahl der verwendeten Münzen","Ende"],
+    correct:[0,1,2,3,4,5,6,7]
+  }
+];
+
+let currentAlgoPuzzle=0;
+let userOrder=[];
+
+function initAlgorithms(){
+  const container=document.getElementById('algorithmPuzzles');
+  container.innerHTML='';
+
+  algoPuzzles.forEach((puzzle,idx)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.marginBottom='20px';
+
+    let html=`<h3 style="margin-bottom:8px">${puzzle.title}</h3>
+      <p class="sub">${puzzle.problem}</p>
+      <div style="margin:18px 0;padding:14px;background:rgba(245,216,99,.08);border-radius:8px;border-left:4px solid var(--accent3)">
+        <strong>Ziel:</strong> Ziehe die Schritte unten in den grauen Bereich in der richtigen Reihenfolge. Jeder Schritt baut auf dem letzten auf!
+      </div>
+      <div id="steps-${idx}" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;justify-content:center"></div>
+      <div id="target-${idx}" style="min-height:60px;padding:12px;background:rgba(245,216,99,.06);border:2px dashed rgba(245,216,99,.3);border-radius:8px;margin-bottom:14px">
+        <div style="text-align:center;color:var(--dim);font-size:13px">Ziehe Schritte hier in der Reihenfolge →</div>
+      </div>
+      <button onclick="checkAlgo(${idx})" style="padding:10px 20px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:14px;font-weight:700;cursor:pointer">Antwort prüfen</button>
+      <div id="result-${idx}"></div>`;
+
+    card.innerHTML=html;
+
+    const stepsDiv=card.querySelector(`#steps-${idx}`);
+    puzzle.steps.forEach((step,i)=>{
+      const btn=document.createElement('button');
+      btn.className='step-btn';
+      btn.textContent=step;
+      btn.draggable=true;
+      btn.dataset.idx=i;
+      btn.dataset.puzzle=idx;
+      btn.ondragstart=(e)=>{e.dataTransfer.setData('text',i+','+idx)};
+      stepsDiv.appendChild(btn);
+    });
+
+    const target=card.querySelector(`#target-${idx}`);
+    target.ondragover=(e)=>e.preventDefault();
+    target.ondrop=(e)=>{
+      e.preventDefault();
+      const [stepIdx,puzzleIdx]=e.dataTransfer.getData('text').split(',');
+      if(parseInt(puzzleIdx)===idx){
+        addToOrder(idx,parseInt(stepIdx));
+      }
+    };
+
+    container.appendChild(card);
+  });
+}
+
+function addToOrder(puzzleIdx,stepIdx){
+  if(!userOrder[puzzleIdx]) userOrder[puzzleIdx]=[];
+  if(!userOrder[puzzleIdx].includes(stepIdx)){
+    userOrder[puzzleIdx].push(stepIdx);
+  }
+  updateOrder(puzzleIdx);
+}
+
+function updateOrder(puzzleIdx){
+  const puzzle=algoPuzzles[puzzleIdx];
+  const target=document.querySelector(`#target-${puzzleIdx}`);
+  target.innerHTML='';
+  userOrder[puzzleIdx].forEach((idx,pos)=>{
+    const step=document.createElement('div');
+    step.style.cssText='padding:8px 12px;background:var(--accent3);color:#000;border-radius:6px;font-size:12px;font-weight:700;display:inline-block;margin:4px';
+    step.textContent=(pos+1)+'. '+puzzle.steps[idx];
+    target.appendChild(step);
+  });
+}
+
+function checkAlgo(puzzleIdx){
+  const puzzle=algoPuzzles[puzzleIdx];
+  const userAns=userOrder[puzzleIdx]||[];
+  const correct=userAns.length===puzzle.correct.length && userAns.every((v,i)=>v===puzzle.correct[i]);
+
+  const resultDiv=document.getElementById('result-'+puzzleIdx);
+  if(correct){
+    resultDiv.innerHTML='<div style="margin-top:14px;padding:12px;background:rgba(143,212,164,.12);border-left:4px solid var(--accent3);color:var(--accent3);font-weight:700">✓ Perfekt! Du hast den Algorithmus gelöst! Al-Khwarizmi wäre stolz.</div>';
+  }else{
+    resultDiv.innerHTML='<div style="margin-top:14px;padding:12px;background:rgba(217,107,107,.12);border-left:4px solid var(--accent2);color:var(--accent2);font-weight:700">✗ Nicht ganz richtig. Prüfe die Reihenfolge und versuch es nochmal!</div>';
+  }
+}
+
+initAlgorithms();
+
+/* ═══════ QUIZ ═══════ */
+const quizPool=[
+  {q:"Woher kommt das Wort „Algorithmus"?",a:["Von Al-Khwarizmis Namen","Aus dem Altgriechischen","Vom Lateinischen","Von arabischen Zahlen"],correct:0,explain:"Das Wort „Algorithmus" kommt buchstäblich von Al-Khwarizmis Namen! Jedes Mal wenn ein Programmierer Code schreibt, nutzt er Algorithmen — nach ihm benannt."},
+  {q:"Woher kommt das Wort „Algebra"?",a:["Von Al-Khwarizmis Buchtitel","Arabisch für ‚Mathematik'","Von einem griechischen Philosophen","Von einem Hindu-Mathematiker"],correct:0,explain:"„Algebra" kommt von „al-jabr" (Vervollständigung/Wiederherstellung), eine Technik in Al-Khwarizmis berühmtem Algebra-Lehrbuch."},
+  {q:"Wo arbeitete Al-Khwarizmi?",a:["Im Haus der Weisheit in Bagdad","In der Bibliothek von Alexandria","Im königlichen Palast in Persien","In einem Kloster in Europa"],correct:0,explain:"Al-Khwarizmi arbeitete im Haus der Weisheit in Bagdad — wie eine alte Forschungsuniversität, an der die weltbesten Gelehrten zusammenarbeiteten."},
+  {q:"Welches revolutionäre Zahlensystem führte er ein?",a:["Hindu-arabische Ziffern (0,1,2,3...)","Binärcode","Brüche","Negative Zahlen"],correct:0,explain:"Al-Khwarizmi führte Hindu-arabische Ziffern in die islamische Welt ein. Schließlich verbreiteten sie sich nach Europa und ersetzten römische Ziffern, weil sie so viel schneller waren!"},
+  {q:"Was war Al-Khwarizmis berühmtestes Buch?",a:["Al-Kitab al-Mukhtasar (Das Buch)","Die Methode","Der Almagest","Die Elemente"],correct:0,explain:"„Al-Kitab al-Mukhtasar" (Das Buch über die Berechnung durch Vervollständigung und Ausgleich) war das erste Algebra-Lehrbuch überhaupt."},
+  {q:"Wie lange wurde Al-Khwarizmis Algebra-Lehrbuch an europäischen Universitäten verwendet?",a:["Über 500 Jahre","100 Jahre","Nur ein paar Jahrzehnte","2.000 Jahre"],correct:0,explain:"Sein Algebra-Lehrbuch wurde über 500 Jahre lang an europäischen Universitäten verwendet! Das zeigt, wie einflussreich seine Ideen waren."},
+  {q:"In welcher Zeit lebte Al-Khwarizmi?",a:["ca. 780-850 n. Chr.","ca. 500-550 n. Chr.","ca. 1000-1100 n. Chr.","ca. 200-250 n. Chr."],correct:0,explain:"Al-Khwarizmi lebte ca. 780-850 n. Chr., während des islamischen Goldenen Zeitalters, als Wissenschaft und Mathematik blühten."},
+  {q:"Was studierte Al-Khwarizmi noch außer Algebra?",a:["Astronomie und Geografie","Medizin und Biologie","Architektur und Ingenieurwesen","Poesie und Literatur"],correct:0,explain:"Al-Khwarizmi war in vielen Bereichen brilliant. Er schrieb über Astronomie, half, den Erdumfang zu berechnen, und machte Sternenkarten."},
+  {q:"Warum ist die Null wichtig in moderner Mathematik und Computern?",a:["Sie ist ein Platzhalter im Dezimalsystem, der Mathe leicht macht","Sie repräsentiert nichts","Sie ist nur eine Zahl","Sie wurde von den Griechen erfunden"],correct:0,explain:"Null ist entscheidend! Ohne sie würde das Hindu-arabische Zahlensystem nicht funktionieren, und moderne Computer (die binär arbeiten) wären unmöglich."},
+  {q:"Welches Problem half Al-Khwarizmis Algebra zu lösen?",a:["Schritt-für-Schritt-Lösungen für Gleichungen finden","Pythagoras' Theorem zu beweisen","Pyramiden bauen","Die Sterne messen"],correct:0,explain:"Al-Khwarizmi erfand systematische Schritt-für-Schritt-Methoden zur Lösung von Gleichungen. Vorher gab es keine klaren Regeln — seine Algebra machte das Lösen von Mathe-Aufgaben systematisch und lehrbar."},
+  {q:"Wie viel schneller ist Hindu-arabische Multiplikation als römische Ziffern?",a:["18-30 mal schneller","2-3 mal schneller","Nur etwas schneller","Ungefähr gleich schnell"],correct:0,explain:"Berechnen mit Hindu-arabischen Ziffern ist drastisch schneller — 18-30 mal schneller! Dies ist der Grund, warum Al-Khwarizmis System die Welt eroberte."},
+  {q:"Welches Ereignis zerstörte das Haus der Weisheit?",a:["Die Mongolen-Invasion 1258","Ein Feuer im 9. Jahrhundert","Die Kreuzzüge","Ein Erdbeben"],correct:0,explain:"Traurigerweise zerstörten die Mongolen das Haus der Weisheit 1258. Aber bis dahin hatten sich Al-Khwarizmis Ideen bereits überall auf der Welt verbreitet."},
+  {q:"Welche moderne Erfindung wird direkt von Al-Khwarizmis Arbeit ermöglicht?",a:["Computer (durch Algorithmen)","Elektrizität","Autos","Flugzeuge"],correct:0,explain:"Alle Computer funktionieren durch Algorithmen — Schritt-für-Schritt-Anweisungen. Ohne Al-Khwarizmis systematisches Denken würde moderne Informatik nicht existieren!"},
+  {q:"In welcher Stadt wurde Al-Khwarizmi geboren?",a:["Chwarezm (modernes Usbekistan)","Bagdad","Kairo","Damaskus"],correct:0,explain:"Al-Khwarizmi wurde in Chwarezm (im modernen Usbekistan) geboren, eines der wichtigsten Wissenszentren in Zentralasien."},
+  {q:"Kannst du XIV × XXIII leicht mit römischen Ziffern multiplizieren?",a:["Nein, es ist sehr schwierig und langsam","Ja, es ist super leicht","Ja, wenn du römisch bist","Nein, weil römische Ziffern Multiplikation nicht unterstützen"],correct:0,explain:"Römische Ziffern machen Multiplikation schmerzhaft! Mit Hindu-arabischen Ziffern (14 × 23) ist es viel schneller. Dies ist der Grund, warum die Welt gewechselt hat!"}
+];
+
+let quizQs=[];
+let currentQ=0;
+let score=0;
+let answered=false;
+
+function startQuiz(){
+  quizQs=[];
+  const shuffled=[...quizPool].sort(()=>Math.random()-0.5);
+  quizQs=shuffled.slice(0,10);
+  currentQ=0;
+  score=0;
+  answered=false;
+  document.getElementById('quizBody').style.display='block';
+  document.getElementById('quizComplete').style.display='none';
+  showQ();
+}
+
+function showQ(){
+  if(currentQ>=quizQs.length){
+    finishQuiz();
+    return;
+  }
+
+  const q=quizQs[currentQ];
+  document.getElementById('questionText').textContent=q.q;
+  document.getElementById('quizScore').textContent=score;
+  document.getElementById('quizTotal').textContent=quizQs.length;
+  document.getElementById('quizProgress').style.width=((currentQ/quizQs.length)*100)+'%';
+
+  const ansDiv=document.getElementById('answersDiv');
+  ansDiv.innerHTML='';
+  q.a.forEach((ans,i)=>{
+    const btn=document.createElement('button');
+    btn.className='answer-btn';
+    btn.textContent=ans;
+    btn.onclick=()=>answerQ(i);
+    btn.id='ans-'+i;
+    ansDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('nextBtn').classList.remove('show');
+  answered=false;
+}
+
+function answerQ(idx){
+  if(answered) return;
+  answered=true;
+
+  const q=quizQs[currentQ];
+  const correct=idx===q.correct;
+
+  if(correct) score++;
+
+  document.querySelectorAll('.answer-btn').forEach((b,i)=>{
+    b.classList.add('locked');
+    if(i===q.correct) b.classList.add('correct');
+    if(i===idx && !correct) b.classList.add('wrong');
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.innerHTML='<strong>'+(correct?'✓ Richtig!':'✗ Falsch')+'</strong> '+q.explain;
+  fb.classList.add('show',correct?'correct-fb':'wrong-fb');
+
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQ(){
+  currentQ++;
+  showQ();
+}
+
+function finishQuiz(){
+  document.getElementById('quizBody').style.display='none';
+  document.getElementById('quizComplete').style.display='block';
+  document.getElementById('finalScore').textContent=score+'/'+quizQs.length;
+
+  let msg='';
+  const pct=(score/quizQs.length)*100;
+  if(pct===100) msg='Perfekt! Du bist ein Al-Khwarizmi-Experte! 🌟';
+  else if(pct>=80) msg='Ausgezeichnet! Du verstehst sein Vermächtnis wirklich! 🎉';
+  else if(pct>=60) msg='Großartig! Du weißt viel über Al-Khwarizmi! 👏';
+  else if(pct>=40) msg='Gute Mühe! Lerne mehr und versuch es nochmal! 📚';
+  else msg='Weiter lernen! Al-Khwarizmis Ideen sind erstaunlich! 💡';
+
+  document.getElementById('finalMsg').textContent=msg;
+}
+
+updateConverter();
+</script>
+</body>
+</html>

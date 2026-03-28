@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>Die Welt von René Descartes</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;--accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;--radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px;background:#314231}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .subtitle{font-size:19px;color:var(--dim)}
+.hero .life{margin-top:10px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
+
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.4)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px}.tl-text strong{color:var(--accent)}
+
+/* ── INTERACTIVE SHARED ── */
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+.slider-group{margin-bottom:16px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+select{background:var(--card);color:var(--text);border:2px solid rgba(245,216,99,.2);border-radius:6px;padding:8px 12px;font-family:inherit;font-size:14px;cursor:pointer}
+select:focus{outline:none;border-color:var(--accent)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(245,216,99,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:20px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+.step-explain{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.step-item{display:flex;gap:14px;align-items:flex-start}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.step-text{font-size:15px;line-height:1.6;padding-top:5px}
+
+/* ── BUTTONS ── */
+.btn-group{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;justify-content:center}
+.btn-group button{padding:10px 18px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.25s}
+.btn-group button:hover{border-color:var(--accent)}
+.btn-group button.active{background:var(--accent);border-color:var(--accent);color:#000}
+
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}
+.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#f472b6}
+.fact-card:nth-child(7){border-left-color:#fb923c}
+.fact-card:nth-child(8){border-left-color:#38bdf8}
+.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}
+.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
+
+/* ── QUIZ ── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:6px;font-weight:700;color:var(--accent3);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--accent);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--accent3);background:rgba(143,212,164,.12);color:var(--accent3)}
+.answer-btn.wrong{border-color:var(--accent2);background:rgba(217,107,107,.1);color:var(--accent2)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--accent3)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--accent2)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(245,216,99,.35)}
+.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}
+.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.restart-btn:hover{transform:scale(1.05)}
+
+/* ── SHAPE CHALLENGE ── */
+.challenge-controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;justify-content:center;align-items:center}
+.challenge-controls button{padding:10px 16px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-weight:600;cursor:pointer;transition:.25s}
+.challenge-controls button:hover{border-color:var(--accent)}
+.challenge-controls button.active{background:var(--accent);border-color:var(--accent);color:#000}
+.challenge-info{text-align:center;font-size:14px;margin-top:10px;padding:10px;background:rgba(245,216,99,.06);border-radius:8px}
+.challenge-status{font-weight:700;margin-top:5px}
+.challenge-status.success{color:var(--accent3)}
+.challenge-status.partial{color:var(--accent)}
+.challenge-status.incorrect{color:var(--accent2)}
+
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:80px;right:16px;display:flex;gap:6px;z-index:90}
+.lang-toggle a{padding:6px 12px;border-radius:4px;border:1px solid rgba(245,216,99,.3);background:rgba(35,48,35,.8);color:var(--dim);text-decoration:none;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.lang-toggle a:hover{color:#fff;border-color:var(--accent)}
+.lang-toggle a.active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+@media(max-width:600px){
+  nav button{padding:7px 10px;font-size:11px}
+  .card{padding:18px}
+  .answers{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr}
+  .portrait{width:120px;height:120px}
+  .lang-toggle{top:auto;bottom:80px;right:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <a href="../descartes-explorer.html">EN</a>
+  <a href="descartes-explorer.html" class="active">DE</a>
+</div>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="portrait" style="background:linear-gradient(135deg,rgba(245,216,99,.3),rgba(143,212,164,.3));display:flex;align-items:center;justify-content:center;font-size:70px;">🧠</div>
+    <h1>Die Welt von René Descartes</h1>
+    <p class="subtitle">Der Vater der modernen Philosophie und Mathematik</p>
+    <p class="life">1596 – 1650 · Frankreich, Niederlande, Schweden</p>
+    <p class="tagline">Er erfand die Koordinatenebene, entwickelte die Methode des Zweifels und ist berühmt für „Ich denke, also bin ich" — was beweist, dass das Einzige, das du sicher weißt, dass es existiert, dein Denken ist, weil du denkst.</p>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+  <button class="active" onclick="show('story',this)">Seine Geschichte</button>
+  <button onclick="show('coords',this)">Koordinatenebene</button>
+  <button onclick="show('equations',this)">Gleichungszeichner</button>
+  <button onclick="show('shapes',this)">Form-Werkstatt</button>
+  <button onclick="show('facts',this)">Spannende Fakten</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+</nav>
+
+<!-- ═══════════ STORY ═══════════ -->
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>Das Leben von René Descartes</h2>
+    <p class="sub">Philosoph, Mathematiker, Wissenschaftler und das Genie, das alles veränderte.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1596</div><div class="tl-text">Geboren in <strong>La Haye, Frankreich</strong> (ein kleines Städtchen). Seine Familie war wohlhabend, daher konnte er lernen, was immer er wollte.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1607–1615</div><div class="tl-text">Besuchte das Jesuitenkolleg von La Flèche. Er war solch ein brillanter Schüler, dass seine Lehrer ihm ein besonderes Privileg gaben: <strong>er durfte bis Mittag im Bett bleiben</strong> — weil sie wussten, dass sein Verstand dann am besten arbeitete.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1616–1628</div><div class="tl-text">Reiste durch Europa, diente kurz im Militär und <strong>hatte immer wieder großartige Offenbarungen</strong>. In einer kalten Nacht im November 1619 hatte er eine Vision in einem beheizten Zimmer, in der er seine ganze Philosophie begriff.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1629</div><div class="tl-text">Zog in die <strong>Niederlande</strong>, weil es dort friedlich und perfekt zum Denken war. Er lebte ruhig, oft allein, konzentrierte sich ganz auf seine Arbeit.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1637</div><div class="tl-text">Veröffentlichte <em>Discourse on Method</em>, sein berühmtestes Werk. Es enthielt seine Philosophie UND <strong>La Géométrie</strong> (Die Geometrie), das die Koordinatenebene erfand und Algebra mit Geometrie verband.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1633</div><div class="tl-text">Hörte von Galileos Problemen mit der Kirche, weil er sagte, die Erde bewegt sich. Descartes wurde <strong>sehr vorsichtig</strong> und beschloss, nur noch mit Bedacht zu veröffentlichen.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1649</div><div class="tl-text">Wurde von <strong>Königin Christina</strong> von Schweden eingeladen, ihr Philosophie zu lehren. Er nahm an (warum nicht?) und zog ins eiskalt frostige Stockholm.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1650</div><div class="tl-text">Bekam eine Lungenentzündung in der schwedischen Kälte. Er starb in Stockholm im Alter von 53 Jahren, gerade als seine Arbeit überall in Europa berühmt wurde.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ COORDINATE PLANE ═══════════ -->
+<section id="sec-coords">
+  <div class="card">
+    <h2>Die Koordinatenebene — Verbindung von Algebra & Geometrie</h2>
+    <p class="sub">Bevor Descartes kam, waren Algebra (Gleichungen mit x und y) und Geometrie (Formen) völlig getrennt. Er verband sie mit zwei einfachen Linien.</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Das Problem:</strong> Mathematiker hatten Algebra (Gleichungen lösen) und Geometrie (Formen zeichnen), aber sie wurden wie zwei verschiedene Themen behandelt, die nie miteinander sprachen.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Descartes' geniale Idee:</strong> Zeichne zwei Zahlenlinien (eine waagerecht namens <em>x</em>, eine senkrecht namens <em>y</em>), die sich bei Null kreuzen. Jetzt ist jeder Punkt einfach ein Zahlenpaar: <strong>(x, y)</strong>.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Die Magie:</strong> Ein Punkt ist (3, 5). Eine Form ist eine Reihe von verbundenen Punkten. Eine Gleichung wie y = x erzeugt ein Muster von Punkten, das eine Linie bildet. <strong>Algebra wird zur Geometrie, Geometrie wird zu Zahlen!</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Probier es selbst — Platziere Punkte auf dem Gitter</h2>
+    <p class="sub">Klicke überall auf der Leinwand, um Punkte zu platzieren. Sehe, wie du Formen aufbaust und ihre Koordinaten erkennst.</p>
+    <div class="lab-layout">
+      <div><canvas id="coordCanvas" width="380" height="380"></canvas></div>
+      <div class="lab-side">
+        <div class="btn-group">
+          <button onclick="coordConnect()">Punkte verbinden</button>
+          <button onclick="coordClear()">Alles löschen</button>
+        </div>
+        <div style="margin-top:16px;background:rgba(245,216,99,.06);border-radius:12px;padding:16px;max-height:280px;overflow-y:auto">
+          <div style="font-weight:700;margin-bottom:10px;color:var(--accent)">Deine Punkte:</div>
+          <div id="coordList" style="font-size:13px;line-height:1.8"></div>
+        </div>
+        <div class="explain-box">
+          <strong>Warum das wichtig ist:</strong> Mit nur <em>x</em> und <em>y</em> Zahlen kannst du JEDEN Punkt im 2D-Raum beschreiben. Drei Dimensionen? Füge eine <em>z</em> Koordinate hinzu. Das ist die Sprache von Computern, 3D-Grafiken, Karten und vielem mehr!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ EQUATION PLOTTER ═══════════ -->
+<section id="sec-equations">
+  <div class="card">
+    <h2>Gleichungszeichner — Jede Gleichung macht eine Form</h2>
+    <p class="sub">Descartes bewies, dass jede Gleichung ein einzigartiges Muster von Punkten erzeugt. Ändere die Gleichung, sehe sofort die Form verändern!</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Einfache Linie:</strong> y = x heißt „für jeden Schritt nach rechts, einen Schritt nach oben". Wenn du alle Punkte plottest, bekommst du eine gerade Diagonallinie.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Parabel:</strong> y = x² heißt „quadriere den x-Wert, um y zu bekommen". Die Punkte wölben sich in einer U-Form nach oben. x = -2 ergibt y = 4, x = 0 ergibt y = 0, x = 2 ergibt y = 4.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Kreis:</strong> x² + y² = r² (wobei r der Radius ist) erzeugt einen perfekten Kreis. Alle Punkte sind Distanz r vom Mittelpunkt entfernt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Probier es selbst — Wähle eine Gleichung</h2>
+    <p class="sub">Wähle eine Gleichung und ziehe den Regler, um sie anzupassen. Sehe die Form auf dem Koordinatengitter erscheinen!</p>
+    <div class="lab-layout">
+      <div><canvas id="eqCanvas" width="380" height="380"></canvas></div>
+      <div class="lab-side">
+        <div class="slider-group">
+          <label>Wähle Gleichung:</label>
+          <select id="eqSelect" onchange="updateEquation()">
+            <option value="linear">y = x (einfache Linie)</option>
+            <option value="linear2">y = 2x + 1 (steilere Linie)</option>
+            <option value="parabola">y = x² (Parabel)</option>
+            <option value="parabola2">y = -x² + 4 (umgekehrte Parabel)</option>
+            <option value="circle">x² + y² = r² (Kreis)</option>
+          </select>
+        </div>
+        <div class="slider-group">
+          <label id="paramLabel">Steigung: <span id="paramVal" style="color:var(--accent);font-size:18px;font-weight:700">1</span></label>
+          <input type="range" id="paramSlider" min="0.5" max="3" step="0.1" value="1" onchange="updateEquation()">
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="lbl">Gleichungstyp</div><div class="val" style="color:var(--accent);font-size:16px" id="eqType">Linear</div></div>
+          <div class="stat-box"><div class="lbl">Parameter</div><div class="val" style="color:var(--accent2)" id="eqParam">1.0</div></div>
+        </div>
+        <div class="explain-box">
+          <strong>Zeichne die Gleichung:</strong> Für jeden x-Wert auf dem Gitter, berechne y mit der Gleichung. Platziere den Punkt (x, y). Verbinde alle Punkte und du siehst die Form, die die Gleichung macht!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SHAPE BUILDER ═══════════ -->
+<section id="sec-shapes">
+  <div class="card">
+    <h2>Form-Werkstatt — Beschreibe Formen mit Zahlen</h2>
+    <p class="sub">Mit Descartes' Koordinaten kannst du jede Form beschreiben, indem du ihre Eckpunkte auflistest. Ein Quadrat? Vier Punkte. Ein Stern? Zehn Punkte. Es sind alle nur Zahlen!</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Wähle eine Herausforderung</strong> unten. Du wirst eine Zielform sehen, beschrieben als Liste von (x, y) Koordinaten.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Klicke auf die genauen Punkte</strong> auf dem Gitter in Reihenfolge. Der erste Punkt verbindet sich mit dem zweiten, der zweite mit dem dritten und so weiter, um die Form zu zeichnen.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Prüfe, ob es richtig ist!</strong> Wenn du alle Punkte richtig platzierst, hebt sich die Form grün hervor. Zu weit weg? Sie wird rot.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Wähle eine Herausforderung</h2>
+    <p class="sub">Fang einfach an und arbeite dich nach oben!</p>
+    <div class="challenge-controls">
+      <button class="active" onclick="setChallenge(0)">Quadrat</button>
+      <button onclick="setChallenge(1)">Dreieck</button>
+      <button onclick="setChallenge(2)">Raute</button>
+      <button onclick="setChallenge(3)">Haus</button>
+      <button onclick="setChallenge(4)">Stern</button>
+    </div>
+    <div class="challenge-info">
+      <div id="challengeText" style="font-weight:700;color:var(--accent)">Herausforderung: Zeichne ein Quadrat</div>
+      <div id="pointsRequired" style="margin-top:8px;color:var(--dim)">Punkte benötigt: (1,1) (1,4) (4,4) (4,1)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="lab-layout">
+      <div><canvas id="shapeCanvas" width="380" height="380"></canvas></div>
+      <div class="lab-side">
+        <div class="btn-group">
+          <button onclick="clearChallenge()">Punkte löschen</button>
+          <button onclick="checkChallenge()">Antwort prüfen</button>
+        </div>
+        <div style="margin-top:16px;background:rgba(245,216,99,.06);border-radius:12px;padding:16px;max-height:280px;overflow-y:auto">
+          <div style="font-weight:700;margin-bottom:10px;color:var(--accent)" id="pointsPlaced">Punkte platziert: 0</div>
+          <div id="shapeList" style="font-size:13px;line-height:1.8"></div>
+        </div>
+        <div class="challenge-status" id="challengeResult"></div>
+        <div class="explain-box" style="margin-top:10px">
+          <strong>Tipp:</strong> Denk daran, dass das Gitter von 0 bis 10 auf beiden Achsen geht. Die Mitte ist (5, 5). Klicke auf Gitter-Schnittpunkte, um Punkte genau zu platzieren!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FUN FACTS ═══════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>Faszinierende Descartes Fakten</h2>
+    <p class="sub">Eine der interessantesten Personen der Geschichte.</p>
+    <div class="facts-grid">
+      <div class="fact-card"><div class="fact-icon">🛏️</div><div class="fact-title">Der Bett-Philosoph</div><div class="fact-text">Descartes blieb berühmt fast jeden Tag bis Mittag im Bett. Sein Vermieter wurde angewiesen, ihn vor 10 Uhr morgens nicht zu stören. Er sagte, sein bestes Denken passierte, wenn er entspannt im Bett lag. Seine Eltern würden so enttäuscht sein, wenn sie das wüssten!</div></div>
+      <div class="fact-card"><div class="fact-icon">💭</div><div class="fact-title">„Ich denke, also bin ich"</div><div class="fact-text">Das ist das berühmteste Philosophie-Zitat aller Zeiten. Im Lateinischen: „Cogito ergo sum." Es heißt: Du kannst alles bezweifeln — deine Augen, deine Freunde, die Realität selbst — aber du kannst nicht bezweifeln, dass du denkst. Der Akt des Zweifelns beweist deine Existenz.</div></div>
+      <div class="fact-card"><div class="fact-icon">🪰</div><div class="fact-title">Die Fliege an der Decke (Wahrscheinlich ein Mythos)</div><div class="fact-text">Die Legende sagt, Descartes lag im Bett und beobachtete eine Fliege, die an der Decke herumflatterte. Er fragte sich: „Wie beschreibe ich, wo die Fliege ist?" Das inspirierte ihn, die Koordinatenebene zu erfinden. Historiker argumentieren, das ist wahrscheinlich nie passiert, aber es ist eine großartige Geschichte!</div></div>
+      <div class="fact-card"><div class="fact-icon">⚔️</div><div class="fact-title">Er war ein Soldat</div><div class="fact-text">Der junge Descartes war ein Offizier! Er kämpfte im Dreißigjährigen Krieg. Aber er liebte es nicht und kündigte, um stattdessen Mathematik und Philosophie zu betreiben. Man kann seine Leidenschaft verfolgen, sogar im 17. Jahrhundert.</div></div>
+      <div class="fact-card"><div class="fact-icon">²</div><div class="fact-title">Erfand Exponenten-Notation</div><div class="fact-text">Vorher schrieben Mathematiker „x mal x mal x". Descartes erfand x³ und x² — die kleinen hochgestellten Zahlen, die wir heute benutzen. Eine so einfache Idee, aber sie änderte alles, wie wir Mathematik schreiben.</div></div>
+      <div class="fact-card"><div class="fact-icon">❄️</div><div class="fact-title">Starb wegen der Kälte</div><div class="fact-text">Königin Christina von Schweden lud ihn ein, ihr Philosophie zu lehren. Descartes nahm an — es war eine große Ehre. Aber Stockholm war eiskalt und er bekam Lungenentzündung. Er starb nach nur wenigen Monaten dort. Er hätte im Bett bleiben sollen!</div></div>
+      <div class="fact-card"><div class="fact-icon">👑</div><div class="fact-title">Korrespondierte mit einer Prinzessin</div><div class="fact-text">Prinzessin Elisabeth von Böhmen schrieb Descartes und fragte nach seiner Philosophie. Sie wechselten jahrelang Briefe! Er war so beeindruckt von ihrer Intelligenz, dass er ein Buch ihr widmete. Weibliche Intellektuelle waren im 17. Jahrhundert super selten.</div></div>
+      <div class="fact-card"><div class="fact-icon">📍</div><div class="fact-title">Die Kartesische Ebene ist nach ihm benannt</div><div class="fact-text">Das Koordinatengitter-System heißt „kartesisch", weil „Cartesius" Descartes' Name im Lateinischen ist. Es ist wie, etwas die „Steve-sche Ebene" zu nennen — ziemlich cool, Mathematik nach dir benannt zu haben!</div></div>
+      <div class="fact-card"><div class="fact-icon">🌈</div><div class="fact-title">Studierte Regenbögen</div><div class="fact-text">Descartes tat nicht nur abstrakte Philosophie. Er studierte Optik und Regenbögen, versuchte zu verstehen, warum Licht sich so verhält. Er kam der richtigen Antwort ziemlich nah, sogar ohne moderne Wissenschaft.</div></div>
+      <div class="fact-card"><div class="fact-icon">🔵</div><div class="fact-title">Das Kreis-Tangenten-Problem</div><div class="fact-text">Descartes bewies eine mathematische Formel über Kreise, die sich berühren. Sie heißt der „Descartes-Kreissatz" und wird heute noch in der Geometrie benutzt. Nicht schlecht für einen Kerl vor 400 Jahren!</div></div>
+      <div class="fact-card"><div class="fact-icon">🧐</div><div class="fact-title">Wollte in Ruhe gelassen werden</div><div class="fact-text">Descartes schätzte Privatsphäre sehr. Er lebte ruhig, zog in die Niederlande teilweise, um dem Ruhm zu entgehen, und mochte es nicht, gestört zu werden. Sogar Genies brauchen Ruhe und Stille zum Denken!</div></div>
+      <div class="fact-card"><div class="fact-icon">🎩</div><div class="fact-title">Trug eine Perücke</div><div class="fact-text">Im 17. Jahrhundert trug jeder, der etwas auf sich hielt, eine schicke Perücke. Descartes auch! Die Mode war damals wild. Lange lockige Perücken waren ein Zeichen von Wohlstand und Status. Stell dir vor, verrückte Haare als normales Aussehen zu haben!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<section id="sec-quiz">
+  <div class="card" id="quizCard">
+    <div class="quiz-header">
+      <h2>Descartes Quiz!</h2>
+      <div class="score-badge">Ergebnis: <span id="quizScore">0</span> / <span id="quizTotal">10</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
+    <div id="quizBody">
+      <div class="question-text" id="questionText"></div>
+      <div class="answers" id="answersDiv"></div>
+      <div class="feedback" id="feedback"></div>
+      <div style="text-align:center;"><button class="next-btn" id="nextBtn" onclick="nextQ()">Nächste Frage →</button></div>
+    </div>
+    <div class="quiz-complete" id="quizComplete" style="display:none">
+      <h2>Quiz vorbei!</h2>
+      <div class="final-score" id="finalScore"></div>
+      <p id="finalMsg" style="font-size:17px;color:var(--dim)"></p>
+      <button class="restart-btn" onclick="startQuiz()">Nochmal versuchen</button>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center;padding:28px 20px 50px;color:var(--dim);font-size:12px;">
+  Gebaut mit Mathematik und Philosophie.
+</div>
+
+<script>
+/* ═══════ NAVIGATION ═══════ */
+function show(name,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+name).classList.add('visible');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='quiz'&&quizQs.length===0) startQuiz();
+}
+
+/* ═══════ COORDINATE PLANE ═══════ */
+const coordCanvas=document.getElementById('coordCanvas'),coordCtx=coordCanvas.getContext('2d');
+const CC_W=380,CC_H=380,CC_SIZE=30;
+let coordPoints=[];
+
+function drawCoordGrid(){
+  coordCtx.clearRect(0,0,CC_W,CC_H);
+
+  // background
+  coordCtx.fillStyle='rgba(245,216,99,.02)';  coordCtx.fillRect(0,0,CC_W,CC_H);
+
+  // grid squares
+  coordCtx.strokeStyle='rgba(245,216,99,.1)';
+  coordCtx.lineWidth=1;
+  for(let i=0;i<=CC_W;i+=CC_SIZE){
+    coordCtx.beginPath();
+    coordCtx.moveTo(i,0);
+    coordCtx.lineTo(i,CC_H);
+    coordCtx.stroke();
+  }
+  for(let i=0;i<=CC_H;i+=CC_SIZE){
+    coordCtx.beginPath();
+    coordCtx.moveTo(0,i);
+    coordCtx.lineTo(CC_W,i);
+    coordCtx.stroke();
+  }
+
+  // axes
+  const centerX=190,centerY=190;
+  coordCtx.strokeStyle='rgba(143,212,164,.5)';
+  coordCtx.lineWidth=2.5;
+  coordCtx.beginPath();
+  coordCtx.moveTo(0,centerY);
+  coordCtx.lineTo(CC_W,centerY);
+  coordCtx.stroke();
+
+  coordCtx.beginPath();
+  coordCtx.moveTo(centerX,0);
+  coordCtx.lineTo(centerX,CC_H);
+  coordCtx.stroke();
+
+  // axis labels
+  coordCtx.fillStyle='rgba(143,212,164,.7)';
+  coordCtx.font='bold 13px sans-serif';
+  coordCtx.textAlign='right';
+  coordCtx.fillText('x →',CC_W-8,centerY-6);
+  coordCtx.textAlign='start';
+  coordCtx.fillText('y ↑',centerX+6,12);
+
+  // grid numbers
+  coordCtx.fillStyle='rgba(245,216,99,.4)';
+  coordCtx.font='11px sans-serif';
+  coordCtx.textAlign='center';
+  for(let i=-6;i<=6;i++){
+    if(i===0) continue;
+    const px=centerX+i*CC_SIZE;
+    coordCtx.fillText(i,px,centerY+15);
+    const py=centerY-i*CC_SIZE;
+    coordCtx.textAlign='right';
+    coordCtx.fillText(i,centerX-8,py+4);
+    coordCtx.textAlign='center';
+  }
+
+  // draw lines connecting points
+  if(coordPoints.length>1){
+    coordCtx.strokeStyle='rgba(245,216,99,.4)';
+    coordCtx.lineWidth=2;
+    coordCtx.beginPath();
+    coordCtx.moveTo(coordPoints[0].px,coordPoints[0].py);
+    for(let i=1;i<coordPoints.length;i++){
+      coordCtx.lineTo(coordPoints[i].px,coordPoints[i].py);
+    }
+    coordCtx.stroke();
+  }
+
+  // draw points
+  coordPoints.forEach((p,i)=>{
+    coordCtx.fillStyle=i===coordPoints.length-1?'#f5d863':'rgba(245,216,99,.6)';
+    coordCtx.beginPath();
+    coordCtx.arc(p.px,p.py,6,0,Math.PI*2);
+    coordCtx.fill();
+    coordCtx.strokeStyle='rgba(255,255,255,.6)';
+    coordCtx.lineWidth=1.5;
+    coordCtx.stroke();
+  });
+}
+
+coordCanvas.addEventListener('click',(e)=>{
+  const rect=coordCanvas.getBoundingClientRect();
+  const px=e.clientX-rect.left;
+  const py=e.clientY-rect.top;
+
+  // snap to grid
+  const snappedX=Math.round(px/CC_SIZE);
+  const snappedY=Math.round(py/CC_SIZE);
+  const snapPx=snappedX*CC_SIZE;
+  const snapPy=snappedY*CC_SIZE;
+
+  // convert to coordinates
+  const centerX=190/CC_SIZE,centerY=190/CC_SIZE;
+  const x=Math.round((snappedX-centerX)*10)/10;
+  const y=Math.round((centerY-snappedY)*10)/10;
+
+  coordPoints.push({px:snapPx,py:snapPy,x,y});
+  updateCoordList();
+  drawCoordGrid();
+});
+
+function updateCoordList(){
+  const list=document.getElementById('coordList');
+  if(coordPoints.length===0){
+    list.innerHTML='<em style="color:var(--dim)">Click on the grid to add points...</em>';
+    return;
+  }
+  list.innerHTML=coordPoints.map((p,i)=>`<div style="margin-bottom:8px;"><span style="color:var(--accent)">#${i+1}</span> (${p.x}, ${p.y})</div>`).join('');
+}
+
+function coordConnect(){
+  if(coordPoints.length<2){
+    alert('Place at least 2 points to connect them!');
+    return;
+  }
+  drawCoordGrid();
+}
+
+function coordClear(){
+  coordPoints=[];
+  updateCoordList();
+  drawCoordGrid();
+}
+
+drawCoordGrid();
+
+/* ═══════ EQUATION PLOTTER ═══════ */
+const eqCanvas=document.getElementById('eqCanvas'),eqCtx=eqCanvas.getContext('2d');
+const EQ_W=380,EQ_H=380,EQ_SIZE=30;
+let currentEq='linear';
+
+function drawEqGrid(){
+  eqCtx.clearRect(0,0,EQ_W,EQ_H);
+
+  // background
+  eqCtx.fillStyle='rgba(245,216,99,.02)';
+  eqCtx.fillRect(0,0,EQ_W,EQ_H);
+
+  // grid
+  eqCtx.strokeStyle='rgba(245,216,99,.1)';
+  eqCtx.lineWidth=1;
+  for(let i=0;i<=EQ_W;i+=EQ_SIZE){
+    eqCtx.beginPath();
+    eqCtx.moveTo(i,0);
+    eqCtx.lineTo(i,EQ_H);
+    eqCtx.stroke();
+  }
+  for(let i=0;i<=EQ_H;i+=EQ_SIZE){
+    eqCtx.beginPath();
+    eqCtx.moveTo(0,i);
+    eqCtx.lineTo(EQ_W,i);
+    eqCtx.stroke();
+  }
+
+  // axes
+  const centerX=190,centerY=190;
+  eqCtx.strokeStyle='rgba(143,212,164,.5)';
+  eqCtx.lineWidth=2.5;
+  eqCtx.beginPath();
+  eqCtx.moveTo(0,centerY);
+  eqCtx.lineTo(EQ_W,centerY);
+  eqCtx.stroke();
+  eqCtx.beginPath();
+  eqCtx.moveTo(centerX,0);
+  eqCtx.lineTo(centerX,EQ_H);
+  eqCtx.stroke();
+
+  const param=parseFloat(document.getElementById('paramSlider').value);
+  document.getElementById('eqParam').textContent=param.toFixed(1);
+
+  // plot equation
+  eqCtx.strokeStyle='rgba(245,216,99,.8)';
+  eqCtx.lineWidth=3;
+  eqCtx.beginPath();
+  let started=false;
+
+  for(let px=0;px<EQ_W;px+=2){
+    const gridX=(px-centerX)/EQ_SIZE;
+    let gridY=0;
+
+    if(currentEq==='linear'){
+      gridY=gridX;
+    }else if(currentEq==='linear2'){
+      gridY=2*gridX+1;
+    }else if(currentEq==='parabola'){
+      gridY=gridX*gridX;
+    }else if(currentEq==='parabola2'){
+      gridY=-gridX*gridX+4;
+    }else if(currentEq==='circle'){
+      const r=param;
+      if(gridX*gridX<=r*r){
+        gridY=Math.sqrt(r*r-gridX*gridX);
+      }else{
+        continue;
+      }
+    }
+
+    if(Math.abs(gridY)>8) continue;
+    const py=centerY-gridY*EQ_SIZE;
+
+    if(!started){
+      eqCtx.moveTo(px,py);
+      started=true;
+    }else{
+      eqCtx.lineTo(px,py);
+    }
+  }
+  eqCtx.stroke();
+
+  // plot bottom half of circle if needed
+  if(currentEq==='circle'){
+    eqCtx.beginPath();
+    started=false;
+    for(let px=0;px<EQ_W;px+=2){
+      const gridX=(px-centerX)/EQ_SIZE;
+      const r=param;
+      if(gridX*gridX<=r*r){
+        const gridY=-Math.sqrt(r*r-gridX*gridX);
+        const py=centerY-gridY*EQ_SIZE;
+        if(!started){
+          eqCtx.moveTo(px,py);
+          started=true;
+        }else{
+          eqCtx.lineTo(px,py);
+        }
+      }
+    }
+    eqCtx.stroke();
+  }
+
+  // labels
+  eqCtx.fillStyle='rgba(143,212,164,.7)';
+  eqCtx.font='bold 13px sans-serif';
+  eqCtx.textAlign='right';
+  eqCtx.fillText('x →',EQ_W-8,centerY-6);
+  eqCtx.textAlign='start';
+  eqCtx.fillText('y ↑',centerX+6,12);
+}
+
+function updateEquation(){
+  currentEq=document.getElementById('eqSelect').value;
+  const paramLabel=document.getElementById('paramLabel');
+  const paramSlider=document.getElementById('paramSlider');
+  const eqTypeDiv=document.getElementById('eqType');
+
+  if(currentEq==='linear'){
+    paramLabel.innerHTML='Slope: <span id="paramVal" style="color:var(--accent);font-size:18px;font-weight:700">1</span>';
+    paramSlider.value=1;
+    eqTypeDiv.textContent='Linear';
+  }else if(currentEq==='linear2'){
+    paramLabel.innerHTML='Slope: <span id="paramVal" style="color:var(--accent);font-size:18px;font-weight:700">2</span>';
+    paramSlider.value=2;
+    eqTypeDiv.textContent='Linear';
+  }else if(currentEq==='parabola'){
+    paramLabel.innerHTML='Scale: <span id="paramVal" style="color:var(--accent);font-size:18px;font-weight:700">1</span>';
+    paramSlider.value=1;
+    eqTypeDiv.textContent='Parabola';
+  }else if(currentEq==='parabola2'){
+    paramLabel.innerHTML='Height: <span id="paramVal" style="color:var(--accent);font-size:18px;font-weight:700">4</span>';
+    paramSlider.value=4;
+    eqTypeDiv.textContent='Parabola';
+  }else if(currentEq==='circle'){
+    paramLabel.innerHTML='Radius: <span id="paramVal" style="color:var(--accent);font-size:18px;font-weight:700">2.5</span>';
+    paramSlider.min=1;
+    paramSlider.max=5;
+    paramSlider.value=2.5;
+    eqTypeDiv.textContent='Circle';
+  }
+  drawEqGrid();
+}
+
+drawEqGrid();
+
+/* ═══════ SHAPE BUILDER ═══════ */
+const shapeCanvas=document.getElementById('shapeCanvas'),shapeCtx=shapeCanvas.getContext('2d');
+const SHAPE_W=380,SHAPE_H=380,SHAPE_GRID=38;
+let shapePoints=[];
+let currentChallenge=0;
+
+const challenges=[
+  {name:'Square',target:[[1,1],[1,4],[4,4],[4,1]],desc:'Draw a square with corners at (1,1), (1,4), (4,4), (4,1)'},
+  {name:'Triangle',target:[[2,1],[5,1],[3,5]],desc:'Draw a triangle with corners at (2,1), (5,1), (3,5)'},
+  {name:'Diamond',target:[[5,1],[7,3],[5,5],[3,3]],desc:'Draw a diamond with corners at (5,1), (7,3), (5,5), (3,3)'},
+  {name:'House',target:[[2,1],[2,4],[5,4],[5,1],[3.5,6]],desc:'Draw a house: (2,1), (2,4), (5,4), (5,1), (3.5,6)'},
+  {name:'Star',target:[[5,0.5],[5.8,3],[9,3],[6.2,5],[7,8.5],[5,6.5],[3,8.5],[3.8,5],[1,3],[4.2,3]],desc:'Draw a star with 10 points'},
+];
+
+function drawShapeGrid(){
+  shapeCtx.clearRect(0,0,SHAPE_W,SHAPE_H);
+
+  // background
+  shapeCtx.fillStyle='rgba(245,216,99,.02)';
+  shapeCtx.fillRect(0,0,SHAPE_W,SHAPE_H);
+
+  // grid
+  shapeCtx.strokeStyle='rgba(245,216,99,.1)';
+  shapeCtx.lineWidth=1;
+  for(let i=0;i<=SHAPE_W;i+=SHAPE_GRID){
+    shapeCtx.beginPath();
+    shapeCtx.moveTo(i,0);
+    shapeCtx.lineTo(i,SHAPE_H);
+    shapeCtx.stroke();
+  }
+  for(let i=0;i<=SHAPE_H;i+=SHAPE_GRID){
+    shapeCtx.beginPath();
+    shapeCtx.moveTo(0,i);
+    shapeCtx.lineTo(SHAPE_W,i);
+    shapeCtx.stroke();
+  }
+
+  // target shape (light)
+  const target=challenges[currentChallenge].target;
+  shapeCtx.strokeStyle='rgba(143,212,164,.3)';
+  shapeCtx.lineWidth=2;
+  shapeCtx.setLineDash([4,4]);
+  shapeCtx.beginPath();
+  for(let i=0;i<target.length;i++){
+    const [x,y]=target[i];
+    const px=x*SHAPE_GRID,py=SHAPE_H-y*SHAPE_GRID;
+    if(i===0) shapeCtx.moveTo(px,py);
+    else shapeCtx.lineTo(px,py);
+  }
+  shapeCtx.closePath();
+  shapeCtx.stroke();
+  shapeCtx.setLineDash([]);
+
+  // user's shape
+  if(shapePoints.length>0){
+    shapeCtx.strokeStyle='rgba(245,216,99,.8)';
+    shapeCtx.lineWidth=2.5;
+    shapeCtx.beginPath();
+    shapeCtx.moveTo(shapePoints[0].px,shapePoints[0].py);
+    for(let i=1;i<shapePoints.length;i++){
+      shapeCtx.lineTo(shapePoints[i].px,shapePoints[i].py);
+    }
+    shapeCtx.stroke();
+  }
+
+  // points
+  shapePoints.forEach((p,i)=>{
+    shapeCtx.fillStyle='#f5d863';
+    shapeCtx.beginPath();
+    shapeCtx.arc(p.px,p.py,5,0,Math.PI*2);
+    shapeCtx.fill();
+    shapeCtx.strokeStyle='rgba(255,255,255,.6)';
+    shapeCtx.lineWidth=1.5;
+    shapeCtx.stroke();
+  });
+
+  // axis labels
+  shapeCtx.fillStyle='rgba(245,216,99,.4)';
+  shapeCtx.font='11px sans-serif';
+  shapeCtx.textAlign='center';
+  for(let i=0;i<=10;i++){
+    const px=i*SHAPE_GRID;
+    shapeCtx.fillText(i,px,SHAPE_H-3);
+    const py=SHAPE_H-i*SHAPE_GRID;
+    shapeCtx.textAlign='right';
+    shapeCtx.fillText(i,SHAPE_GRID-5,py+4);
+    shapeCtx.textAlign='center';
+  }
+
+  updateShapeList();
+}
+
+shapeCanvas.addEventListener('click',(e)=>{
+  const rect=shapeCanvas.getBoundingClientRect();
+  const px=e.clientX-rect.left;
+  const py=e.clientY-rect.top;
+
+  // snap to grid
+  const snappedX=Math.round(px/SHAPE_GRID);
+  const snappedY=Math.round(py/SHAPE_GRID);
+  const snapPx=snappedX*SHAPE_GRID;
+  const snapPy=snappedY*SHAPE_GRID;
+
+  const x=snappedX;
+  const y=10-snappedY;
+
+  shapePoints.push({px:snapPx,py:snapPy,x,y});
+  drawShapeGrid();
+});
+
+function updateShapeList(){
+  document.getElementById('pointsPlaced').textContent=`Points placed: ${shapePoints.length}`;
+  const list=document.getElementById('shapeList');
+  if(shapePoints.length===0){
+    list.innerHTML='<em style="color:var(--dim)">Click to place points...</em>';
+    return;
+  }
+  list.innerHTML=shapePoints.map((p,i)=>`<div style="margin-bottom:8px;"><span style="color:var(--accent)">#${i+1}</span> (${p.x}, ${p.y})</div>`).join('');
+  document.getElementById('challengeResult').textContent='';
+  document.getElementById('challengeResult').className='challenge-status';
+}
+
+function setChallenge(idx){
+  currentChallenge=idx;
+  shapePoints=[];
+  document.querySelectorAll('.challenge-controls button').forEach((b,i)=>{
+    b.classList.toggle('active',i===idx);
+  });
+  const ch=challenges[idx];
+  document.getElementById('challengeText').textContent=`Challenge: Draw ${ch.name}`;
+  document.getElementById('pointsRequired').textContent=`Points needed: ${ch.target.map(p=>`(${p[0]},${p[1]})`).join(' ')}`;
+  document.getElementById('challengeResult').textContent='';
+  drawShapeGrid();
+}
+
+function clearChallenge(){
+  shapePoints=[];
+  drawShapeGrid();
+}
+
+function checkChallenge(){
+  const ch=challenges[currentChallenge];
+  const target=ch.target;
+
+  if(shapePoints.length!==target.length){
+    document.getElementById('challengeResult').textContent=`Need ${target.length} points, you placed ${shapePoints.length}`;
+    document.getElementById('challengeResult').className='challenge-status incorrect';
+    return;
+  }
+
+  let correct=0;
+  for(let i=0;i<target.length;i++){
+    const dist=Math.sqrt(Math.pow(shapePoints[i].x-target[i][0],2)+Math.pow(shapePoints[i].y-target[i][1],2));
+    if(dist<0.6) correct++;
+  }
+
+  const result=document.getElementById('challengeResult');
+  if(correct===target.length){
+    result.textContent='Perfect! You nailed it!';
+    result.className='challenge-status success';
+  }else if(correct>=Math.ceil(target.length*0.7)){
+    result.textContent=`Close! ${correct}/${target.length} points correct.`;
+    result.className='challenge-status partial';
+  }else{
+    result.textContent=`${correct}/${target.length} points correct. Try again!`;
+    result.className='challenge-status incorrect';
+  }
+}
+
+drawShapeGrid();
+
+/* ═══════ QUIZ ═══════ */
+let quizQs=[],qIdx=0,score=0;
+const TOTAL=10;
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+const quizPool=[
+  {q:"In what year was René Descartes born?",a:["1596","1650","1637","1620"],c:0},
+  {q:"What are the two most famous Descartes quotes/ideas?",a:["'I think therefore I am' and 'I coordinate'","'I doubt therefore I think' and 'The method of doubt'","'I think therefore I am' and the coordinate plane","'Everything is math' and 'Everything is numbers'"],c:2},
+  {q:"What did Descartes invent that connects algebra and geometry?",a:["The number line","The coordinate plane","The abacus","The compass"],c:1},
+  {q:"What is a point on a coordinate grid described by?",a:["Just one number","Two numbers: (x, y)","Three numbers: (x, y, z)","Four numbers: (x, y, z, w)"],c:1},
+  {q:"What shape does the equation y = x² create?",a:["A straight line","A circle","A parabola (U-shape)","A triangle"],c:2},
+  {q:"According to legend, what inspired Descartes to invent coordinates?",a:["A dream","A fly on the ceiling","His teacher's lesson","A conversation with a princess"],c:1},
+  {q:"Where did Descartes spend most of his adult life thinking and working?",a:["Italy","France","The Netherlands","Sweden"],c:2},
+  {q:"How did Descartes famously stay productive each day?",a:["By exercising at dawn","By taking long walks","By staying in bed until noon","By meditating for hours"],c:2},
+  {q:"What does 'Cartesian' mean?",a:["Related to cars","Related to maps","Related to Descartes (Cartesius in Latin)","Related to cards"],c:2},
+  {q:"What did Descartes prove existed just by thinking?",a:["God","The universe","Himself","Math"],c:2},
+  {q:"Which country's queen invited Descartes to teach her?",a:["England","France","Sweden","Spain"],c:2},
+  {q:"Why did Descartes leave France for the Netherlands?",a:["For a job","For a princess","For peace and quiet to think","For the weather"],c:2},
+  {q:"What notation did Descartes invent for repeated multiplication?",a:["Parentheses like (x)","Exponents like x²","Fractions like x/2","Symbols like x*"],c:1},
+  {q:"What killed Descartes in Stockholm?",a:["A sword fight","Pneumonia from the cold","Old age (he was 80)","An accident"],c:1},
+  {q:"The equation x² + y² = r² describes what shape?",a:["A line","A parabola","A circle","A square"],c:2},
+];
+
+function startQuiz(){
+  quizQs=shuffle(quizPool).slice(0,TOTAL);
+  qIdx=0;
+  score=0;
+  document.getElementById('quizBody').style.display='block';
+  document.getElementById('quizComplete').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=quizQs[qIdx];
+  document.getElementById('questionText').textContent=q.q;
+  const aDiv=document.getElementById('answersDiv');
+  aDiv.innerHTML='';
+
+  q.a.forEach((ans,i)=>{
+    const btn=document.createElement('button');
+    btn.className='answer-btn';
+    btn.textContent=ans;
+    btn.onclick=()=>checkAnswer(i,q.c);
+    aDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextBtn').classList.remove('show');
+
+  updateProgress();
+}
+
+function checkAnswer(selected,correct){
+  const btns=document.querySelectorAll('.answer-btn');
+  btns.forEach(b=>b.classList.add('locked'));
+
+  const feedback=document.getElementById('feedback');
+  if(selected===correct){
+    score++;
+    btns[selected].classList.add('correct');
+    feedback.className='feedback show correct-fb';
+    feedback.textContent='Correct! Great job!';
+  }else{
+    btns[selected].classList.add('wrong');
+    btns[correct].classList.add('correct');
+    feedback.className='feedback show wrong-fb';
+    feedback.textContent=`Not quite! The correct answer is: ${quizQs[qIdx].a[correct]}`;
+  }
+
+  document.getElementById('nextBtn').classList.add('show');
+  updateProgress();
+}
+
+function nextQ(){
+  qIdx++;
+  if(qIdx<TOTAL){
+    showQuestion();
+  }else{
+    endQuiz();
+  }
+}
+
+function updateProgress(){
+  const progress=(qIdx+1)/TOTAL*100;
+  document.getElementById('quizProgress').style.width=progress+'%';
+  document.getElementById('quizScore').textContent=score;
+}
+
+function endQuiz(){
+  document.getElementById('quizBody').style.display='none';
+  document.getElementById('quizComplete').style.display='block';
+  document.getElementById('finalScore').textContent=score+'/'+TOTAL;
+
+  let msg='';
+  if(score===TOTAL) msg="Perfect score! You're a Descartes expert!";
+  else if(score>=8) msg="Excellent! You really understand Descartes!";
+  else if(score>=6) msg="Great job! You know a lot about Descartes!";
+  else if(score>=4) msg="Good effort! Learn more about this amazing thinker!";
+  else msg="Keep learning! Descartes has so many cool ideas!";
+
+  document.getElementById('finalMsg').textContent=msg;
+}
+</script>
+
+</body>
+</html>

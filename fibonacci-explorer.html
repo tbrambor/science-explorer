@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <title>Fibonacci Explorer - Interactive Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Patrick Hand','Caveat',cursive,system-ui,sans-serif;
+            background-color: #2b3a2b;
+            color: #e8e4d9;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, rgba(35,48,35,1) 0%, rgba(35,48,35,1) 100%);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #8fd4a4;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        nav button {
+            background: #314231;
+            color: #8fd4a4;
+            border: 2px solid #8fd4a4;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+
+        nav button:hover {
+            background: #8fd4a4;
+            border-color: #8fd4a4;
+            color: #2b3a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(143, 212, 164, 0.3);
+        }
+
+        nav button.active {
+            background: #f5d863;
+            color: #2b3a2b;
+            border-color: #f5d863;
+        }
+
+        /* Sections */
+        section {
+            display: none;
+            animation: fadeUp 0.6s ease-out;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #f5d863 0%, #d96b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #f5d863;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #d96b6b;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 3px solid #8fd4a4;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #314231 0%, #314231 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #8fd4a4;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #f5d863;
+            box-shadow: 0 8px 20px rgba(245, 216, 99, 0.2);
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        /* Interactive Elements */
+        .interactive-box {
+            background: linear-gradient(135deg, #314231 0%, #314231 100%);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 2px solid #8fd4a4;
+            margin: 2rem 0;
+        }
+
+        button {
+            background: #314231;
+            color: #8fd4a4;
+            border: 2px solid #8fd4a4;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background: #8fd4a4;
+            color: #2b3a2b;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+        }
+
+        input[type="range"] {
+            accent-color: #f5d863;
+        }
+
+        .sequence-display {
+            background: #2b3a2b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px solid #8fd4a4;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            min-height: 60px;
+            align-items: center;
+        }
+
+        .number-tile {
+            background: linear-gradient(135deg, #8fd4a4 0%, #7bb8e0 100%);
+            border: 2px solid #f5d863;
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #2b3a2b;
+            animation: popIn 0.4s ease-out;
+            box-shadow: 0 4px 8px rgba(245, 216, 99, 0.2);
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stat-box {
+            background: rgba(49, 66, 49, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #f5d863;
+        }
+
+        /* Canvas */
+        canvas {
+            border: 2px solid #8fd4a4;
+            border-radius: 8px;
+            background: #2b3a2b;
+            display: block;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: linear-gradient(135deg, #314231 0%, #314231 100%);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 2px solid #8fd4a4;
+            margin: 1rem 0;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+
+        .question p {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .option-btn {
+            background: #2b3a2b;
+            border: 2px solid #8fd4a4;
+            color: #e8e4d9;
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover {
+            border-color: #f5d863;
+            background: #314231;
+        }
+
+        .option-btn.selected {
+            background: #f5d863;
+            color: #2b3a2b;
+            border-color: #f5d863;
+        }
+
+        .option-btn.correct {
+            background: #8fd4a4;
+            border-color: #8fd4a4;
+            color: #2b3a2b;
+        }
+
+        .option-btn.incorrect {
+            background: #d96b6b;
+            border-color: #d96b6b;
+            color: #e8e4d9;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .feedback.correct {
+            background: rgba(143, 212, 164, 0.2);
+            border-color: #8fd4a4;
+            color: #8fd4a4;
+        }
+
+        .feedback.incorrect {
+            background: rgba(217, 107, 107, 0.2);
+            border-color: #d96b6b;
+            color: #d96b6b;
+        }
+
+        .progress-bar {
+            background: #314231;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            border: 1px solid #8fd4a4;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8fd4a4, #f5d863);
+            transition: width 0.3s ease;
+        }
+
+        .quiz-result {
+            background: linear-gradient(135deg, #314231 0%, #314231 100%);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+            border: 2px solid #f5d863;
+        }
+
+        .quiz-result h3 {
+            font-size: 2rem;
+            color: #f5d863;
+        }
+
+        .score {
+            font-size: 3rem;
+            color: #8fd4a4;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+            border-left: 3px solid #8fd4a4;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: #f5d863;
+            border-radius: 50%;
+            border: 3px solid #2b3a2b;
+        }
+
+        .timeline-item:hover::before {
+            background: #8fd4a4;
+        }
+
+        .timeline-item h3 {
+            color: #f5d863;
+            margin-top: 0;
+        }
+
+        .timeline-item p {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .hero {
+                flex-direction: column;
+            }
+
+            nav {
+                padding: 0.8rem 1rem;
+            }
+
+            nav button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="nav">
+        <button class="nav-btn active" data-section="story">His Story</button>
+        <button class="nav-btn" data-section="builder">Sequence Builder</button>
+        <button class="nav-btn" data-section="spiral">Golden Spiral</button>
+        <button class="nav-btn" data-section="nature">In Nature</button>
+        <button class="nav-btn" data-section="facts">Fun Facts</button>
+        <button class="nav-btn" data-section="quiz">Quiz</button>
+    </nav>
+
+    <!-- Section 1: His Story -->
+    <section id="story" class="active">
+        <div class="hero">
+            <div class="hero-text">
+                <h1>Leonardo Fibonacci: The Man Who Changed Everything</h1>
+                <p>
+                    Meet Leonardo Bonacci, better known as <strong>Fibonacci</strong> (which means "son of Bonacci").
+                    He was born around 1170 in Pisa, Italy, and became one of the most important mathematicians in history.
+                </p>
+                <p>
+                    Why? Because he brought a revolutionary number system to Europe that transformed mathematics, commerce,
+                    and how we do math today!
+                </p>
+            </div>
+            <div class="hero-image">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Leonardo_da_Pisa.jpg"
+                     alt="Leonardo Fibonacci">
+                <p style="margin-top: 1rem; font-size: 0.9rem;">Leonardo Fibonacci (c. 1170-1250)</p>
+            </div>
+        </div>
+
+        <h2>Timeline: A Life Changing the World</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <h3>c. 1170 — Born in Pisa</h3>
+                <p>Leonardo Bonacci is born in Pisa, Italy. His father is a merchant who works in North Africa.</p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>1170s-1190s — Travels Across the Mediterranean</h3>
+                <p>
+                    Young Leonardo travels with his father to Algeria, Egypt, Syria, and Constantinople.
+                    He meets Arab merchants and learns something incredible: the Hindu-Arabic numeral system (0, 1, 2, 3, 4, 5, 6, 7, 8, 9).
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>The Problem: Roman Numerals</h3>
+                <p>
+                    Back in Europe, everyone used Roman numerals: I, V, X, L, C, D, M. Try this yourself:
+                    <br><strong>XIV × XXIII = ?</strong>
+                    <br>It's nearly impossible! Try multiplying 14 × 23 with just Roman numerals.
+                    Leonardo realized there was a better way.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>1202 — Publishes <em>Liber Abaci</em></h3>
+                <p>
+                    At age 32, Fibonacci publishes the "Book of Calculation." This book introduces the Hindu-Arabic
+                    numerals (0-9) to Europe and shows how they make math SO much easier.
+                    Europe finally had a better way to calculate!
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>The Famous Rabbit Problem</h3>
+                <p>
+                    In <em>Liber Abaci</em>, Fibonacci includes a puzzle about rabbit breeding.
+                    The solution leads to a sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55...
+                    <br>
+                    <strong>Each number is the sum of the two before it!</strong> This became known as the Fibonacci Sequence,
+                    though he never realized how important it would become.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>1200s-1250 — Fame and Honor</h3>
+                <p>
+                    Fibonacci's ideas revolutionize European mathematics and business. His number system makes accounting,
+                    trade, and science possible. The Republic of Pisa honors him.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>c. 1250 — Died in Pisa</h3>
+                <p>
+                    Fibonacci dies, but his legacy lives forever. Today, centuries later,
+                    his sequence and the golden ratio appear everywhere in nature and art. Pretty cool, right?
+                </p>
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <h3>Why Fibonacci Matters:</h3>
+            <p>
+                Fibonacci didn't just discover a number sequence. He helped Europe abandon Roman numerals and adopt
+                a system that made math, science, and commerce possible. Without him, the modern world wouldn't exist!
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 2: Sequence Builder -->
+    <section id="builder">
+        <h1>Build the Fibonacci Sequence</h1>
+        <p>
+            The Fibonacci Sequence is simple but powerful. Start with 0 and 1.
+            Each new number is the sum of the previous two!
+        </p>
+
+        <div class="interactive-box">
+            <h2>How It Works:</h2>
+            <p style="font-size: 1.2rem;">
+                <strong>0, 1</strong> → 0 + 1 = <strong>1</strong> → 1 + 1 = <strong>2</strong> → 1 + 2 = <strong>3</strong>
+                → 2 + 3 = <strong>5</strong> → 3 + 5 = <strong>8</strong> ...
+            </p>
+
+            <div class="sequence-display" id="sequenceDisplay">
+                <div class="number-tile">0</div>
+                <div class="number-tile">1</div>
+            </div>
+
+            <div>
+                <button onclick="addNextFibonacci()">Add Next Number</button>
+                <button onclick="speedRun()">🚀 Speed Run!</button>
+                <button onclick="resetSequence()">Reset</button>
+            </div>
+
+            <div class="stat-box">
+                <p><strong>Sequence Length:</strong> <span id="sequenceLength">2</span> numbers</p>
+                <p><strong>Last Number:</strong> <span id="lastNumber">1</span></p>
+            </div>
+        </div>
+
+        <h2>The Golden Ratio Secret</h2>
+        <div class="interactive-box">
+            <p>
+                Here's something magical: as the sequence grows, the ratio of consecutive numbers
+                gets closer and closer to the Golden Ratio: <strong>φ (phi) ≈ 1.618...</strong>
+            </p>
+            <p>
+                Try dividing any large Fibonacci number by the one before it!
+            </p>
+            <div class="stat-box" id="ratioBox">
+                <p>Add more numbers to see the golden ratio appear! →</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Golden Spiral -->
+    <section id="spiral">
+        <h1>The Golden Spiral</h1>
+        <p>
+            When you arrange Fibonacci squares next to each other, you can draw a spiral through them.
+            This spiral is called the <strong>Golden Spiral</strong>, and it appears everywhere in nature!
+        </p>
+
+        <div class="interactive-box">
+            <h2>Explore the Spiral</h2>
+            <p>
+                Move the slider to see how Fibonacci squares build the golden spiral.
+                Each square's size is a Fibonacci number!
+            </p>
+            <div class="input-group">
+                <label for="spiralSlider">Spiral Levels: <strong id="spiralLevel">3</strong></label>
+                <input type="range" id="spiralSlider" min="1" max="8" value="3"
+                       oninput="updateSpiral(this.value)">
+            </div>
+            <canvas id="spiralCanvas" width="600" height="600"></canvas>
+        </div>
+
+        <h2>Where Spirals Appear in Nature:</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <h3>Sunflowers 🌻</h3>
+                <p>Sunflower seeds are arranged in spiral patterns following Fibonacci numbers.
+                Most sunflowers have spirals in both directions: usually 21 spirals one way and 34 the other.</p>
+            </div>
+            <div class="card">
+                <h3>Pine Cones 🌲</h3>
+                <p>Look at a pine cone carefully. You'll see spirals going up and down.
+                Count them: usually 8 spirals one way and 13 the other. Both Fibonacci numbers!</p>
+            </div>
+            <div class="card">
+                <h3>Nautilus Shells 🐚</h3>
+                <p>The chambered nautilus shell forms a perfect golden spiral as it grows.
+                Each chamber is bigger than the last, following the golden ratio.</p>
+            </div>
+            <div class="card">
+                <h3>Hurricanes 🌪️</h3>
+                <p>Seen from space, hurricanes and cyclones form spiral patterns similar to the golden spiral.
+                Nature's most powerful storms follow mathematical patterns!</p>
+            </div>
+            <div class="card">
+                <h3>Galaxies 🌌</h3>
+                <p>Many spiral galaxies, including our own Milky Way, form golden spirals as they rotate through space.</p>
+            </div>
+            <div class="card">
+                <h3>DNA & Plants 🧬</h3>
+                <p>Even at the microscopic level, DNA spirals and plant growth patterns follow Fibonacci numbers and the golden ratio.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Fibonacci in Nature -->
+    <section id="nature">
+        <h1>Fibonacci in Nature: The Interactive Sunflower</h1>
+        <p>
+            Nature is mathematical! Let's create a sunflower head by placing seeds at the
+            <strong>golden angle (137.5°)</strong>. This special angle automatically creates spiral patterns
+            that follow Fibonacci numbers.
+        </p>
+
+        <div class="interactive-box">
+            <h2>Plant Seeds in Your Sunflower</h2>
+            <div class="input-group">
+                <label for="seedSlider">Number of Seeds: <strong id="seedCount">100</strong></label>
+                <input type="range" id="seedSlider" min="10" max="1000" step="10" value="100"
+                       oninput="updateSunflower(this.value)">
+            </div>
+            <canvas id="sunflowerCanvas" width="600" height="600"></canvas>
+
+            <div class="stat-box">
+                <p id="spiralInfo">Place seeds to see how Fibonacci spirals naturally form!</p>
+            </div>
+        </div>
+
+        <h2>Why the Golden Angle Works</h2>
+        <div class="stat-box">
+            <p>
+                <strong>The golden angle is 137.5°</strong> (or 360° ÷ 1.618...).
+                When seeds grow at this angle, they naturally space themselves perfectly.
+                No crowding, no wasted space — just efficient packing!
+            </p>
+            <p>
+                This is why:
+                <br>• Sunflower seeds arrange in Fibonacci spirals (21 and 34 spirals)
+                <br>• Pine cone scales form 5, 8, or 13 spirals
+                <br>• Petal counts often match Fibonacci numbers
+            </p>
+            <p>
+                Nature discovered mathematics millions of years before humans did!
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 5: Fun Facts -->
+    <section id="facts">
+        <h1>Fun Facts About Fibonacci & the Golden Ratio</h1>
+
+        <div class="cards-grid">
+            <div class="card">
+                <h3>📚 He Didn't Discover It First</h3>
+                <p>Indian mathematicians knew about this sequence centuries before Fibonacci!
+                But Fibonacci introduced it to Europe, so it got his name.</p>
+            </div>
+
+            <div class="card">
+                <h3>🔢 Goodbye, Roman Numerals!</h3>
+                <p>Fibonacci convinced Europe to use 0-9 instead of Roman numerals.
+                Imagine doing modern math with only I, V, X, L, C, D, M!</p>
+            </div>
+
+            <div class="card">
+                <h3>🏛️ The Golden Ratio in Art</h3>
+                <p>Many famous artworks use the golden ratio (1.618...).
+                The Parthenon, the Mona Lisa, and even modern logos incorporate it.</p>
+            </div>
+
+            <div class="card">
+                <h3>🎹 Music & Piano Keys</h3>
+                <p>A piano octave has 13 keys: 8 white keys and 5 black keys.
+                All Fibonacci numbers! This creates harmonious musical intervals.</p>
+            </div>
+
+            <div class="card">
+                <h3>💪 The Sequence Grows FAST</h3>
+                <p>The numbers grow exponentially. The 50th Fibonacci number is over 12 billion!
+                The 100th number has 21 digits!</p>
+            </div>
+
+            <div class="card">
+                <h3>📅 Fibonacci Day</h3>
+                <p>November 23 (11/23) is Fibonacci Day! Why? Because 1, 1, 2, 3
+                is the start of the sequence. Celebrate it!</p>
+            </div>
+
+            <div class="card">
+                <h3>🌻 Sunflower Seeds Count</h3>
+                <p>Most sunflower heads have either 34 and 55 spirals, or 55 and 89 spirals.
+                All consecutive Fibonacci numbers!</p>
+            </div>
+
+            <div class="card">
+                <h3>🌲 Pine Cone Spirals</h3>
+                <p>Pine cones show spirals of 8 and 13 (or sometimes 5 and 8).
+                Every cone follows the Fibonacci sequence!</p>
+            </div>
+
+            <div class="card">
+                <h3>💰 Changed Finance Forever</h3>
+                <p>Fibonacci's number system revolutionized accounting and commerce.
+                Modern banking and business wouldn't exist without his ideas!</p>
+            </div>
+
+            <div class="card">
+                <h3>🔬 Research Never Stops</h3>
+                <p>Scientists still discover Fibonacci patterns everywhere: in DNA, in galaxies,
+                in how proteins fold, in how cities grow. It's endlessly fascinating!</p>
+            </div>
+
+            <div class="card">
+                <h3>📊 A Whole Journal</h3>
+                <p>There's an academic journal called "The Fibonacci Quarterly" dedicated entirely
+                to research about Fibonacci numbers. That's how important they are!</p>
+            </div>
+
+            <div class="card">
+                <h3>🧮 Computing & Algorithms</h3>
+                <p>Computer scientists use Fibonacci sequences to test algorithms and optimize
+                search methods. It's a fundamental concept in computer science.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Quiz -->
+    <section id="quiz">
+        <h1>Fibonacci Quiz Challenge</h1>
+        <p>Test your knowledge! Answer questions about Fibonacci, the golden ratio, and what you've learned.</p>
+
+        <div id="quizContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div id="quizContent"></div>
+        </div>
+    </section>
+
+    <script>
+        // ===== NAVIGATION =====
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+                const sectionId = btn.dataset.section;
+                document.getElementById(sectionId).classList.add('active');
+                btn.classList.add('active');
+
+                if (sectionId === 'quiz' && !window.quizStarted) {
+                    initializeQuiz();
+                    window.quizStarted = true;
+                }
+            });
+        });
+
+        // ===== SEQUENCE BUILDER =====
+        let fib = [0, 1];
+        let a = 0, b = 1;
+
+        function addNextFibonacci() {
+            const c = a + b;
+            fib.push(c);
+            a = b;
+            b = c;
+            renderSequence();
+            updateRatio();
+        }
+
+        function speedRun() {
+            const targetLength = 20;
+            while (fib.length < targetLength) {
+                addNextFibonacci();
+            }
+        }
+
+        function resetSequence() {
+            fib = [0, 1];
+            a = 0;
+            b = 1;
+            renderSequence();
+            updateRatio();
+        }
+
+        function renderSequence() {
+            const display = document.getElementById('sequenceDisplay');
+            display.innerHTML = fib.map(n => `<div class="number-tile">${n}</div>`).join('');
+            document.getElementById('sequenceLength').textContent = fib.length;
+            document.getElementById('lastNumber').textContent = fib[fib.length - 1];
+        }
+
+        function updateRatio() {
+            if (fib.length >= 2) {
+                const last = fib[fib.length - 1];
+                const prev = fib[fib.length - 2];
+                const ratio = (last / prev).toFixed(6);
+                const phi = 1.618034;
+                document.getElementById('ratioBox').innerHTML = `
+                    <p><strong>Ratio of last two numbers:</strong> ${last} ÷ ${prev} = ${ratio}</p>
+                    <p><strong>Golden Ratio (φ):</strong> 1.618034...</p>
+                    <p><strong>Getting closer?</strong> ${Math.abs(ratio - phi) < 0.01 ? '✓ Yes! Very close!' : '✓ Keep adding more!'}</p>
+                `;
+            }
+        }
+
+        // ===== GOLDEN SPIRAL =====
+        function drawGoldenSpiral() {
+            const canvas = document.getElementById('spiralCanvas');
+            const ctx = canvas.getContext('2d');
+            const level = parseInt(document.getElementById('spiralSlider').value);
+
+            ctx.fillStyle = '#0a0e1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const fibs = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+            const scale = 2;
+            let x = 50, y = 50;
+
+            // Draw Fibonacci squares
+            ctx.fillStyle = 'rgba(45, 80, 22, 0.6)';
+            ctx.strokeStyle = '#2d5016';
+            ctx.lineWidth = 2;
+
+            for (let i = 0; i < Math.min(level, fibs.length); i++) {
+                const size = fibs[i] * scale;
+                if (i === 0) {
+                    ctx.fillRect(x, y, size, size);
+                    ctx.strokeRect(x, y, size, size);
+                } else if (i === 1) {
+                    ctx.fillRect(x + fibs[0] * scale, y, size, size);
+                    ctx.strokeRect(x + fibs[0] * scale, y, size, size);
+                } else {
+                    x += fibs[i - 1] * scale;
+                    ctx.fillRect(x, y, size, size);
+                    ctx.strokeRect(x, y, size, size);
+                }
+            }
+
+            // Draw golden spiral
+            ctx.strokeStyle = '#DAA520';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            const cx = 50 + fibs[0] * scale;
+            const cy = 50 + fibs[0] * scale;
+            let angle = 0;
+            let radius = fibs[0] * scale / 2;
+
+            for (let i = 0; i < Math.min(level * 4, 100); i++) {
+                const x = cx + radius * Math.cos(angle);
+                const y = cy + radius * Math.sin(angle);
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+
+                angle += 0.1;
+                radius += 0.5;
+            }
+
+            ctx.stroke();
+
+            // Add labels
+            ctx.fillStyle = '#90EE90';
+            ctx.font = 'bold 12px Arial';
+            for (let i = 0; i < Math.min(level, 3); i++) {
+                ctx.fillText('F' + i, 55 + i * 30, 45);
+            }
+        }
+
+        function updateSpiral(value) {
+            document.getElementById('spiralLevel').textContent = value;
+            drawGoldenSpiral();
+        }
+
+        // ===== SUNFLOWER =====
+        function drawSunflower() {
+            const canvas = document.getElementById('sunflowerCanvas');
+            const ctx = canvas.getContext('2d');
+            const seedCount = parseInt(document.getElementById('seedSlider').value);
+
+            ctx.fillStyle = '#0a0e1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const goldenAngle = 137.5 * Math.PI / 180; // Golden angle in radians
+            const maxRadius = 200;
+
+            // Draw seeds
+            let spiralCount1 = 0, spiralCount2 = 0;
+
+            for (let i = 0; i < seedCount; i++) {
+                const angle = i * goldenAngle;
+                const radius = Math.sqrt(i) * (maxRadius / Math.sqrt(seedCount));
+
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                // Color based on spiral position
+                const hue = (i / seedCount * 60 + 30) % 360;
+                ctx.fillStyle = `hsl(${hue}, 80%, 50%)`;
+
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Count spirals (simplified)
+                if (i === seedCount * 0.34) spiralCount1++;
+                if (i === seedCount * 0.55) spiralCount2++;
+            }
+
+            // Count major spirals
+            const estimatedFibSpirals = countFibonacciSpirals(seedCount);
+            document.getElementById('spiralInfo').innerHTML =
+                `<p><strong>Seeds placed:</strong> ${seedCount}</p>
+                 <p><strong>Spiral pattern:</strong> Natural Fibonacci arrangement!</p>
+                 <p><strong>Notice:</strong> The golden angle (137.5°) creates beautiful, efficient spirals.
+                 Nature's solution to space-packing!</p>`;
+        }
+
+        function countFibonacciSpirals(count) {
+            const fibs = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144];
+            for (let i = fibs.length - 1; i >= 0; i--) {
+                if (fibs[i] <= count) {
+                    return fibs[i];
+                }
+            }
+            return 21;
+        }
+
+        function updateSunflower(value) {
+            document.getElementById('seedCount').textContent = value;
+            drawSunflower();
+        }
+
+        // ===== QUIZ =====
+        const quizQuestions = [
+            {
+                question: "What does 'Fibonacci' mean?",
+                options: ["Numbers", "Son of Bonacci", "Golden Ratio", "Spiral Pattern"],
+                correct: 1,
+                explanation: "Fibonacci means 'son of Bonacci.' His real name was Leonardo Bonacci."
+            },
+            {
+                question: "In what year did Fibonacci publish 'Liber Abaci'?",
+                options: ["1170", "1200", "1202", "1250"],
+                correct: 2,
+                explanation: "Fibonacci published the Book of Calculation ('Liber Abaci') in 1202."
+            },
+            {
+                question: "What is the next number in this sequence: 3, 5, 8, 13, ___?",
+                options: ["15", "20", "21", "25"],
+                correct: 2,
+                explanation: "In the Fibonacci sequence, each number is the sum of the previous two: 8 + 13 = 21."
+            },
+            {
+                question: "What is the Golden Ratio approximately equal to?",
+                options: ["1.414", "1.618", "2.718", "3.14"],
+                correct: 1,
+                explanation: "The Golden Ratio (phi, φ) is approximately 1.618. It appears in nature everywhere!"
+            },
+            {
+                question: "Which is NOT a Fibonacci number?",
+                options: ["8", "13", "17", "21"],
+                correct: 2,
+                explanation: "17 is not a Fibonacci number. The sequence goes: ...13, 21..."
+            },
+            {
+                question: "Why did Fibonacci promote the use of numbers 0-9?",
+                options: ["They were easier to use", "They were prettier", "Everyone else was using them", "He invented them"],
+                correct: 0,
+                explanation: "The Hindu-Arabic numeral system (0-9) made math much easier than Roman numerals!"
+            },
+            {
+                question: "How many spirals do most sunflower seeds form?",
+                options: ["5 and 8", "8 and 13", "21 and 34", "13 and 21"],
+                correct: 2,
+                explanation: "Most sunflower heads have 21 and 34 spirals, both Fibonacci numbers!"
+            },
+            {
+                question: "What is the golden angle used in nature for efficient spacing?",
+                options: ["90°", "120°", "137.5°", "180°"],
+                correct: 2,
+                explanation: "The golden angle is 137.5°, which creates perfect Fibonacci spirals in plants."
+            },
+            {
+                question: "What shape does the nautilus shell create as it grows?",
+                options: ["Square spiral", "Golden spiral", "Circle", "Square"],
+                correct: 1,
+                explanation: "The nautilus shell grows in a perfect golden spiral following the golden ratio."
+            },
+            {
+                question: "How many white keys are on a piano octave?",
+                options: ["5", "8", "10", "13"],
+                correct: 1,
+                explanation: "A piano octave has 8 white keys and 5 black keys—both Fibonacci numbers!"
+            }
+        ];
+
+        function initializeQuiz() {
+            const shuffled = [...quizQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
+            window.quizState = {
+                questions: shuffled,
+                currentQ: 0,
+                score: 0,
+                answered: []
+            };
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const state = window.quizState;
+            const progress = ((state.currentQ + 1) / state.questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            if (state.currentQ >= state.questions.length) {
+                showQuizResult();
+                return;
+            }
+
+            const q = state.questions[state.currentQ];
+            let html = `
+                <div class="quiz-container">
+                    <p style="color: #DAA520; margin-bottom: 0.5rem;">Question ${state.currentQ + 1} of ${state.questions.length}</p>
+                    <div class="question">
+                        <p>${q.question}</p>
+                        <div class="options">
+            `;
+
+            q.options.forEach((option, idx) => {
+                html += `<button class="option-btn" onclick="selectAnswer(${idx})">${option}</button>`;
+            });
+
+            html += `</div></div></div>`;
+            document.getElementById('quizContent').innerHTML = html;
+        }
+
+        function selectAnswer(idx) {
+            const state = window.quizState;
+            const q = state.questions[state.currentQ];
+            const isCorrect = idx === q.correct;
+
+            // Update buttons
+            document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.add('correct');
+                } else if (i === idx && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            // Show feedback
+            const feedbackClass = isCorrect ? 'correct' : 'incorrect';
+            const feedbackText = isCorrect ? '✓ Correct!' : '✗ Not quite right';
+
+            const feedback = document.createElement('div');
+            feedback.className = `feedback ${feedbackClass}`;
+            feedback.innerHTML = `<strong>${feedbackText}</strong><br>${q.explanation}`;
+            document.querySelector('.question').appendChild(feedback);
+
+            if (isCorrect) state.score++;
+
+            setTimeout(() => {
+                state.currentQ++;
+                renderQuizQuestion();
+            }, 2500);
+        }
+
+        function showQuizResult() {
+            const state = window.quizState;
+            const percentage = Math.round((state.score / state.questions.length) * 100);
+            let message = '';
+
+            if (percentage === 100) {
+                message = "🏆 Perfect Score! You're a Fibonacci Master!";
+            } else if (percentage >= 80) {
+                message = "🌟 Excellent! You know Fibonacci really well!";
+            } else if (percentage >= 60) {
+                message = "✓ Good job! You've learned a lot about Fibonacci!";
+            } else {
+                message = "Keep learning! Fibonacci is fascinating!";
+            }
+
+            document.getElementById('quizContent').innerHTML = `
+                <div class="quiz-result">
+                    <h3>${message}</h3>
+                    <div class="score">${state.score}/${state.questions.length}</div>
+                    <p style="font-size: 1.2rem;">${percentage}%</p>
+                    <button onclick="resetQuiz()" style="margin-top: 1rem;">Try Again</button>
+                </div>
+            `;
+        }
+
+        function resetQuiz() {
+            window.quizStarted = false;
+            document.getElementById('quizContent').innerHTML = '';
+            initializeQuiz();
+        }
+
+        // ===== INITIAL DRAWS =====
+        window.addEventListener('load', () => {
+            drawGoldenSpiral();
+            drawSunflower();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>The World of Hypatia</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#2b3a2b;--card:#314231;--amber:#f5d863;--blue:#7bb8e0;--coral:#d96b6b;--silver:#e8e4d9;--teal:#8fd4a4;--text:#e8e4d9;--dim:#9ca898;--radius:18px}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--amber);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
+.hero{text-align:center;padding:50px 20px 35px;position:relative}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.07) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;border:4px solid var(--amber);box-shadow:0 0 40px rgba(245,216,99,.25);margin-bottom:18px;background:linear-gradient(135deg,#3a2a5a 0%,#1a1040 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.portrait svg{width:120px;height:120px}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,#f5d863,#d96b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .sub{font-size:19px;color:var(--dim)}.hero .life{margin-top:10px;font-size:15px;color:var(--teal)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#f5d863,#d96b6b,#8fd4a4);border-radius:2px}
+.tl-item{position:relative;margin-bottom:24px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--amber);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.4)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--coral)}.tl-item:nth-child(3n) .tl-dot{background:var(--teal)}
+.tl-year{font-weight:800;font-size:15px;color:var(--amber);margin-bottom:2px}
+.tl-text{font-size:15px}.tl-text strong{color:var(--amber)}
+.step-explain{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.step-item{display:flex;gap:14px;align-items:flex-start}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--amber);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.step-text{font-size:15px;line-height:1.6;padding-top:5px}
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+.slider-group{margin-bottom:16px}.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--amber);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(245,216,99,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:18px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--teal);font-size:14px;line-height:1.7}
+.example-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.example-card{background:rgba(123,184,224,.06);border-radius:10px;padding:12px;text-align:center;border:1px solid rgba(123,184,224,.15)}
+.example-card .icon{font-size:24px;margin-bottom:4px}.example-card .name{font-weight:700;font-size:13px}
+.example-card .desc{font-size:12px;color:var(--dim)}
+.puzzle-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.puzzle-card{background:rgba(245,216,99,.06);border:2px solid rgba(245,216,99,.15);border-radius:14px;padding:18px;cursor:pointer;transition:.25s}
+.puzzle-card:hover{border-color:var(--amber);transform:translateY(-2px)}
+.puzzle-card.active{border-color:var(--amber);background:rgba(245,216,99,.1)}
+.puzzle-card h3{font-size:16px;margin-bottom:6px}.puzzle-card p{font-size:13px;color:var(--dim)}
+.puzzle-area{background:rgba(245,216,99,.04);border-radius:14px;padding:20px;text-align:center;min-height:120px}
+.puzzle-eq{font-size:22px;font-weight:700;margin-bottom:16px;font-family:'Times New Roman',serif}
+.puzzle-inputs{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.puzzle-inputs input{width:70px;padding:10px;border:2px solid rgba(245,216,99,.3);border-radius:10px;background:rgba(245,216,99,.05);color:var(--text);font-size:18px;text-align:center;font-weight:700}
+.puzzle-inputs input:focus{outline:none;border-color:var(--amber)}
+.puzzle-inputs span{font-size:18px;font-weight:600;color:var(--dim)}
+.btn{padding:10px 22px;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;display:inline-block;margin:4px}
+.btn-primary{background:var(--amber);color:#000}.btn-primary:hover{transform:scale(1.04)}
+.btn-secondary{background:rgba(217,107,107,.12);color:var(--coral);border:2px solid rgba(217,107,107,.25)}
+.puzzle-feedback{margin-top:12px;font-size:16px;font-weight:700;min-height:24px}
+.hint-text{margin-top:10px;padding:12px;background:rgba(143,212,164,.08);border-left:4px solid var(--teal);border-radius:8px;font-size:14px;display:none}
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--amber)}
+.fact-card:nth-child(2){border-left-color:var(--coral)}.fact-card:nth-child(3){border-left-color:var(--teal)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#fb923c}.fact-card:nth-child(7){border-left-color:#f472b6}
+.fact-card:nth-child(8){border-left-color:#38bdf8}.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:6px;font-weight:700;color:var(--teal);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#f5d863,#8fd4a4);transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--amber);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--teal);background:rgba(143,212,164,.12);color:var(--teal)}
+.answer-btn.wrong{border-color:var(--coral);background:rgba(217,107,107,.1);color:var(--coral)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--teal)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--coral)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:6px;background:linear-gradient(135deg,#f5d863,#d96b6b);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04)}.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,#8fd4a4,#f5d863);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:6px;background:var(--amber);color:#000;font-size:15px;font-weight:700;cursor:pointer}
+@media(max-width:600px){nav button{padding:7px 10px;font-size:11px}.card{padding:18px}.answers{grid-template-columns:1fr}.stat-grid,.example-grid,.puzzle-grid{grid-template-columns:1fr}.portrait{width:120px;height:120px}.portrait svg{width:85px;height:85px}}
+</style>
+</head>
+<body>
+<div class="hero"><div class="hero-content">
+  <div class="portrait"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="32" r="18" fill="#e8a838" opacity=".85"/>
+    <ellipse cx="50" cy="85" rx="28" ry="22" fill="#e8a838" opacity=".7"/>
+    <path d="M35 30 Q40 8 50 10 Q60 8 65 30" stroke="#c77d20" stroke-width="2.5" fill="none"/>
+    <circle cx="44" cy="31" r="2" fill="#1a1040"/><circle cx="56" cy="31" r="2" fill="#1a1040"/>
+    <path d="M46 38 Q50 41 54 38" stroke="#1a1040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="50" cy="60" rx="6" ry="3" fill="none" stroke="#e8a838" stroke-width="1.5" transform="rotate(-30 50 60)"/>
+    <line x1="44" y1="58" x2="56" y2="62" stroke="#e8a838" stroke-width="1.2"/>
+    <circle cx="50" cy="60" r="12" fill="none" stroke="rgba(232,168,56,.3)" stroke-width="1" stroke-dasharray="3 3"/>
+  </svg></div>
+  <h1>The World of Hypatia</h1>
+  <p class="sub">The first great woman mathematician</p>
+  <p class="life">c. 350–415 AD · Alexandria, Egypt</p>
+  <p class="tagline">She taught the most powerful people in the Roman Empire, improved ancient scientific instruments, and gave her life for the pursuit of knowledge.</p>
+</div></div>
+<nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+  <button class="active" onclick="show('story',this)">Her Story</button>
+  <button onclick="show('conics',this)">Conic Sections</button>
+  <button onclick="show('astrolabe',this)">Astrolabe</button>
+  <button onclick="show('puzzles',this)">Number Puzzles</button>
+  <button onclick="show('facts',this)">Fun Facts</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+</nav>
+
+<section id="sec-story" class="visible">
+<div class="card">
+  <h2>The Life of Hypatia</h2><p class="sub">Scholar, teacher, philosopher — and one of the bravest minds in history.</p>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 350–370 AD</div><div class="tl-text">Born in <strong>Alexandria, Egypt</strong> — home of the greatest library the ancient world had ever known.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Childhood</div><div class="tl-text">Educated by her father <strong>Theon</strong>, the last known scholar of the Library of Alexandria. He taught her math, astronomy, and philosophy.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 390 AD</div><div class="tl-text">Became head of the <strong>Neoplatonist school</strong> in Alexandria — an incredible achievement for anyone, and unheard of for a woman in the ancient world.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 390–415 AD</div><div class="tl-text">Students traveled from across the <strong>Roman Empire</strong> to attend her lectures on math, astronomy, and philosophy.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 400 AD</div><div class="tl-text">Wrote commentaries on <strong>Diophantus's Arithmetica</strong> (algebra) and <strong>Apollonius's Conics</strong> (geometry of curves from slicing cones).</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 400 AD</div><div class="tl-text">Improved the design of the <strong>astrolabe</strong> — an ancient device used to map the stars, navigate, and tell time.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">c. 410 AD</div><div class="tl-text">Alexandria became a battleground between political and religious factions. Hypatia, as a prominent pagan scholar, was caught in the middle.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">415 AD</div><div class="tl-text">Murdered by a fanatical mob. Her death shocked the ancient world and is seen as a turning point — the end of classical learning.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Legacy</div><div class="tl-text">A <strong>crater on the Moon</strong> bears her name. She is celebrated as a symbol of knowledge, courage, and intellectual freedom.</div></div>
+  </div>
+</div>
+</section>
+
+<section id="sec-conics">
+<div class="card">
+  <h2>Conic Sections — Slicing a Cone</h2><p class="sub">Hypatia wrote about these shapes. You get them by cutting a cone at different angles!</p>
+  <div class="step-explain">
+    <div class="step-item"><div class="step-num">1</div><div class="step-text">Imagine a cone — like an ice cream cone that goes on forever in both directions.</div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-text">Now slice through it with a flat plane. The <strong>angle</strong> determines the shape.</div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-text">Straight across → <strong style="color:var(--amber)">Circle</strong>. Tilted → <strong style="color:var(--blue)">Ellipse</strong>. Parallel to edge → <strong style="color:var(--teal)">Parabola</strong>. Steep → <strong style="color:var(--coral)">Hyperbola</strong>.</div></div>
+  </div>
+</div>
+<div class="card">
+  <h2>Explore the Shapes</h2><p class="sub">Drag the slider to change the slice angle!</p>
+  <div class="lab-layout">
+    <div><canvas id="conicCanvas" width="360" height="340"></canvas></div>
+    <div class="lab-side">
+      <div class="slider-group"><label>Slice angle: <span id="sliceLabel" style="color:var(--amber);font-weight:700">Circle</span></label><input type="range" id="sliceSlider" min="0" max="100" value="0"></div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="lbl">Shape</div><div class="val" style="color:var(--amber)" id="conicName">Circle</div></div>
+        <div class="stat-box"><div class="lbl">Equation</div><div class="val" style="color:var(--blue);font-size:14px;font-family:'Times New Roman',serif" id="conicEq">x² + y² = r²</div></div>
+      </div>
+      <div class="example-grid">
+        <div class="example-card" id="exCard1"><div class="icon">🎡</div><div class="name">Circle</div><div class="desc">Wheels, clocks</div></div>
+        <div class="example-card" id="exCard2"><div class="icon">🪐</div><div class="name">Ellipse</div><div class="desc">Planet orbits</div></div>
+        <div class="example-card" id="exCard3"><div class="icon">🏀</div><div class="name">Parabola</div><div class="desc">Basketball arcs</div></div>
+        <div class="example-card" id="exCard4"><div class="icon">💥</div><div class="name">Hyperbola</div><div class="desc">Sonic booms</div></div>
+      </div>
+      <div class="explain-box">These four shapes appear <em>everywhere</em> in science. Hypatia helped preserve this ancient knowledge — which later helped Kepler discover how planets move!</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="sec-astrolabe">
+<div class="card">
+  <h2>The Astrolabe — The Ancient Computer</h2><p class="sub">Hypatia improved this incredible device for finding stars, telling time, and navigating.</p>
+  <div class="step-explain">
+    <div class="step-item"><div class="step-num">1</div><div class="step-text">An astrolabe is a flat model of the sky. The <strong>back plate</strong> shows a grid for your latitude.</div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-text">A rotating <strong>star map</strong> (the "rete") sits on top. Rotate it to match the current time.</div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-text">Line everything up and you can tell: what time it is, when the sun rises, which stars are visible, and which direction you're facing!</div></div>
+  </div>
+</div>
+<div class="card">
+  <h2>Interactive Astrolabe</h2><p class="sub">Drag the slider to rotate the star map and see which stars are visible.</p>
+  <div class="lab-layout">
+    <div><canvas id="astroCanvas" width="340" height="340"></canvas></div>
+    <div class="lab-side">
+      <div class="slider-group"><label>Time: <span id="astroTime" style="color:var(--amber);font-weight:700">9:00 PM</span></label><input type="range" id="astroSlider" min="0" max="360" value="0"></div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="lbl">Stars Visible</div><div class="val" style="color:var(--amber)" id="starsVisible">5</div></div>
+        <div class="stat-box"><div class="lbl">Season</div><div class="val" style="color:var(--teal)" id="astroSeason">Spring</div></div>
+      </div>
+      <div class="explain-box"><strong>Navigation trick:</strong> Sailors would find a known star, measure its height above the horizon, and calculate their latitude. This was the main navigation tool for over 1,500 years!</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="sec-puzzles">
+<div class="card">
+  <h2>Number Puzzles — Diophantine Equations</h2><p class="sub">Hypatia wrote about Diophantus, who loved finding whole number solutions.</p>
+  <div class="step-explain">
+    <div class="step-item"><div class="step-num">1</div><div class="step-text">A <strong>Diophantine equation</strong> is one where you can only use whole numbers as answers — no fractions!</div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-text">Example: find two numbers that add to 10 and multiply to 21. (It's 3 and 7!)</div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-text">These puzzles are the foundation of <strong>modern cryptography</strong> — the math keeping your passwords safe!</div></div>
+  </div>
+</div>
+<div class="card">
+  <h2>Solve the Puzzles!</h2><p class="sub">Pick a difficulty and find the whole numbers.</p>
+  <div class="puzzle-grid" id="puzzleGrid"></div>
+  <div class="puzzle-area" id="puzzleArea">
+    <div class="puzzle-eq" id="puzzleEq">Pick a puzzle above!</div>
+    <div class="puzzle-inputs" id="puzzleInputs" style="display:none"><span>x =</span><input type="number" id="pX" min="0" max="100"><span>y =</span><input type="number" id="pY" min="0" max="100"></div>
+    <div style="margin-top:10px"><button class="btn btn-primary" id="checkBtn" onclick="checkPuzzle()" style="display:none">Check Answer</button><button class="btn btn-secondary" id="hintBtn" onclick="showHint()" style="display:none">Hint</button></div>
+    <div class="puzzle-feedback" id="puzzleFb"></div>
+    <div class="hint-text" id="hintText"></div>
+  </div>
+</div>
+</section>
+
+<section id="sec-facts">
+<div class="card">
+  <h2>Mind-Blowing Hypatia Facts</h2><p class="sub">A true legend of the ancient world.</p>
+  <div class="facts-grid">
+    <div class="fact-card"><div class="fact-icon">👩‍🏫</div><div class="fact-title">Head of a Major School</div><div class="fact-text">She led the Neoplatonist school in Alexandria — one of the most prestigious positions in the Roman Empire. As a woman, in the 4th century!</div></div>
+    <div class="fact-card"><div class="fact-icon">🌍</div><div class="fact-title">Students from Everywhere</div><div class="fact-text">People traveled from across the entire Roman Empire — thousands of miles — just to attend her lectures.</div></div>
+    <div class="fact-card"><div class="fact-icon">🏛️</div><div class="fact-title">Chariot-Driving Scholar</div><div class="fact-text">Hypatia wore scholar's robes and drove her own chariot through Alexandria. In an age when women were expected to stay home, she was a public intellectual superstar.</div></div>
+    <div class="fact-card"><div class="fact-icon">🗣️</div><div class="fact-title">Legendary Speaker</div><div class="fact-text">She could explain the most complex math to anyone. Even the Roman governor of Egypt sought her advice on important decisions.</div></div>
+    <div class="fact-card"><div class="fact-icon">📚</div><div class="fact-title">Library of Alexandria</div><div class="fact-text">Her father worked at the greatest library ever built — it tried to collect ALL human knowledge. She grew up surrounded by more books than almost anyone in history.</div></div>
+    <div class="fact-card"><div class="fact-icon">🔭</div><div class="fact-title">Improved the Astrolabe</div><div class="fact-text">She redesigned the astrolabe, sometimes called "the first analog computer." It could find stars, tell time, and navigate — in one handheld device.</div></div>
+    <div class="fact-card"><div class="fact-icon">✨</div><div class="fact-title">First Documented Female Mathematician</div><div class="fact-text">While women certainly did math before her, Hypatia is the first female mathematician whose life and work are well-documented.</div></div>
+    <div class="fact-card"><div class="fact-icon">🤝</div><div class="fact-title">Taught Everyone</div><div class="fact-text">She taught students of all religions — Christians, pagans, and others. She believed knowledge belonged to everyone.</div></div>
+    <div class="fact-card"><div class="fact-icon">🎬</div><div class="fact-title">Hollywood Movie</div><div class="fact-text">The movie "Agora" (2009) starring Rachel Weisz tells her story — her fight to preserve knowledge as the world descended into conflict.</div></div>
+    <div class="fact-card"><div class="fact-icon">🌙</div><div class="fact-title">Crater on the Moon</div><div class="fact-text">There's a crater on the Moon AND an asteroid (238 Hypatia) named after her. She's literally written into the cosmos.</div></div>
+    <div class="fact-card"><div class="fact-icon">🕯️</div><div class="fact-title">End of an Era</div><div class="fact-text">Her death in 415 AD is seen as a turning point — the moment when the light of ancient learning began to dim for nearly a thousand years.</div></div>
+    <div class="fact-card"><div class="fact-icon">💪</div><div class="fact-title">Refused to Back Down</div><div class="fact-text">When friends urged her to flee or convert, she refused. She continued teaching and speaking freely, choosing truth over safety.</div></div>
+  </div>
+</div>
+</section>
+
+<section id="sec-quiz">
+<div class="card">
+  <div class="quiz-header"><h2>Hypatia Quiz!</h2><div class="score-badge">Score: <span id="quizScore">0</span> / <span id="quizTotal">10</span></div></div>
+  <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
+  <div id="quizBody">
+    <div class="question-text" id="questionText"></div>
+    <div class="answers" id="answersDiv"></div>
+    <div class="feedback" id="feedback"></div>
+    <div style="text-align:center"><button class="next-btn" id="nextBtn" onclick="nextQ()">Next Question →</button></div>
+  </div>
+  <div class="quiz-complete" id="quizComplete" style="display:none">
+    <h2>Quiz Complete!</h2><div class="final-score" id="finalScore"></div>
+    <p id="finalMsg" style="font-size:17px;color:var(--dim)"></p>
+    <button class="restart-btn" onclick="startQuiz()">Try Again</button>
+  </div>
+</div>
+</section>
+
+<div style="text-align:center;padding:28px 20px 50px;color:var(--dim);font-size:12px;">Portrait: Public domain via Wikimedia Commons · Built with math and curiosity.</div>
+
+<script>
+function show(n,b){document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));document.getElementById('sec-'+n).classList.add('visible');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(n==='quiz'&&quizQs.length===0)startQuiz()}
+
+/* CONIC SECTIONS */
+const cc=document.getElementById('conicCanvas'),cctx=cc.getContext('2d');
+const sliceS=document.getElementById('sliceSlider');
+function drawConic(){
+  const v=+sliceS.value;cctx.clearRect(0,0,360,340);const cX=180,cY=170;
+  let shape,color,eq;
+  if(v<20){shape='Circle';color='#e8a838';eq='x² + y² = r²'}
+  else if(v<50){shape='Ellipse';color='#3b82f6';eq='x²/a² + y²/b² = 1'}
+  else if(v<70){shape='Parabola';color='#2dd4bf';eq='y = ax²'}
+  else{shape='Hyperbola';color='#f472b6';eq='x²/a² − y²/b² = 1'}
+  document.getElementById('sliceLabel').textContent=shape;document.getElementById('sliceLabel').style.color=color;
+  document.getElementById('conicName').textContent=shape;document.getElementById('conicName').style.color=color;
+  document.getElementById('conicEq').textContent=eq;
+  ['exCard1','exCard2','exCard3','exCard4'].forEach((id,i)=>{
+    document.getElementById(id).style.borderColor=(i===0&&v<20)||(i===1&&v>=20&&v<50)||(i===2&&v>=50&&v<70)||(i===3&&v>=70)?color:'rgba(59,130,246,.15)';
+  });
+  // cone
+  cctx.strokeStyle='rgba(255,255,255,.12)';cctx.lineWidth=1.5;
+  cctx.beginPath();cctx.moveTo(cX,30);cctx.lineTo(cX-140,310);cctx.moveTo(cX,30);cctx.lineTo(cX+140,310);cctx.stroke();
+  cctx.beginPath();cctx.ellipse(cX,310,140,25,0,0,Math.PI*2);cctx.stroke();
+  // shape
+  cctx.lineWidth=3;cctx.strokeStyle=color;
+  if(shape==='Circle'){cctx.beginPath();cctx.arc(cX,cY,60,0,Math.PI*2);cctx.stroke();cctx.fillStyle=color+'22';cctx.fill()}
+  else if(shape==='Ellipse'){const a=80+v*0.4;cctx.beginPath();cctx.ellipse(cX,cY,a,50,0,0,Math.PI*2);cctx.stroke();cctx.fillStyle=color+'18';cctx.fill()}
+  else if(shape==='Parabola'){cctx.beginPath();for(let t=-1.5;t<=1.5;t+=.02)cctx.lineTo(cX+t*80,cY-80+t*t*55);cctx.stroke()}
+  else{cctx.beginPath();for(let t=-1.2;t<=1.2;t+=.02)cctx.lineTo(cX+60/Math.cos(t*1.2),cY+80*Math.tan(t*.8));cctx.stroke();cctx.beginPath();for(let t=-1.2;t<=1.2;t+=.02)cctx.lineTo(cX-60/Math.cos(t*1.2),cY+80*Math.tan(t*.8));cctx.stroke()}
+  // slice line — 0=horizontal (circle), increasing tilt toward hyperbola
+  cctx.setLineDash([6,4]);cctx.strokeStyle='rgba(255,255,255,.35)';cctx.lineWidth=1.5;
+  const ang=v*.005;cctx.beginPath();cctx.moveTo(20,cY-ang*160);cctx.lineTo(340,cY+ang*160);cctx.stroke();cctx.setLineDash([]);
+  cctx.fillStyle='rgba(255,255,255,.4)';cctx.font='12px sans-serif';cctx.fillText('slice',310,cY+ang*160-8);
+}
+sliceS.addEventListener('input',drawConic);drawConic();
+
+/* ASTROLABE */
+const ac=document.getElementById('astroCanvas'),actx=ac.getContext('2d');
+const astroS=document.getElementById('astroSlider');
+const stars=[{name:'Sirius',a:30,r:.6,b:1},{name:'Vega',a:85,r:.35,b:.9},{name:'Rigel',a:145,r:.7,b:.85},{name:'Polaris',a:0,r:.1,b:.8},{name:'Altair',a:200,r:.5,b:.75},{name:'Deneb',a:260,r:.4,b:.7},{name:'Betelgeuse',a:310,r:.55,b:.95},{name:'Arcturus',a:170,r:.3,b:.8},{name:'Aldebaran',a:60,r:.65,b:.7},{name:'Spica',a:240,r:.75,b:.65}];
+function drawAstrolabe(){
+  const rot=+astroS.value;actx.clearRect(0,0,340,340);const cX=170,cY=170,R=145;
+  actx.strokeStyle='rgba(232,168,56,.12)';actx.lineWidth=1;
+  for(let i=1;i<=4;i++){actx.beginPath();actx.arc(cX,cY,R*i/4,0,Math.PI*2);actx.stroke()}
+  for(let i=0;i<12;i++){const a=Math.PI*2*i/12;actx.beginPath();actx.moveTo(cX,cY);actx.lineTo(cX+R*Math.cos(a),cY+R*Math.sin(a));actx.stroke()}
+  // horizon
+  actx.strokeStyle='rgba(45,212,191,.3)';actx.lineWidth=2;actx.beginPath();actx.moveTo(cX-R,cY);actx.lineTo(cX+R,cY);actx.stroke();
+  actx.fillStyle='rgba(45,212,191,.5)';actx.font='11px sans-serif';actx.fillText('Horizon',cX+R-50,cY-6);
+  actx.fillStyle='rgba(255,255,255,.15)';actx.font='10px sans-serif';actx.textAlign='center';
+  actx.fillText('ZENITH',cX,cY-R+14);actx.fillText('VISIBLE SKY',cX,cY-40);
+  actx.fillStyle='rgba(255,255,255,.08)';actx.fillText('BELOW HORIZON',cX,cY+50);actx.textAlign='start';
+  let vis=0;const th=18+rot/360*12;const h=Math.floor(th)%24;const m=Math.round((th-Math.floor(th))*60);
+  document.getElementById('astroTime').textContent=((h>12?h-12:h)||12)+':'+(m<10?'0':'')+m+' '+(h>=12&&h<24?'PM':'AM');
+  document.getElementById('astroSeason').textContent=rot<90?'Spring':rot<180?'Summer':rot<270?'Autumn':'Winter';
+  stars.forEach(s=>{const a2=(s.a+rot)*Math.PI/180;const px=cX+R*s.r*Math.cos(a2);const py=cY-R*s.r*Math.sin(a2);const v=py<cY;if(v)vis++;const al=v?s.b:.15;const sz=v?3+s.b*3:2;
+    actx.beginPath();actx.arc(px,py,sz,0,Math.PI*2);actx.fillStyle=v?`rgba(255,215,0,${al})`:`rgba(255,255,255,${al})`;actx.fill();
+    if(v){actx.fillStyle=`rgba(255,215,0,${al*.7})`;actx.font='10px sans-serif';actx.fillText(s.name,px+6,py+3);actx.beginPath();actx.arc(px,py,sz+4,0,Math.PI*2);actx.fillStyle=`rgba(255,215,0,${al*.1})`;actx.fill()}
+  });
+  document.getElementById('starsVisible').textContent=vis;
+  actx.beginPath();actx.arc(cX,cY,R,0,Math.PI*2);actx.strokeStyle='rgba(232,168,56,.35)';actx.lineWidth=3;actx.stroke();
+  actx.beginPath();actx.arc(cX,cY,R+6,0,Math.PI*2);actx.strokeStyle='rgba(232,168,56,.15)';actx.lineWidth=1.5;actx.stroke();
+  for(let i=0;i<24;i++){const a=Math.PI*2*i/24-Math.PI/2;actx.beginPath();actx.moveTo(cX+(R+1)*Math.cos(a),cY+(R+1)*Math.sin(a));actx.lineTo(cX+(R+8)*Math.cos(a),cY+(R+8)*Math.sin(a));actx.strokeStyle='rgba(232,168,56,.3)';actx.lineWidth=1;actx.stroke()}
+  actx.beginPath();actx.arc(cX,cY,4,0,Math.PI*2);actx.fillStyle='#e8a838';actx.fill();
+}
+astroS.addEventListener('input',drawAstrolabe);drawAstrolabe();
+
+/* PUZZLES */
+const puzzles=[
+  {name:'Easy: Sum & Product',eq:'x + y = 10  AND  x × y = 21',ax:3,ay:7,hint:'Both between 1 and 9. One is 3...'},
+  {name:'Easy: Double Sum',eq:'x + y = 12  AND  x = 2 × y',ax:8,ay:4,hint:'If x is double y, try y = 4...'},
+  {name:'Medium: Squares',eq:'x² + y² = 25  AND  x + y = 7',ax:3,ay:4,hint:'Think 3-4-5 triangle!'},
+  {name:'Medium: Difference',eq:'x × y = 36  AND  x − y = 5',ax:9,ay:4,hint:'Factors of 36 that are 5 apart...'},
+  {name:'Hard: Product',eq:'x + y = 15  AND  x × y = 56',ax:7,ay:8,hint:'7 × 8 = 56...'},
+  {name:'Hard: Sum of Squares',eq:'x² + y² = 85  AND  x + y = 13',ax:6,ay:7,hint:'Try x=6, then 36 + 49 = ?'},
+];
+let curP=null;const pG=document.getElementById('puzzleGrid');
+puzzles.forEach((p,i)=>{const d=document.createElement('div');d.className='puzzle-card';d.innerHTML=`<h3>${p.name.split(':')[0]}</h3><p>${p.name.split(':')[1]||''}</p>`;d.onclick=()=>selP(i,d);pG.appendChild(d)});
+function selP(i,el){document.querySelectorAll('.puzzle-card').forEach(c=>c.classList.remove('active'));el.classList.add('active');curP=puzzles[i];document.getElementById('puzzleEq').textContent=curP.eq;document.getElementById('puzzleInputs').style.display='flex';document.getElementById('checkBtn').style.display='inline-block';document.getElementById('hintBtn').style.display='inline-block';document.getElementById('pX').value='';document.getElementById('pY').value='';document.getElementById('puzzleFb').textContent='';document.getElementById('hintText').style.display='none'}
+function checkPuzzle(){if(!curP)return;const x=+document.getElementById('pX').value,y=+document.getElementById('pY').value;const f=document.getElementById('puzzleFb');if((x===curP.ax&&y===curP.ay)||(x===curP.ay&&y===curP.ax)){f.textContent='✨ Correct! x='+curP.ax+', y='+curP.ay;f.style.color='var(--teal)'}else{f.textContent='Not quite — try again!';f.style.color='var(--coral)'}}
+function showHint(){if(curP){const h=document.getElementById('hintText');h.textContent='💡 '+curP.hint;h.style.display='block'}}
+
+/* QUIZ */
+let quizQs=[],qIdx=0,score=0;const TOTAL=10;
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+const pool=[
+  {q:'Where was Hypatia born?',c:'Alexandria, Egypt',o:['Alexandria, Egypt','Athens, Greece','Rome, Italy','Constantinople'],e:'Hypatia was born in Alexandria, Egypt — home of the famous ancient library.'},
+  {q:'What was Hypatia\'s father\'s name?',c:'Theon',o:['Theon','Ptolemy','Euclid','Diophantus'],e:'Her father Theon was the last known scholar of the Library of Alexandria.'},
+  {q:'What shape do you get slicing a cone straight across?',c:'Circle',o:['Circle','Ellipse','Parabola','Hyperbola'],e:'A horizontal slice through a cone produces a perfect circle.'},
+  {q:'What shape do you get slicing a cone at a slight tilt?',c:'Ellipse',o:['Ellipse','Circle','Parabola','Square'],e:'A tilted slice produces an ellipse — the shape of planetary orbits!'},
+  {q:'What device did Hypatia help improve?',c:'The astrolabe',o:['The astrolabe','The telescope','The compass','The sundial'],e:'Hypatia improved the astrolabe — an ancient navigation and star-finding device.'},
+  {q:'Diophantine equations require what kind of solutions?',c:'Whole numbers only',o:['Whole numbers only','Decimals only','Negative numbers','Imaginary numbers'],e:'Diophantine equations are all about finding solutions using only whole numbers.'},
+  {q:'What school did Hypatia lead?',c:'The Neoplatonist school',o:['The Neoplatonist school','The Lyceum','The Academy','The Pythgorean school'],e:'She led the Neoplatonist school in Alexandria.'},
+  {q:'Which conic section describes a thrown basketball\'s path?',c:'Parabola',o:['Parabola','Circle','Ellipse','Hyperbola'],e:'Projectiles follow parabolic arcs.'},
+  {q:'What is named after Hypatia on the Moon?',c:'A crater',o:['A crater','A sea','A mountain','A valley'],e:'The Hypatia crater on the Moon honors her legacy.'},
+  {q:'When was Hypatia killed?',c:'415 AD',o:['415 AD','300 BC','500 AD','200 AD'],e:'Hypatia was murdered by a mob in 415 AD during political conflicts.'},
+  {q:'What shape are planetary orbits?',c:'Ellipses',o:['Ellipses','Perfect circles','Parabolas','Hyperbolas'],e:'Kepler discovered planets orbit in ellipses — a conic section Hypatia studied!'},
+  {q:'What movie tells Hypatia\'s story?',c:'Agora (2009)',o:['Agora (2009)','Cleopatra (1963)','Alexander (2004)','Gladiator (2000)'],e:'Agora (2009) starring Rachel Weisz portrays Hypatia\'s life.'},
+  {q:'Hypatia commented on which mathematician\'s algebra work?',c:'Diophantus',o:['Diophantus','Euclid','Pythagoras','Archimedes'],e:'She wrote commentaries on Diophantus\'s Arithmetica.'},
+  {q:'An astrolabe was mainly used for...',c:'Finding star positions & navigating',o:['Finding star positions & navigating','Measuring temperature','Weighing objects','Predicting weather'],e:'The astrolabe mapped the sky, found stars, told time, and helped navigation.'},
+  {q:'If x + y = 10 and x × y = 21, what is x?',c:'3 (or 7)',o:['3 (or 7)','5','4 (or 6)','2 (or 8)'],e:'3 × 7 = 21 and 3 + 7 = 10. This is a classic Diophantine puzzle!'},
+];
+function startQuiz(){quizQs=shuffle(pool).slice(0,TOTAL);qIdx=0;score=0;document.getElementById('quizScore').textContent=0;document.getElementById('quizTotal').textContent=TOTAL;document.getElementById('quizBody').style.display='block';document.getElementById('quizComplete').style.display='none';showQ()}
+function showQ(){const q=quizQs[qIdx];document.getElementById('questionText').textContent=(qIdx+1)+'. '+q.q;document.getElementById('quizProgress').style.width=((qIdx/TOTAL)*100)+'%';document.getElementById('feedback').className='feedback';document.getElementById('feedback').style.display='none';document.getElementById('nextBtn').className='next-btn';const d=document.getElementById('answersDiv');d.innerHTML='';shuffle(q.o).forEach(o=>{const b=document.createElement('button');b.className='answer-btn';b.textContent=o;b.onclick=()=>chk(o,q);d.appendChild(b)})}
+function chk(ch,q){document.querySelectorAll('.answer-btn').forEach(b=>{b.classList.add('locked');b.style.pointerEvents='none';if(b.textContent===q.c)b.classList.add('correct');if(b.textContent===ch&&ch!==q.c)b.classList.add('wrong')});const f=document.getElementById('feedback');if(ch===q.c){score++;f.className='feedback correct-fb show';f.innerHTML='<strong>Correct!</strong> '+q.e}else{f.className='feedback wrong-fb show';f.innerHTML='<strong>Not quite.</strong> '+q.e}document.getElementById('quizScore').textContent=score;document.getElementById('nextBtn').className='next-btn show'}
+function nextQ(){qIdx++;if(qIdx>=TOTAL){document.getElementById('quizBody').style.display='none';document.getElementById('quizComplete').style.display='block';document.getElementById('finalScore').textContent=score+' / '+TOTAL;const p=score/TOTAL;document.getElementById('finalMsg').textContent=p===1?'Perfect! Hypatia herself would be proud!':p>=.7?'Great job! You really know your ancient math!':p>=.4?'Good effort! Explore the interactive sections again.':'Keep learning! The Conic Sections and Astrolabe are great places to start.';document.getElementById('quizProgress').style.width='100%'}else showQ()}
+</script>
+</body>
+</html>

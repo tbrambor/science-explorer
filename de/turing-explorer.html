@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>Alan Turing Entdecker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;--accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;--radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(245,216,99,.2);flex-wrap:wrap}
+nav button{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba(245,216,99,.35)}
+.lang-toggle{margin-left:auto;display:flex;gap:8px}
+.lang-toggle button{padding:6px 12px;font-size:12px;background:transparent;border:1px solid rgba(245,216,99,.3);color:var(--dim);border-radius:4px}
+.lang-toggle button.active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero .subtitle{font-size:19px;color:var(--dim)}
+.hero .life{margin-top:10px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:14px;font-size:16px;max-width:620px;margin-left:auto;margin-right:auto}
+
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:24px;border:1px solid rgba(245,216,99,.1)}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:16px;font-size:14px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(245,216,99,.4)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px}.tl-text strong{color:var(--accent)}
+
+/* ── INTERACTIVE SHARED ── */
+.lab-layout{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;justify-content:center}
+.lab-side{flex:1;min-width:250px}
+.slider-group{margin-bottom:16px}
+.slider-group label{display:block;font-weight:600;margin-bottom:8px;font-size:15px}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:rgba(245,216,99,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,216,99,.4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-box{background:rgba(245,216,99,.06);border-radius:12px;padding:12px;text-align:center}
+.stat-box .lbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.stat-box .val{font-size:20px;font-weight:700;margin-top:3px}
+.explain-box{margin-top:14px;padding:14px;background:rgba(143,212,164,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+.step-explain{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.step-item{display:flex;gap:14px;align-items:flex-start}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.step-text{font-size:15px;line-height:1.6;padding-top:5px}
+
+/* ── CIPHER TOOL ── */
+.cipher-section{margin-bottom:18px}
+.cipher-input-group{margin-bottom:14px}
+.cipher-input-group label{display:block;font-weight:600;margin-bottom:6px;font-size:14px}
+.cipher-input-group input[type=text]{width:100%;padding:10px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:rgba(245,216,99,.04);color:var(--text);font-family:'Patrick Hand',sans-serif;font-size:14px}
+.cipher-input-group input[type=text]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 8px rgba(245,216,99,.2)}
+.cipher-output{margin-top:10px;padding:12px;background:rgba(245,216,99,.08);border-radius:6px;border-left:4px solid var(--accent2);font-size:14px;word-break:break-all}
+.cipher-label{font-weight:600;color:var(--accent);margin-bottom:4px}
+.cipher-buttons{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.cipher-btn{padding:10px 16px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.25s}
+.cipher-btn:hover{border-color:var(--accent);background:rgba(245,216,99,.12)}
+.cipher-btn.active{background:var(--accent);border-color:var(--accent);color:#000}
+
+/* ── TURING MACHINE ── */
+.tm-controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;justify-content:center}
+.tm-btn{padding:10px 18px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;transition:.25s}
+.tm-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(245,216,99,.12)}
+.tm-btn:disabled{opacity:0.5;cursor:not-allowed}
+.tm-btn.primary{background:var(--accent);border-color:var(--accent);color:#000}
+.tm-info{padding:12px;background:rgba(143,212,164,.08);border-radius:6px;border-left:4px solid var(--accent3);font-size:14px;margin-top:12px}
+.tm-state{display:inline-block;padding:4px 10px;background:var(--blue);color:#000;border-radius:4px;font-weight:700;font-size:13px;margin:0 4px}
+
+/* ── TURING TEST ── */
+.test-pair{background:rgba(245,216,99,.04);border-radius:12px;padding:20px;margin-bottom:16px;border:2px solid rgba(245,216,99,.1)}
+.test-pair.revealed{border-color:var(--accent3)}
+.test-label{font-weight:700;font-size:14px;margin-bottom:10px;color:var(--accent)}
+.test-response{padding:12px;background:rgba(0,0,0,.2);border-radius:6px;margin-bottom:10px;font-size:14px;line-height:1.6;font-style:italic}
+.test-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.test-btn{flex:1;min-width:120px;padding:10px;border:2px solid rgba(245,216,99,.2);border-radius:6px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.25s}
+.test-btn:hover:not(:disabled){border-color:var(--accent)}
+.test-btn:disabled{opacity:0.5;cursor:not-allowed}
+.test-btn.human-choice{border-color:var(--accent3);color:var(--accent3)}
+.test-btn.machine-choice{border-color:var(--blue);color:var(--blue)}
+.test-answer{margin-top:10px;padding:10px;border-radius:6px;font-size:13px}
+.test-answer.correct{background:rgba(143,212,164,.12);border-left:4px solid var(--accent3);color:var(--accent3)}
+.test-answer.wrong{background:rgba(217,107,107,.1);border-left:4px solid var(--accent2);color:var(--accent2)}
+.test-score{text-align:center;padding:20px;font-size:18px;font-weight:700}
+.test-score .number{font-size:32px;color:var(--accent);margin:0 4px}
+
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fact-card{background:rgba(245,216,99,.04);border-radius:14px;padding:18px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:var(--blue)}
+.fact-card:nth-child(5){border-left-color:#c084fc}
+.fact-card:nth-child(6){border-left-color:#f472b6}
+.fact-card:nth-child(7){border-left-color:#fb923c}
+.fact-card:nth-child(8){border-left-color:#38bdf8}
+.fact-card:nth-child(9){border-left-color:#a78bfa}
+.fact-card:nth-child(10){border-left-color:#34d399}
+.fact-card:nth-child(11){border-left-color:#fbbf24}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:26px;margin-bottom:6px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.fact-text{font-size:13px;color:var(--dim);line-height:1.6}
+
+/* ── QUIZ ── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.score-badge{background:rgba(143,212,164,.1);padding:8px 18px;border-radius:6px;font-weight:700;color:var(--accent3);font-size:15px}
+.progress-bar{height:6px;border-radius:3px;background:rgba(245,216,99,.12);margin-bottom:18px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .4s}
+.question-text{font-size:19px;font-weight:600;margin-bottom:18px;line-height:1.4}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.answer-btn{padding:14px;border:2px solid rgba(245,216,99,.2);border-radius:14px;background:rgba(245,216,99,.04);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-btn:hover:not(.locked){border-color:var(--accent);background:rgba(245,216,99,.12);transform:scale(1.02)}
+.answer-btn.correct{border-color:var(--accent3);background:rgba(143,212,164,.12);color:var(--accent3)}
+.answer-btn.wrong{border-color:var(--accent2);background:rgba(217,107,107,.1);color:var(--accent2)}
+.feedback{padding:14px;border-radius:12px;font-size:14px;line-height:1.6;display:none;margin-bottom:14px}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.correct-fb{background:rgba(143,212,164,.08);border-left:4px solid var(--accent3)}
+.feedback.wrong-fb{background:rgba(217,107,107,.08);border-left:4px solid var(--accent2)}
+.next-btn{display:none;padding:12px 28px;border:none;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.next-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(245,216,99,.35)}
+.next-btn.show{display:inline-block}
+.quiz-complete{text-align:center;padding:40px 20px}
+.quiz-complete h2{font-size:30px;margin-bottom:10px}
+.final-score{font-size:60px;font-weight:800;margin:16px 0;background:linear-gradient(135deg,var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.restart-btn{margin-top:16px;padding:12px 32px;border:none;border-radius:6px;background:var(--accent);color:#000;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+.restart-btn:hover{transform:scale(1.05)}
+
+@media(max-width:600px){
+  nav button{padding:7px 10px;font-size:11px}
+  .card{padding:18px}
+  .answers{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr}
+  .portrait{width:120px;height:120px}
+  .lang-toggle{margin-left:0;margin-top:8px;width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="portrait" style="background:linear-gradient(135deg,#7bb8e0,#f5d863);display:flex;align-items:center;justify-content:center;font-size:80px">&#128105;</div>
+    <h1>Alan Turing: Der Code-Knacker</h1>
+    <p class="subtitle">Der Vater der Informatik und künstlichen Intelligenz</p>
+    <p class="life">1912 – 1954 · Britischer Mathematiker, Logiker und Visionär</p>
+    <p class="tagline">Er knackte Nazi-Codes, die Millionen von Menschen retteten, träumte von den ersten Computern, bevor es sie gab, und stellte die Frage, die uns immer noch verfolgt: Können Maschinen denken?</p>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+  <button class="active" onclick="show('story',this)">Seine Geschichte</button>
+  <button onclick="show('codebreaker',this)">Code-Knacker</button>
+  <button onclick="show('machine',this)">Turing-Maschine</button>
+  <button onclick="show('test',this)">Der Test</button>
+  <button onclick="show('facts',this)">Interessante Fakten</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+  <div class="lang-toggle">
+    <button onclick="window.location.href='../turing-explorer.html'">EN</button>
+    <button class="active" onclick="window.location.href='./turing-explorer.html'">DE</button>
+  </div>
+</nav>
+
+<!-- ═══════════ STORY ═══════════ -->
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>Das Leben von Alan Turing</h2>
+    <p class="sub">Vom jungen Code-Knacker zum Vater der Informatik.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1912</div><div class="tl-text">Geburt in <strong>London, England</strong> bei Julius und Ethel Turing. Sein Vater war ein indischer Verwaltungsbeamter. Der junge Alan war von Anfang an fasziniert von Codes und Rätseln.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1926</div><div class="tl-text">Mit 14 Jahren zur <strong>Sherborne School</strong> geschickt. Er war schüchtern und brillant, interessierte sich mehr für reine Mathematik als für klassische Sprachen. Lehrer nannten ihn "unvielversprechend" in Englisch!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1930er</div><div class="tl-text">Studierte Mathematik an der <strong>Cambridge University</strong>. Bewies das "Entscheidungsproblem" im Alter von 24 Jahren. Veröffentlichte sein Konzept der <strong>Turing-Maschine</strong> — eine theoretische Maschine, die alles berechnen kann, was berechenbar ist.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1936</div><div class="tl-text">Führte die <strong>Turing-Maschine</strong> in einem Papier ein, das im Grunde sagte: Stelle dir eine einfache Maschine vor, die Symbole liest, Regeln befolgt und Symbole auf ein Band schreibt. Jede Berechnung kann auf diese Weise durchgeführt werden. So funktionieren Computer heute noch.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1939-1945</div><div class="tl-text">Arbeitete bei <strong>Bletchley Park</strong> — Großbritanniens geheimes Code-Knack-Zentrum im Zweiten Weltkrieg. Leitete das Team, das die <strong>Enigma-Maschine</strong> knackte und deutsche Verschlüsselung brach, die unmöglich zu brechen schien. Historiker sagen, dass seine Arbeit Millionen von Menschenleben rettete.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1945-1948</div><div class="tl-text">Entwarf die <strong>ACE (Automatic Computing Engine)</strong> — eine der ersten programmierbaren Computer. Schrieb, was viele als das erste Computerprogramm betrachten.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1950</div><div class="tl-text">Veröffentlichte das Papier "Computing Machinery and Intelligence" und schlug den berühmten <strong>Turing-Test</strong> vor — wenn eine Maschine so gut chatten kann, dass Menschen nicht unterscheiden können, dass es eine Maschine ist, ist sie dann intelligent? Diese Frage verfolgt KI-Forscher heute noch.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1952</div><div class="tl-text">Wegen "grober Anständigkeitsverletzung" strafrechtlich verfolgt, weil er schwul war — damals in Großbritannien illegal. Wurde gezwungen, Hormonbehandlung zu nehmen. Eine tragische und grausame Ungerechtigkeit.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1954</div><div class="tl-text">Starb im Alter von 41 Jahren. Offizielle Todesursache: Zyanidvergiftung. Für Unfall befunden, aber die Tragödie seiner Verfolgung deutet auf Verzweiflung hin. Die Welt verlor einen ihrer größten Köpfe viel zu früh.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2013</div><div class="tl-text">Großbritannien erteilte <strong>königliche Begnadigung</strong> — eine formelle Entschuldigung und Rehabilitation für seine strafrechtliche Verfolgung. 2019 erschien sein Gesicht auf der britischen 50-Pfund-Note. Der Mann, den sein Land verfolgte, ist jetzt sein mathematisches Symbol.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CODE BREAKER ═══════════ -->
+<section id="sec-codebreaker">
+  <div class="card">
+    <h2>Code-Knacker — Die Caesar-Chiffre</h2>
+    <p class="sub">Wie Turing Codes knackte, die unmöglich schienen.</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Was ist eine Chiffre?</strong> Eine Chiffre ist ein Geheimcode. Du wandelst normalen Text (Klartext genannt) in verworrenen Text (Chiffrentext) um, indem du einen Schlüssel verwendest. Die Nazis benutzten eine Maschine namens Enigma, die jeden Buchstaben viele Male verschob — scheinbar unmöglich zu knacken.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Grundlagen der Caesar-Chiffre:</strong> Die einfachste Chiffre: Verschiebe jeden Buchstaben um eine feste Anzahl. A→B, B→C, und Z→A (es umschließt sich). Mit nur 26 möglichen Verschiebungen ist es einfach zu knacken, indem man alle 26 ausprobiert, bis lesbarer Text erscheint.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Turings Genie:</strong> Enigma wechselte seine Verschiebung nach jedem Buchstaben — scheinbar unmöglich. Aber Turing erkannte: Wenn man wusste, was eine Nachricht <em>sagen sollte</em> (wie "WETTERBERICHT"), konnte man rückwärts arbeiten, um die Maschineneinstellungen zu finden. Genannt "Crib-Attacken".</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Turings "Bombe":</strong> Er baute eine elektromechanische Maschine, die tausende Enigma-Konfigurationen pro Sekunde testete. Wo Rohkraft unmöglich schien, machte clevere Logik es schnell. Dies war eine der ersten "Computer".</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Versuch es: Caesar-Chiffre-Werkzeug</h2>
+    <p class="sub">Verschlüssle und entschlüssle Nachrichten wie ein Code-Knacker!</p>
+
+    <div class="cipher-section">
+      <div class="cipher-input-group">
+        <label>Deine Nachricht:</label>
+        <input type="text" id="cipherInput" placeholder="Gib eine Nachricht ein zum Verschlüsseln..." value="HALLO WELT">
+      </div>
+
+      <div class="slider-group">
+        <label>Verschiebungsbetrag: <span id="shiftVal" style="color:var(--accent);font-size:16px;font-weight:700">3</span> (wie ein Schlüssel)</label>
+        <input type="range" id="shiftSlider" min="1" max="25" value="3">
+      </div>
+
+      <div class="cipher-output">
+        <div class="cipher-label">Verschlüsselte Nachricht:</div>
+        <div id="encryptedText" style="font-weight:700;font-size:15px">KDOOR ZRUOG</div>
+      </div>
+
+      <div style="margin-top:16px">
+        <p class="sub" style="margin-bottom:12px">Versuche, eine vorher verschlüsselte Nachricht zu knacken!</p>
+        <div class="cipher-output" style="background:rgba(217,107,107,.08);border-left-color:var(--accent2);margin-bottom:14px">
+          <div class="cipher-label" style="color:var(--accent2)">Herausforderung (verschlüsselt mit Verschiebung=7):</div>
+          <div id="challengeText" style="font-weight:700;font-size:15px">IVMMP BSVMJ</div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+          <input type="range" id="crackSlider" min="1" max="25" value="7" style="flex:1;min-width:200px">
+          <span id="crackVal" style="padding:8px 12px;background:rgba(143,212,164,.1);border-radius:6px;font-weight:700;min-width:50px">Verschiebung: 7</span>
+        </div>
+
+        <div class="cipher-output" style="background:rgba(143,212,164,.08);border-left-color:var(--accent3)">
+          <div class="cipher-label" style="color:var(--accent3)">Geknackt (entschlüsselt):</div>
+          <div id="crackedText" style="font-weight:700;font-size:15px">HALLO WELT</div>
+        </div>
+      </div>
+
+      <div class="explain-box" style="margin-top:16px">
+        <strong>Wie es funktionierte:</strong> Beachte, wie die Verschiebung die ganze Nachricht verändert, aber sobald du die richtige Verschiebung findest, erscheint lesbarer Text! Versuche, verschiedene Nachrichten zu tippen und die Verschiebung anzupassen. Um die Herausforderung zu knacken, ziehe den Regler, bis du echte Wörter siehst. Das ist im Grunde das, was Turings Bombe-Maschine tat — aber mit etwas viel Komplexerem als der Caesar-Chiffre!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TURING MACHINE ═══════════ -->
+<section id="sec-machine">
+  <div class="card">
+    <h2>Die Turing-Maschine — Die Berechnung selbst</h2>
+    <p class="sub">Turings brillante Antwort auf "Was kann berechnet werden?"</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Das Konzept:</strong> Stelle dir eine Maschine vor, die Symbole auf einem endlosen Band liest, eines nach dem anderen. Basierend auf dem, was es liest und seinem aktuellen "Zustand" (Stimmung), kann es ein neues Symbol schreiben, sich nach links oder rechts bewegen und den Zustand wechseln. Das ist es. Das ist eine Turing-Maschine.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Die Kraft:</strong> Turing bewies, dass jedes Problem, das <em>berechnet</em> werden <em>kann</em> durch <em>irgendeine</em> Methode, kann durch diese einfache Maschine berechnet werden. Dein Computer? Eine Turing-Maschine. Dein Telefon? Turing-Maschine. Diese Theorie definiert Berechnung heute noch.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Sieh es funktionieren:</strong> Unten addiert eine Turing-Maschine 1 zu einer Binärzahl. Beginne mit 0111 (das ist 7 in Binär). Drücke "Schritt", um zuzuschauen, wie der Lesekopf (der Pfeil) das Band abtastet und ändert. Sieh Zustände wechseln, Symbole von 0 zu 1 kippen, und das Band sich nach links oder rechts verschieben.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Das Genie:</strong> Mit nur diesem einfachen System (lesen, schreiben, bewegen, Zustand ändern), zeigte Turing, dass wir alles berechnen könnten — Theoreme beweisen, Rätsel lösen, Informationen verarbeiten. Diese theoretische Einsicht führte direkt zu modernen Computern.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Interaktive Turing-Maschine: Addiere 1 zu Binär</h2>
+    <p class="sub">Sieh die Maschine 1 zu einer Binärzahl addieren, Schritt für Schritt.</p>
+
+    <div style="text-align:center;margin-bottom:16px">
+      <div class="tm-controls">
+        <button class="tm-btn primary" id="tmStepBtn" onclick="tmStep()">Schritt</button>
+        <button class="tm-btn" id="tmRunBtn" onclick="tmRun()">Ausführen</button>
+        <button class="tm-btn" onclick="tmReset()">Zurücksetzen</button>
+      </div>
+    </div>
+
+    <canvas id="tmCanvas" width="700" height="200" style="display:block;margin:0 auto;max-width:100%;border:1px solid rgba(245,216,99,.2);border-radius:8px;background:rgba(0,0,0,.2)"></canvas>
+
+    <div class="tm-info" style="margin-top:16px">
+      <div style="margin-bottom:8px"><strong>Aktueller Zustand:</strong> <span class="tm-state" id="tmState">q0</span></div>
+      <div style="margin-bottom:8px"><strong>Leseposition:</strong> Zelle <span id="tmPos">0</span></div>
+      <div><strong>Band:</strong> <span id="tmTape" style="font-family:monospace;font-weight:700">0 1 1 1</span></div>
+      <div style="margin-top:8px;color:var(--dim);font-size:13px">Start: 0111 (Binär 7) → Ergebnis: 1000 (Binär 8)</div>
+    </div>
+
+    <div class="explain-box" style="margin-top:16px">
+      <strong>Wie es funktioniert:</strong> Die Turing-Maschine liest das Band von links nach rechts. Wenn sie eine 1 sieht und im Zustand q0 ist, schreibt sie eine 0 und bewegt sich nach rechts. Wenn sie die Leerstelle (Ende) erreicht, wechselt sie zu Zustand q1 und schreibt eine 1. Fertig! Sie hat 1 addiert. Stelle dir jetzt ähnliche Logik für irgendeine Berechnung vor — deshalb ist dein Computer eine Turing-Maschine.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TURING TEST ═══════════ -->
+<section id="sec-test">
+  <div class="card">
+    <h2>Der Turing-Test — Können Maschinen denken?</h2>
+    <p class="sub">Turings Herausforderung: Wenn eine Maschine so gut chatten kann, dass du nicht unterscheiden kannst, dass sie eine Maschine ist... denkt sie dann?</p>
+
+    <div class="step-explain">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Die Frage:</strong> 1950 fragte Turing: "Können Maschinen denken?" Er erkannte, dass die Antwort davon abhängt, was du unter "denken" verstehst. Also schlug er stattdessen einen Test vor.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Der Test:</strong> Eine Person chattet mit zwei verborgenen Dingen über Text — eines ist sicher ein Mensch, eines soll angeblich eine Maschine sein. Kannst du anhand der Konversation allein unterscheiden, welches welches ist? Wenn du es nicht zuverlässig kannst, "besteht" die Maschine den Test.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Die Wendung:</strong> Turing fragte nicht "denkt die Maschine wirklich?" (philosophisches Durcheinander). Er fragte: "Verhält sie sich ununterscheidbar von einem denkenden Wesen?" In der Praxis könnte das gut genug sein.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Immer noch relevant:</strong> Moderne KI-Chatbots (wie ChatGPT) werden teilweise nach Turing-Test-ähnlichen Metriken bewertet. Wir haben den Test nie wirklich "gelöst" — Menschen können KI von Mensch unterscheiden, wenn sie vorsichtig sind. Aber es wird schwieriger.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Test dich selbst: Kannst du den Bot erkennen?</h2>
+    <p class="sub">Lies 5 Paare von Antworten. Eine ist vom Menschen, eine vom Chatbot. Welche ist welche? Klick auf deine Vermutung.</p>
+
+    <div id="testContainer">
+      <!-- Paare generiert durch JavaScript -->
+    </div>
+
+    <div id="testScoreBox" style="display:none;margin-top:20px">
+      <div class="test-score">
+        Du hast <span class="number" id="testScoreFinal">0</span> von 5 richtig!
+        <div style="font-size:16px;color:var(--dim);margin-top:10px" id="testScoreMsg"></div>
+      </div>
+      <div style="text-align:center;margin-top:16px">
+        <button class="restart-btn" onclick="resetTest()">Nochmal versuchen</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FUN FACTS ═══════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>Großartige Turing-Fakten</h2>
+    <p class="sub">Das brillante, seltsame und tragische Leben des Informatik-Godfathers.</p>
+    <div class="facts-grid">
+      <div class="fact-card"><div class="fact-icon">🏃</div><div class="fact-title">Fast olympischer Marathon-Läufer</div><div class="fact-text">Turing war ein ernsthafter Langstreckenläufer. Er lief regelmäßig 40+ Meilen Marathons und war schnell genug, um fast das britische Olympia-Team zu schaffen. Manchmal löste er Matheprobleme, während er joggte!</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🔐</div><div class="fact-title">Knackte Enigma & rettete Millionen</div><div class="fact-text">Bei Bletchley Park half Turing, den Nazi-Enigma-Maschinencode zu knacken. Historiker schätzen, dass dies den Zweiten Weltkrieg um Jahre verkürzte und etwa 14 Millionen Menschenleben rettete. Einer der größten Leistungen der Logik und Technik in der Geschichte.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🤖</div><div class="fact-title">Vater der Informatik</div><div class="fact-text">Das Turing-Maschinen-Konzept (1936) ist die Grundlage der theoretischen Informatik. Bevor es echte Computer gab, definierte er, was "Berechnung" bedeutet. Jede Programmiersprache, jeder Algorithmus — alles wurzelt in seiner Theorie.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">⚖️</div><div class="fact-title">Wegen Homosexualität verurteilt</div><div class="fact-text">1952 verfolgte Großbritannien Turing wegen "grober Anständigkeitsverletzung" — er war schwul, was illegal war. Er wurde gezwungen, Hormonbehandlung zu nehmen (chemische Kastration). Diese Grausamkeit zerstörte einen der größten Köpfe der Welt. Ein dunkles Kapitel der Geschichte.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">👑</div><div class="fact-title">Auf der britischen 50-Pfund-Note</div><div class="fact-text">2019, fast 65 Jahre nach seinem Tod, wurde Turings Bild für die britische 50-Pfund-Note ausgewählt. Das Land, das ihn verfolgte, feiert ihn jetzt als nationalen Helden. Besser spät als nie.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">👸</div><div class="fact-title">Königliche Begnadigung 2013</div><div class="fact-text">Die britische Regierung erteilte Turing eine offizielle königliche Begnadigung für seine Verurteilung von 1952. Es war eine formelle Entschuldigung und Rehabilitation — obwohl Turing da schon fast 60 Jahre tot war. Bittersüße Gerechtigkeit.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">♟️</div><div class="fact-title">Baute ein frühes Schach-Programm</div><div class="fact-text">In den 1950ern schrieb Turing eines der ersten Schach-Computerprogramme. Er konnte es auf einem echten Computer nicht ausführen (sie waren zu langsam), also spielte er selbst die Maschine, indem er Züge manuell berechnete. Ja, er simulierte per Hand einen Computer!</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🎬</div><div class="fact-title">Liebte Disney-Filme</div><div class="fact-text">Turing war besessen von Disneys Schneewittchen und die sieben Zwerge. Er schaute ihn immer wieder an und würde die Lieder summen. Seine Kollegen fanden diesen Charakterzug bei einem so ernsthaften Mathematiker seltsam charmant.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🎙️</div><div class="fact-title">Stotterte wenn aufgeregt</div><div class="fact-text">Turing hatte ein Stottern, das schlimmer wurde, wenn er über Ideen aufgeregt war. Kollegen sagten, wenn er sich wirklich für ein Problem begeisterte, würde sein Stottern schneller werden, aber er würde weitermachen, weil die Mathematik zu wichtig war zum Innehalten.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🏆</div><div class="fact-title">Der Turing Award ist Informatik-Nobelpreis</div><div class="fact-text">Der angesehenste Preis in der Informatik ist der Turing Award — oft als "Nobelpreis der Informatik" genannt. Gewinner erhalten 1 Million Dollar und ewige Ruhm. Es ist die höchste Ehre, die ein Informatiker erhalten kann.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">🔒</div><div class="fact-title">Seine Arbeit im Zweiten Weltkrieg war jahrzehntelang Geheimnis</div><div class="fact-text">Alles, was Turing bei Bletchley Park tat, war bis in die 1970er Jahre als geheim klassifiziert. Er konnte der Welt von seiner größten Leistung nicht berichten. Viele Leute dachten, er wäre nur ein Mathematiker, kein Kriegsheld.</div></div>
+
+      <div class="fact-card"><div class="fact-icon">💡</div><div class="fact-title">Definiert Berechnung heute noch</div><div class="fact-text">Jeder Algorithmus, jede Programmiersprache, jeder theoretische Informatik-Beweis ruht noch auf dem Turing-Maschinen-Konzept. Über 90 Jahre später ist er keine historische Figur — er ist die Grundlage dessen, was wir heute tun.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<section id="sec-quiz">
+  <div class="card" id="quizCard">
+    <div class="quiz-header">
+      <h2>Turing Quiz!</h2>
+      <div class="score-badge">Punktzahl: <span id="quizScore">0</span> / <span id="quizTotal">10</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="quizProgress"></div></div>
+    <div id="quizBody">
+      <div class="question-text" id="questionText"></div>
+      <div class="answers" id="answersDiv"></div>
+      <div class="feedback" id="feedback"></div>
+      <div style="text-align:center;"><button class="next-btn" id="nextBtn" onclick="nextQ()">Nächste Frage →</button></div>
+    </div>
+    <div class="quiz-complete" id="quizComplete" style="display:none">
+      <h2>Quiz fertig!</h2>
+      <div class="final-score" id="finalScore"></div>
+      <p id="finalMsg" style="font-size:17px;color:var(--dim)"></p>
+      <button class="restart-btn" onclick="startQuiz()">Nochmal versuchen</button>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center;padding:28px 20px 50px;color:var(--dim);font-size:12px;">
+  Gebaut mit Logik und Neugier.
+</div>
+
+<script>
+/* ═══════ NAVIGATION ═══════ */
+function show(name,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+name).classList.add('visible');
+  document.querySelectorAll('nav button:not(.lang-toggle *)').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='quiz'&&quizQs.length===0) startQuiz();
+}
+
+/* ═══════ CAESAR CIPHER ═══════ */
+const cipherInput=document.getElementById('cipherInput');
+const shiftSlider=document.getElementById('shiftSlider');
+const crackSlider=document.getElementById('crackSlider');
+
+function caesarEncrypt(text,shift){
+  return text.split('').map(c=>{
+    if(/[A-Z]/.test(c)) return String.fromCharCode(((c.charCodeAt(0)-65+shift)%26)+65);
+    if(/[a-z]/.test(c)) return String.fromCharCode(((c.charCodeAt(0)-97+shift)%26)+97);
+    return c;
+  }).join('');
+}
+
+function updateCipher(){
+  const shift=parseInt(shiftSlider.value);
+  const text=cipherInput.value.toUpperCase();
+  const encrypted=caesarEncrypt(text,shift);
+  document.getElementById('shiftVal').textContent=shift;
+  document.getElementById('encryptedText').textContent=encrypted||'(Nachricht eingeben)';
+}
+
+function updateCrack(){
+  const shift=parseInt(crackSlider.value);
+  const encrypted='IVMMP BSVMJ';
+  const decrypted=caesarEncrypt(encrypted,26-shift);
+  document.getElementById('crackVal').textContent='Verschiebung: '+shift;
+  document.getElementById('crackedText').textContent=decrypted;
+}
+
+cipherInput.addEventListener('input',updateCipher);
+shiftSlider.addEventListener('input',updateCipher);
+crackSlider.addEventListener('input',updateCrack);
+updateCipher();
+updateCrack();
+
+/* ═══════ TURING MACHINE ═══════ */
+const tmCanvas=document.getElementById('tmCanvas');
+const tmCtx=tmCanvas.getContext('2d');
+let tmTape=['0','1','1','1'];
+let tmPos=0;
+let tmState='q0';
+let tmRunning=false;
+let tmComplete=false;
+
+function drawTuringMachine(){
+  tmCtx.clearRect(0,0,tmCanvas.width,tmCanvas.height);
+  const cellW=50,cellH=60;
+  const startX=50,startY=70;
+
+  for(let i=0;i<tmTape.length;i++){
+    const x=startX+i*cellW;
+    tmCtx.fillStyle=i===tmPos?'rgba(245,216,99,.2)':'rgba(245,216,99,.05)';
+    tmCtx.fillRect(x,startY,cellW,cellH);
+    tmCtx.strokeStyle='rgba(245,216,99,.4)';tmCtx.lineWidth=2;
+    tmCtx.strokeRect(x,startY,cellW,cellH);
+    tmCtx.fillStyle='var(--text)';tmCtx.font='bold 24px monospace';tmCtx.textAlign='center';
+    tmCtx.fillText(tmTape[i],x+cellW/2,startY+cellH/2+8);
+  }
+
+  if(tmPos<tmTape.length){
+    const x=startX+tmPos*cellW;
+    tmCtx.fillStyle='var(--accent)';
+    tmCtx.beginPath();
+    tmCtx.moveTo(x+cellW/2-15,startY-10);
+    tmCtx.lineTo(x+cellW/2+15,startY-10);
+    tmCtx.lineTo(x+cellW/2,startY);
+    tmCtx.closePath();
+    tmCtx.fill();
+  }
+
+  tmCtx.fillStyle='var(--blue)';tmCtx.font='bold 16px sans-serif';
+  tmCtx.textAlign='left';
+  tmCtx.fillText('Zustand: '+tmState,20,30);
+}
+
+function tmStep(){
+  if(tmComplete) return;
+
+  if(tmState==='q0'){
+    if(tmPos<tmTape.length){
+      if(tmTape[tmPos]==='1'){
+        tmTape[tmPos]='0';
+        tmPos++;
+      } else {
+        tmState='q1';
+        tmTape[tmPos]='1';
+      }
+    }
+  } else if(tmState==='q1'){
+    tmComplete=true;
+    document.getElementById('tmStepBtn').disabled=true;
+    document.getElementById('tmRunBtn').disabled=true;
+  }
+
+  updateTMDisplay();
+  drawTuringMachine();
+}
+
+function tmRun(){
+  if(tmRunning||tmComplete) return;
+  tmRunning=true;
+  document.getElementById('tmStepBtn').disabled=true;
+  document.getElementById('tmRunBtn').disabled=true;
+
+  const interval=setInterval(()=>{
+    tmStep();
+    if(tmComplete){
+      clearInterval(interval);
+      tmRunning=false;
+    }
+  },300);
+}
+
+function tmReset(){
+  tmTape=['0','1','1','1'];
+  tmPos=0;
+  tmState='q0';
+  tmRunning=false;
+  tmComplete=false;
+  document.getElementById('tmStepBtn').disabled=false;
+  document.getElementById('tmRunBtn').disabled=false;
+  updateTMDisplay();
+  drawTuringMachine();
+}
+
+function updateTMDisplay(){
+  document.getElementById('tmState').textContent=tmState;
+  document.getElementById('tmPos').textContent=tmPos;
+  document.getElementById('tmTape').textContent=tmTape.join(' ');
+}
+
+drawTuringMachine();
+
+/* ═══════ TURING TEST ═══════ */
+const testPairs=[
+  {human:"Ich denke, Pizza mit Ananas ist eigentlich wirklich gut, wenn du ihr eine Chance gibst.",machine:"Ich habe Pizzakonsummuster analysiert und Ananas ist eine gültige Belagsoption."},
+  {human:"Meine Katze hat heute Morgen eine Tasse Wasser umgeworfen und ich war so genervt, aber dann schaute sie mich mit diesen Augen an...",machine:"Katzen sind Felines. Wasser ist eine flüssige Substanz. Emotionen sind menschliche Erfahrungen."},
+  {human:"Wenn ich Wolken sehe, erinnern sie mich manchmal an Formen — wie Elefanten oder Schlösser. Beobachtest du das manchmal?",machine:"Wolkenformationen sind Wasserdampfkondensation. Formerkennung erfordert Musterabgleich-Algorithmen."},
+  {human:"Ich bin bei einem Mathe-Test durchgefallen und fühlte mich ziemlich entmutigt, aber mein bester Freund schickte mir ein lustiges Meme und es brachte mich zum Lachen.",machine:"Testleistung kann durch numerische Punktzahlen quantifiziert werden. Memes sind Bildmakros, die in sozialen Medien geteilt werden."},
+  {human:"Die Art, wie Bäume im Wind sichbewegen ist so beruhigend. Ich könnte sie stundenlang beobachten.",machine:"Wind verursacht Astversatz durch Druckvariation. Bäume liefern Sauerstoff durch Photosynthese."}
+];
+
+function buildTest(){
+  const testContainer=document.getElementById('testContainer');
+  testContainer.innerHTML='';
+  testPairs.forEach((pair,i)=>{
+    const div=document.createElement('div');
+    div.className='test-pair';
+    div.id='pair-'+i;
+
+    const order=Math.random()>0.5?[0,1]:[1,0];
+    const labels=['Option A','Option B'];
+    const responses=[pair.human,pair.machine];
+    const isHuman=[order[0]===0,order[0]===1];
+
+    div.innerHTML=`
+      <div class="test-label">Paar ${i+1} von 5: Welche ist der Mensch?</div>
+      <div style="display:grid;gap:10px">
+        <div>
+          <div style="font-size:13px;color:var(--dim);margin-bottom:6px">${labels[0]}</div>
+          <div class="test-response">"${responses[order[0]]}"</div>
+          <button class="test-btn" onclick="guessTest(${i},${isHuman[0]})">Das ist Mensch</button>
+        </div>
+        <div>
+          <div style="font-size:13px;color:var(--dim);margin-bottom:6px">${labels[1]}</div>
+          <div class="test-response">"${responses[order[1]]}"</div>
+          <button class="test-btn" onclick="guessTest(${i},${isHuman[1]})">Das ist Mensch</button>
+        </div>
+      </div>
+      <div class="test-answer" id="ans-${i}" style="display:none;margin-top:10px"></div>
+    `;
+    testContainer.appendChild(div);
+  });
+}
+
+let testScore=0;
+function guessTest(pairIdx,guessedHuman){
+  const pair=testPairs[pairIdx];
+  const actuallyHuman=true;
+
+  const correct=guessedHuman;
+  testScore+=correct?1:0;
+
+  const ansDiv=document.getElementById('ans-'+pairIdx);
+  ansDiv.style.display='block';
+
+  if(correct){
+    ansDiv.className='test-answer correct';
+    ansDiv.textContent='Richtig! Das war die Menschliche Antwort.';
+  } else {
+    ansDiv.className='test-answer wrong';
+    ansDiv.textContent='Oops! Das war die KI-Antwort. KI klingt oft klinisch und listet Fakten ohne Emotion auf.';
+  }
+
+  document.getElementById('pair-'+pairIdx).querySelectorAll('.test-btn').forEach(b=>b.disabled=true);
+
+  if(pairIdx===testPairs.length-1){
+    setTimeout(showTestScore,800);
+  }
+}
+
+function showTestScore(){
+  document.getElementById('testContainer').style.display='none';
+  document.getElementById('testScoreBox').style.display='block';
+  document.getElementById('testScoreFinal').textContent=testScore;
+
+  let msg='';
+  if(testScore===5) msg='Perfekt! Du hast die KI outsmart!';
+  else if(testScore>=4) msg='Ausgezeichnet! Du hast die Maschine entdeckt!';
+  else if(testScore>=3) msg='Gute Augen! KI wird heimtückischer!';
+  else if(testScore>=2) msg='Nicht schlecht! KI ist knifflig!';
+  else msg='KI hat dich getäuscht! Das ist okay — es ist schwer!';
+
+  document.getElementById('testScoreMsg').textContent=msg;
+}
+
+function resetTest(){
+  testScore=0;
+  document.getElementById('testScoreBox').style.display='none';
+  document.getElementById('testContainer').style.display='block';
+  buildTest();
+}
+
+buildTest();
+
+/* ═══════ QUIZ ═══════ */
+const allQuestions=[
+  {q:"In welchem Jahr wurde Alan Turing geboren?",a:["1912","1924","1936","1905"],c:0,hint:"Er wurde in der frühen 20. Jahrhundert geboren."},
+  {q:"Was war Turings berühmtester Beitrag im Zweiten Weltkrieg?",a:["Entwarf Panzer","Knackte den Enigma-Code","Baute Radarsysteme","Führte Militärstrategie an"],c:1,hint:"Es ging um das Brechen von Feindesgeheimnis."},
+  {q:"Was ist die 'Turing-Maschine'?",a:["Ein physischer Computer, den Turing baute","Ein theoretisches Berechnungsmodell","Ein Code-Knack-Gerät","Eine Schach-Maschine"],c:1,hint:"Es ist konzeptionell, nicht real."},
+  {q:"Was soll der 'Turing-Test' bestimmen?",a:["Ob eine Maschine schnell laufen kann","Ob eine Maschine Code schreiben kann","Ob du eine Maschine durch Konversation von einem Menschen unterscheiden kannst","Ob eine Maschine Matheprobleme lösen kann"],c:2,hint:"Es geht um Konversation und Ununterscheidbarkeit."},
+  {q:"In welchem Sport war Turing geschickt?",a:["Fußball","Tennis","Langstreckenmarathon","Cricket"],c:2,hint:"Er war schnell genug, um fast die Olympiade zu schaffen."},
+  {q:"In welchem Jahr starb Turing?",a:["1948","1952","1954","1960"],c:2,hint:"Es war in den 1950ern."},
+  {q:"Warum wurde Turing 1952 verfolgt?",a:["Für Spionage","Weil er schwul war, was in Großbritannien damals illegal war","Für Betrug","Für Diebstahl"],c:1,hint:"Es war eine schreckliche Ungerechtigkeit basierend auf seiner Identität."},
+  {q:"Wofür steht ACE?",a:["Automatic Computing Engine","Advanced Cryptographic Equipment","Algorithmic Calculation Engine","Automatic Code Encoder"],c:0,hint:"Es ist eine Art früher Computer."},
+  {q:"Welcher moderne Preis gilt als 'Nobelpreis' der Informatik?",a:["Fields-Medaille","Turing Award","Babbage-Preis","Grace Hopper Award"],c:1,hint:"Er ist nach Alan selbst benannt!"},
+  {q:"In welchem Jahr wurde Turing offiziell für seine Verurteilung von 1952 begnadigt?",a:["1967","1990","2009","2013"],c:3,hint:"Es war in den 2010ern."}
+];
+
+let quizQs=[];
+let quizCur=0;
+let quizScore=0;
+let answered=false;
+
+function startQuiz(){
+  quizQs=allQuestions.sort(()=>Math.random()-0.5).slice(0,10);
+  quizCur=0;
+  quizScore=0;
+  answered=false;
+  document.getElementById('quizBody').style.display='block';
+  document.getElementById('quizComplete').style.display='none';
+  showQ();
+}
+
+function showQ(){
+  if(quizCur>=quizQs.length) return finishQuiz();
+
+  answered=false;
+  const q=quizQs[quizCur];
+  document.getElementById('questionText').textContent=q.q;
+
+  const answersDiv=document.getElementById('answersDiv');
+  answersDiv.innerHTML='';
+  q.a.forEach((ans,i)=>{
+    const btn=document.createElement('button');
+    btn.className='answer-btn';
+    btn.textContent=ans;
+    btn.onclick=()=>answerQ(i);
+    answersDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('feedback').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+
+  const pct=(quizCur/quizQs.length)*100;
+  document.getElementById('quizProgress').style.width=pct+'%';
+  document.getElementById('quizScore').textContent=quizScore;
+  document.getElementById('quizTotal').textContent=quizQs.length;
+}
+
+function answerQ(idx){
+  if(answered) return;
+  answered=true;
+
+  const q=quizQs[quizCur];
+  const correct=idx===q.c;
+  if(correct) quizScore++;
+
+  const btns=document.querySelectorAll('.answer-btn');
+  btns.forEach((b,i)=>{
+    b.classList.add('locked');
+    if(i===q.c) b.classList.add('correct');
+    if(i===idx&&!correct) b.classList.add('wrong');
+  });
+
+  const fbDiv=document.getElementById('feedback');
+  fbDiv.classList.add('show',correct?'correct-fb':'wrong-fb');
+  if(correct){
+    fbDiv.innerHTML='<strong>Richtig!</strong> '+q.hint;
+  } else {
+    fbDiv.innerHTML='<strong>Falsch.</strong> '+q.a[q.c]+' ist die richtige Antwort. '+q.hint;
+  }
+
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQ(){
+  quizCur++;
+  showQ();
+}
+
+function finishQuiz(){
+  document.getElementById('quizBody').style.display='none';
+  document.getElementById('quizComplete').style.display='block';
+  document.getElementById('finalScore').textContent=quizScore+' / '+quizQs.length;
+
+  const pct=Math.round((quizScore/quizQs.length)*100);
+  let msg='';
+  if(pct===100) msg='Perfekt! Du bist ein Turing-Experte!';
+  else if(pct>=80) msg='Ausgezeichnet! Du kennst Turing gut!';
+  else if(pct>=60) msg='Gute Arbeit! Du hast viel gelernt!';
+  else if(pct>=40) msg='Nicht schlecht! Lerne mehr über Turing!';
+  else msg='Weiter lernen! Turing ist faszinierend!';
+
+  document.getElementById('finalMsg').textContent=msg;
+}
+
+function drawArrow(ctx,fromX,fromY,toX,toY,color){
+  const headlen=12;
+  const angle=Math.atan2(toY-fromY,toX-fromX);
+  ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(fromX,fromY);ctx.lineTo(toX,toY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(toX,toY);ctx.lineTo(toX-headlen*Math.cos(angle-Math.PI/6),toY-headlen*Math.sin(angle-Math.PI/6));
+  ctx.lineTo(toX-headlen*Math.cos(angle+Math.PI/6),toY-headlen*Math.sin(angle+Math.PI/6));ctx.closePath();ctx.fill();
+}
+</script>
+
+</body>
+</html>

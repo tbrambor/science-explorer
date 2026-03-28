@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <title>Ramanujan Explorer - Interactive Math Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Patrick Hand', 'Caveat', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2b3a2b 0%, #1f2d1f 100%);
+            color: #e8e4d9;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(35, 48, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #d96b6b;
+            padding: 1rem 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(143, 212, 164, 0.2);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0 1rem;
+        }
+
+        nav button {
+            background: linear-gradient(135deg, #8fd4a4, #7bb8e0);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        nav button:hover {
+            background: linear-gradient(135deg, #a8e6c3, #9ccbdb);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(143, 212, 164, 0.4);
+        }
+
+        nav button.active {
+            background: linear-gradient(135deg, #f5d863, #f5d863);
+            box-shadow: 0 6px 20px rgba(245, 216, 99, 0.4);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #2b3a2b, #1f2d1f);
+            border-bottom: 2px solid #d96b6b;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #f5d863, #d96b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(217, 107, 107, 0.3);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #d9d5c9;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(49, 66, 49, 0.8);
+            border: 2px solid #8fd4a4;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            background: rgba(49, 66, 49, 0.9);
+            border-color: #f5d863;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(143, 212, 164, 0.3);
+        }
+
+        .card h3 {
+            color: #f5d863;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            line-height: 1.6;
+            color: #d9d5c9;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Portrait */
+        .portrait {
+            width: 200px;
+            height: 280px;
+            border-radius: 15px;
+            border: 3px solid #d96b6b;
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0 10px 40px rgba(217, 107, 107, 0.3);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5d863, #f5d863);
+            border: 3px solid #2b3a2b;
+            box-shadow: 0 0 15px rgba(245, 216, 99, 0.5);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 30px;
+            width: 2px;
+            height: calc(100% + 10px);
+            background: linear-gradient(180deg, #8fd4a4, #7bb8e0);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-item strong {
+            color: #f5d863;
+            font-size: 1.1rem;
+        }
+
+        /* Interactive Elements */
+        input[type="text"], input[type="number"], select {
+            background: rgba(43, 58, 43, 0.8);
+            border: 2px solid #8fd4a4;
+            color: #e8e4d9;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 0.5rem 0;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #f5d863;
+            box-shadow: 0 0 15px rgba(245, 216, 99, 0.3);
+        }
+
+        button.btn {
+            background: linear-gradient(135deg, #8fd4a4, #7bb8e0);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        button.btn:hover {
+            background: linear-gradient(135deg, #a8e6c3, #9ccbdb);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(143, 212, 164, 0.4);
+        }
+
+        button.btn.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        button.btn.danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        /* Range Slider */
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #8fd4a4, #7bb8e0);
+            outline: none;
+            -webkit-appearance: none;
+            margin: 1rem 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f5d863;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(245, 216, 99, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f5d863;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(245, 216, 99, 0.5);
+        }
+
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .fun-fact {
+            background: rgba(49, 66, 49, 0.8);
+            border: 2px solid #7bb8e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .fun-fact:hover {
+            background: rgba(49, 66, 49, 0.9);
+            border-color: #f5d863;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(143, 212, 164, 0.3);
+        }
+
+        .fun-fact h4 {
+            color: #7bb8e0;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .fun-fact p {
+            color: #d9d5c9;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Magic Square */
+        .magic-square {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-width: 300px;
+            margin: 1.5rem auto;
+        }
+
+        .square-cell {
+            aspect-ratio: 1;
+            background: rgba(43, 58, 43, 0.8);
+            border: 2px solid #8fd4a4;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fbbf24;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .square-cell input {
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 30, 0.9);
+            border: none;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fbbf24;
+            border-radius: 8px;
+        }
+
+        .square-cell.correct {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: #10b981;
+        }
+
+        .square-cell.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
+
+        /* Quiz */
+        .quiz-question {
+            background: rgba(49, 66, 49, 0.8);
+            border: 2px solid #8fd4a4;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question h4 {
+            color: #f5d863;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .quiz-option {
+            background: rgba(43, 58, 43, 0.8);
+            border: 2px solid #8fd4a4;
+            color: #e8e4d9;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .quiz-option:hover {
+            background: rgba(49, 66, 49, 0.9);
+            border-color: #f5d863;
+        }
+
+        .quiz-option.selected {
+            background: rgba(143, 212, 164, 0.3);
+            border-color: #8fd4a4;
+        }
+
+        .quiz-option.correct {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: #10b981;
+            color: #86efac;
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .quiz-feedback {
+            background: rgba(49, 66, 49, 0.8);
+            border: 2px solid #7bb8e0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #b8d8ec;
+        }
+
+        .progress-bar {
+            background: rgba(43, 58, 43, 0.8);
+            border: 2px solid #8fd4a4;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8fd4a4, #7bb8e0);
+            transition: width 0.3s ease;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #fbbf24;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            background: rgba(30, 20, 50, 0.8);
+            border: 3px solid #fbbf24;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .result-screen h3 {
+            color: #fbbf24;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-screen .score-display {
+            font-size: 3rem;
+            margin: 1.5rem 0;
+        }
+
+        .result-screen p {
+            color: #d9d5c9;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Formula Display */
+        .formula {
+            background: rgba(43, 58, 43, 0.8);
+            border: 2px solid #7bb8e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            color: #f5d863;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .convergence-meter {
+            background: rgba(43, 58, 43, 0.8);
+            border: 2px solid #8fd4a4;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .convergence-meter p {
+            color: #a5f3fc;
+            margin: 0.5rem 0;
+        }
+
+        .convergence-meter .value {
+            color: #fbbf24;
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                gap: 0.3rem;
+            }
+
+            nav button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Taxicab Info Box */
+        .taxicab-result {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #86efac;
+        }
+
+        .taxicab-result.not-found {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌟 Ramanujan Explorer 🌟</h1>
+        <p>Journey through the extraordinary life and discoveries of a mathematical genius</p>
+    </header>
+
+    <nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+        <ul>
+            <li><button class="nav-btn active" data-section="story">His Story</button></li>
+            <li><button class="nav-btn" data-section="taxicab">Taxicab 1729</button></li>
+            <li><button class="nav-btn" data-section="series">Infinite Series</button></li>
+            <li><button class="nav-btn" data-section="magic">Magic Squares</button></li>
+            <li><button class="nav-btn" data-section="facts">Fun Facts</button></li>
+            <li><button class="nav-btn" data-section="quiz">Quiz</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Section 1: His Story -->
+        <section id="story" class="active">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Srinivasa_Ramanujan_-_OPC_-_1.jpg" alt="Srinivasa Ramanujan" class="portrait">
+
+            <div class="card">
+                <h3>📖 The Life of Srinivasa Ramanujan</h3>
+                <p>One of history's most brilliant mathematicians, Ramanujan showed extraordinary gifts with numbers. His story is one of passion, struggle, and discoveries that scientists are STILL proving correct today!</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <strong>1887 - Born in Erode, India</strong>
+                    <p>Srinivasa Ramanujan was born on December 22, 1887, in a small town in southern India. From childhood, he showed an unusual fascination with numbers and patterns.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>Age 12 - Math Prodigy Emerges</strong>
+                    <p>By age 12, Ramanujan had already mastered advanced trigonometry — mathematics that most university students struggle with. His teachers were amazed by his natural talent.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>Age 15 - The Magic Book</strong>
+                    <p>Ramanujan borrowed a book called "Carr's Synopsis of Pure Mathematics" containing 5,000 mathematical formulas. He didn't just read it — he proved every single formula himself, filling notebooks with his own discoveries!</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>College Struggles</strong>
+                    <p>Ramanujan attended college twice but failed both times. Why? He was so obsessed with mathematics that he neglected other subjects. School couldn't teach him anything new!</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>1913 - The Famous Letter</strong>
+                    <p>At age 26, Ramanujan wrote to the famous mathematician G.H. Hardy at Cambridge University. His letter contained 120 incredible mathematical formulas. Hardy instantly recognized genius and invited him to England.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>1914-1919 - Cambridge Years</strong>
+                    <p>Ramanujan moved to Cambridge and produced groundbreaking mathematical work. He became the first Indian to be elected as a Fellow of Trinity College, one of the highest honors in mathematics.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>The 1729 Taxicab Story</strong>
+                    <p>Hardy visited Ramanujan in his sickbed and complained that his taxi's number (1729) was "a dull number." Ramanujan instantly replied: "No, Hardy! It's the smallest number that can be expressed as the sum of two cubes in two different ways!" Hardy was amazed.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>1920 - Untimely Death</strong>
+                    <p>Ramanujan died on April 26, 1920, at just 32 years old. He suffered from tuberculosis, but his legacy lived on. In his short life, he created 3,900 mathematical results.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <strong>Legacy - Still Being Discovered!</strong>
+                    <p>Mathematicians are STILL proving Ramanujan's formulas correct more than 100 years later. His notebooks contain formulas that he seemed to pull from thin air — they're connected to modern physics, black holes, and string theory, fields that didn't even exist when he was alive!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💡 Why Ramanujan Matters</h3>
+                <p>Ramanujan proved that genius doesn't need fancy schools or expensive resources. He taught himself from a single book and became one of the greatest mathematicians ever. His story shows that passion and curiosity can lead to extraordinary discoveries!</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Taxicab Number -->
+        <section id="taxicab">
+            <div class="card">
+                <h3>🚕 The Taxicab Number 1729</h3>
+                <p>This is one of the most famous stories in mathematics! When mathematician G.H. Hardy visited Ramanujan in the hospital, he mentioned that his taxi had number 1729, which seemed like "a rather dull number."</p>
+                <p>Ramanujan instantly replied: "On the contrary, it is a very interesting number. It is the smallest number expressible as the sum of two cubes in two different ways!"</p>
+            </div>
+
+            <div class="card">
+                <h3>🔢 The Magic of 1729</h3>
+                <div class="formula">1729 = 1³ + 12³ = 9³ + 10³</div>
+                <p><strong>First way:</strong> 1³ + 12³ = 1 + 1728 = 1729</p>
+                <p><strong>Second way:</strong> 9³ + 10³ = 729 + 1000 = 1729</p>
+                <p>No other number smaller than 1729 can be expressed as the sum of two cubes in two different ways. Such numbers are now called "Taxicab Numbers" in honor of this story!</p>
+            </div>
+
+            <div class="card">
+                <h3>🎮 Interactive Taxicab Explorer</h3>
+                <p>Try it yourself! Enter any number and see if it can be expressed as the sum of two cubes. Can you find more taxicab numbers?</p>
+
+                <label>Enter a number:</label>
+                <input type="number" id="taxicabInput" placeholder="Try 1729, 4104, or any number..." min="1" max="100000">
+                <button class="btn" onclick="checkTaxicab()">Check This Number</button>
+                <button class="btn" onclick="discoverTaxicabs()">Discover Taxicab Numbers</button>
+
+                <div id="taxicabResult"></div>
+            </div>
+        </section>
+
+        <!-- Section 3: Infinite Series -->
+        <section id="series">
+            <div class="card">
+                <h3>∞ What is an Infinite Series?</h3>
+                <p>An infinite series is when you add numbers together forever... and sometimes you actually get a final answer! For example:</p>
+                <p style="text-align: center; font-size: 1.2rem; font-family: monospace; color: #06b6d4;">1 + 1/2 + 1/4 + 1/8 + 1/16 + ... = 2</p>
+                <p>Even though you're adding infinitely many numbers, they get smaller and smaller, so the total equals exactly 2. Amazing, right?</p>
+            </div>
+
+            <div class="card">
+                <h3>🥧 Ramanujan's Series for π</h3>
+                <p>Ramanujan discovered an incredible formula that calculates π (pi) super fast! His series converges (reaches the correct answer) much faster than most other methods.</p>
+                <div class="formula">1/π = (1/8√2) × Σ(6n)! × (13591409 + 545140134n) / ((3n)! × n!³ × 640320^(3n+3/2))</div>
+                <p style="font-size: 0.9rem; color: #a5f3fc; text-align: center;">This is the actual formula! (Don't worry if it looks complicated — mathematicians use it!)</p>
+            </div>
+
+            <div class="card">
+                <h3>📊 Interactive Series Visualizer</h3>
+
+                <p><strong style="color:#fbbf24;">⚡ Ramanujan's Series (Super Fast!)</strong></p>
+                <p>Use the slider to add terms. Watch how quickly correct digits (in <span style="color:#4ade80">green</span>) lock in!</p>
+
+                <label>Terms used: <span id="ramanujanTerms" style="color:#fbbf24;font-weight:bold">1</span></label>
+                <input type="range" id="ramanujanSlider" min="1" max="5" value="1" oninput="updateRamanujanSeries()">
+
+                <div class="convergence-meter">
+                    <p style="font-size:.85rem;color:#a5f3fc;">Ramanujan's estimate of π:</p>
+                    <div id="ramanujanDigits" style="font-size:1.6rem;font-weight:bold;font-family:'Courier New',monospace;letter-spacing:2px;margin:6px 0"></div>
+                    <p style="margin-top:8px">Correct digits: <span id="ramanujanCorrect" style="color:#4ade80;font-weight:bold;font-size:1.3rem">0</span></p>
+                </div>
+
+                <div style="height:1.5rem"></div>
+
+                <p><strong style="color:#60a5fa;">🐢 Leibniz's Series (Much Slower!)</strong></p>
+                <p>Formula: π/4 = 1 − 1/3 + 1/5 − 1/7 + 1/9 − ... &nbsp; Drag the slider and compare!</p>
+
+                <label>Terms used: <span id="leibnizTerms" style="color:#60a5fa;font-weight:bold">1</span></label>
+                <input type="range" id="leibnizSlider" min="1" max="500" value="1" oninput="updateLeibnizSeries()">
+
+                <div class="convergence-meter" style="border-color:#3b82f6;">
+                    <p style="font-size:.85rem;color:#a5f3fc;">Leibniz's estimate of π:</p>
+                    <div id="leibnizDigits" style="font-size:1.6rem;font-weight:bold;font-family:'Courier New',monospace;letter-spacing:2px;margin:6px 0"></div>
+                    <p style="margin-top:8px">Correct digits: <span id="leibnizCorrect" style="color:#4ade80;font-weight:bold;font-size:1.3rem">0</span></p>
+                </div>
+
+                <canvas id="convergenceCanvas" width="660" height="200" style="display:block;margin:1.5rem auto 0;max-width:100%;border-radius:8px;background:rgba(10,5,25,.6)"></canvas>
+                <p style="text-align:center;font-size:.8rem;color:rgba(255,255,255,.4);margin-top:6px">Convergence graph — closer to the dashed line (π) is better</p>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Why Ramanujan's is Better</h3>
+                <p>Ramanujan's series converges SO fast that <strong>just 1 term</strong> gives 8 correct digits of π, and 2 terms gives all 15 digits a computer can store! Leibniz's series needs <strong>hundreds of terms</strong> for just 2 correct digits. This is why mathematicians consider Ramanujan a once-in-a-century genius.</p>
+            </div>
+        </section>
+
+        <!-- Section 4: Magic Squares -->
+        <section id="magic">
+            <div class="card">
+                <h3>✨ What is a Magic Square?</h3>
+                <p>A magic square is a grid of numbers where every row, column, and diagonal adds up to the same sum (called the "magic constant").</p>
+                <p>Here's a simple example:</p>
+                <div class="magic-square">
+                    <div class="square-cell">8</div>
+                    <div class="square-cell">1</div>
+                    <div class="square-cell">6</div>
+                    <div class="square-cell">3</div>
+                    <div class="square-cell">5</div>
+                    <div class="square-cell">7</div>
+                    <div class="square-cell">4</div>
+                    <div class="square-cell">9</div>
+                    <div class="square-cell">2</div>
+                </div>
+                <p>Every row, column, and diagonal adds to 15! ✓</p>
+            </div>
+
+            <div class="card">
+                <h3>🎁 Ramanujan's Special Square</h3>
+                <p>Ramanujan created a magic square using his own birthdate (22-12-1887) as the first row!</p>
+                <div class="magic-square">
+                    <div class="square-cell">22</div>
+                    <div class="square-cell">12</div>
+                    <div class="square-cell">18</div>
+                    <div class="square-cell">87</div>
+                    <div class="square-cell">25</div>
+                    <div class="square-cell">23</div>
+                    <div class="square-cell">60</div>
+                    <div class="square-cell">11</div>
+                    <div class="square-cell">51</div>
+                </div>
+                <p style="text-align: center; color: #a5f3fc;">Every row, column, and diagonal adds to 139!</p>
+            </div>
+
+            <div class="card">
+                <h3>🎮 Try It Yourself!</h3>
+                <p>Complete this magic square! Each row, column, and diagonal must add to 15. Some numbers are already filled in. Type the missing numbers:</p>
+
+                <div class="magic-square" id="gameSquare">
+                    <div class="square-cell"><input type="number" id="cell0" min="1" max="9" oninput="validateMagicSquare()"></div>
+                    <div class="square-cell">1</div>
+                    <div class="square-cell"><input type="number" id="cell2" min="1" max="9" oninput="validateMagicSquare()"></div>
+                    <div class="square-cell"><input type="number" id="cell3" min="1" max="9" oninput="validateMagicSquare()"></div>
+                    <div class="square-cell">5</div>
+                    <div class="square-cell"><input type="number" id="cell5" min="1" max="9" oninput="validateMagicSquare()"></div>
+                    <div class="square-cell"><input type="number" id="cell6" min="1" max="9" oninput="validateMagicSquare()"></div>
+                    <div class="square-cell"><input type="number" id="cell7" min="1" max="9" oninput="validateMagicSquare()"></div>
+                    <div class="square-cell">2</div>
+                </div>
+
+                <button class="btn" onclick="hintMagicSquare()">💡 Hint</button>
+                <button class="btn" onclick="showMagicSquareAnswer()">📖 Show Answer</button>
+                <button class="btn" onclick="resetMagicSquare()">🔄 Reset</button>
+
+                <div id="magicSquareMessage"></div>
+            </div>
+        </section>
+
+        <!-- Section 5: Fun Facts -->
+        <section id="facts">
+            <div class="card">
+                <h3>🌟 Amazing Facts About Ramanujan</h3>
+                <p>Here are 12 incredible facts about this mathematical genius:</p>
+            </div>
+
+            <div class="grid">
+                <div class="fun-fact">
+                    <h4>📚 Self-Taught Genius</h4>
+                    <p>Ramanujan taught himself advanced mathematics from a single borrowed book. No fancy school. No tutors. Just one book and pure passion!</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>❌ Failed College Twice</h4>
+                    <p>Ramanujan dropped out of college twice because he only wanted to study mathematics. He refused to waste time on other subjects.</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>⭐ Hardy's Rating</h4>
+                    <p>Hardy rated mathematicians on a scale. He gave Ramanujan a 100, gave himself a 25, and only gave Hilbert (another genius) an 80!</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>🎯 120 Formulas in One Letter</h4>
+                    <p>Ramanujan's letter to Hardy contained 120 incredible formulas. It took other mathematicians DECADES to prove them all correct.</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>💭 Dreams from Goddess Namagiri</h4>
+                    <p>Ramanujan said his formulas came to him in dreams from the goddess Namagiri. Whether it was divine inspiration or his subconscious mind, his intuition was remarkable!</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>📔 Lost Notebook Discovery</h4>
+                    <p>In 1976, a "lost notebook" of Ramanujan was discovered containing 600+ new formulas. Mathematicians are still studying and proving them today!</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>🔢 Pattern Recognition Magic</h4>
+                    <p>Ramanujan could instantly see patterns in numbers that nobody else could see. It was like his brain was wired to understand mathematics!</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>🌌 From Past to Future</h4>
+                    <p>Ramanujan's work connects to string theory and black holes — fields discovered 100+ years AFTER he died. He discovered things before physics even needed them!</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>🚀 3,900 Results in 32 Years</h4>
+                    <p>In his short life of just 32 years, Ramanujan created 3,900 mathematical results. That's an average of over 2 new discoveries per week!</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>🧠 The Man Who Knew Infinity</h4>
+                    <p>Ramanujan worked entirely on intuition and never needed to show all his work. His conclusions seemed to come from nowhere — mathematicians call him "the man who knew infinity."</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>🍛 Religious & Vegetarian</h4>
+                    <p>Ramanujan was deeply religious and vegetarian. In Cambridge, he struggled with the food and the cold weather, but his love for mathematics kept him going.</p>
+                </div>
+
+                <div class="fun-fact">
+                    <h4>🇮🇳 National Holiday</h4>
+                    <p>Ramanujan's birthday (December 22) is celebrated as National Mathematics Day in India. He's considered a national hero and inspiration to all young mathematicians!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Quiz -->
+        <section id="quiz">
+            <div class="card">
+                <h3>🎓 Test Your Knowledge!</h3>
+                <p>Answer 10 questions about Ramanujan and see how much you've learned. Each question has 4 options. After you answer, you'll see if you're correct and learn more!</p>
+                <button class="btn" onclick="startQuiz()" id="startBtn">Start Quiz</button>
+                <div id="quizContainer" class="hidden"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                const sectionId = e.target.dataset.section;
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // ========== TAXICAB FUNCTIONS ==========
+        function checkTaxicab() {
+            const input = parseInt(document.getElementById('taxicabInput').value);
+            const resultDiv = document.getElementById('taxicabResult');
+
+            if (!input || input < 2) {
+                resultDiv.innerHTML = '<div class="taxicab-result not-found">Please enter a number greater than 1</div>';
+                return;
+            }
+
+            let ways = [];
+            for (let a = 1; a * a * a < input; a++) {
+                for (let b = a; a * a * a + b * b * b <= input; b++) {
+                    if (a * a * a + b * b * b === input) {
+                        ways.push({ a, b, sum: a * a * a + b * b * b });
+                    }
+                }
+            }
+
+            if (ways.length === 0) {
+                resultDiv.innerHTML = `<div class="taxicab-result not-found">❌ ${input} cannot be expressed as the sum of two cubes</div>`;
+            } else if (ways.length === 1) {
+                resultDiv.innerHTML = `<div class="taxicab-result">✓ ${input} = ${ways[0].a}³ + ${ways[0].b}³<br>This is expressible in 1 way (not a taxicab number)</div>`;
+            } else {
+                let html = `<div class="taxicab-result">🎉 ${input} is a TAXICAB NUMBER! It can be expressed in ${ways.length} ways:<br>`;
+                ways.forEach(w => {
+                    html += `${w.a}³ + ${w.b}³ = ${w.sum}<br>`;
+                });
+                html += '</div>';
+                resultDiv.innerHTML = html;
+            }
+        }
+
+        function discoverTaxicabs() {
+            const taxicabs = [1729, 4104, 5832, 9729, 15625];
+            let html = '<div class="taxicab-result" style="background: rgba(6, 182, 212, 0.2); border-color: #06b6d4;"><strong>🔍 The First 5 Taxicab Numbers:</strong><br>';
+            html += '1729 = 1³ + 12³ = 9³ + 10³<br>';
+            html += '4104 = 2³ + 16³ = 9³ + 15³<br>';
+            html += '5832 = 9³ + 15³ = 12³ + 12³<br>';
+            html += '9729 = 1³ + 21³ = 10³ + 18³<br>';
+            html += '15625 = 5³ + 25³ = 10³ + 20³<br>';
+            html += 'Try these numbers in the checker above!</div>';
+            document.getElementById('taxicabResult').innerHTML = html;
+        }
+
+        // ========== INFINITE SERIES FUNCTIONS ==========
+        /* ===== PI DIGITS FOR COMPARISON ===== */
+        const PI_STR = '3.141592653589793238';
+
+        function countCorrectDigits(piStr) {
+            let count = 0;
+            for (let i = 0; i < Math.min(piStr.length, PI_STR.length); i++) {
+                if (piStr[i] === PI_STR[i]) count++;
+                else break;
+            }
+            // subtract 1 for the decimal point
+            return Math.max(0, count - 1);
+        }
+
+        function colorDigits(piStr) {
+            let html = '';
+            for (let i = 0; i < piStr.length; i++) {
+                if (i < PI_STR.length && piStr[i] === PI_STR[i]) {
+                    html += '<span style="color:#4ade80">' + piStr[i] + '</span>';
+                } else {
+                    html += '<span style="color:#ef4444">' + piStr[i] + '</span>';
+                }
+            }
+            return html;
+        }
+
+        /* ===== RAMANUJAN (Chudnovsky algorithm) ===== */
+        // 1/π = 12 × Σ (-1)^n (6n)!(A+Bn) / ((3n)!(n!)³ × C^(3n+3/2))
+        // Uses iterative term ratios to avoid factorial overflow
+        const CHUD_A = 13591409, CHUD_B = 545140134;
+        const CHUD_C3 = 262537412640768000; // 640320³
+        const CHUD_C32 = 640320 * Math.sqrt(640320); // 640320^(3/2)
+
+        let ramanujanHistory = [];
+        let leibnizHistory = [];
+
+        function updateRamanujanSeries() {
+            const terms = parseInt(document.getElementById('ramanujanSlider').value);
+            document.getElementById('ramanujanTerms').textContent = terms;
+
+            // term 0
+            let termN = CHUD_A / CHUD_C32;
+            let sum = termN;
+
+            for (let n = 1; n < terms; n++) {
+                const num = (6*n) * (6*n-1) * (6*n-2) * (6*n-3) * (6*n-4) * (6*n-5);
+                const den = (3*n) * (3*n-1) * (3*n-2) * n * n * n * CHUD_C3;
+                const cRatio = (CHUD_A + CHUD_B * n) / (CHUD_A + CHUD_B * (n - 1));
+                termN = termN * (-1) * num * cRatio / den;
+                sum += termN;
+            }
+
+            const pi = 1 / (12 * sum);
+            const piStr = pi.toFixed(15);
+            const correct = countCorrectDigits(piStr);
+
+            document.getElementById('ramanujanDigits').innerHTML = colorDigits(piStr);
+            document.getElementById('ramanujanCorrect').textContent = correct;
+
+            // store for graph
+            ramanujanHistory = [];
+            let s = 0, t = CHUD_A / CHUD_C32;
+            for (let n = 0; n < 5; n++) {
+                if (n === 0) { s = t; }
+                else {
+                    const num = (6*n)*(6*n-1)*(6*n-2)*(6*n-3)*(6*n-4)*(6*n-5);
+                    const den = (3*n)*(3*n-1)*(3*n-2)*n*n*n*CHUD_C3;
+                    const cr = (CHUD_A+CHUD_B*n)/(CHUD_A+CHUD_B*(n-1));
+                    t = t * (-1) * num * cr / den;
+                    s += t;
+                }
+                ramanujanHistory.push(1 / (12 * s));
+            }
+            drawConvergenceGraph();
+        }
+
+        /* ===== LEIBNIZ ===== */
+        function updateLeibnizSeries() {
+            const terms = parseInt(document.getElementById('leibnizSlider').value);
+            document.getElementById('leibnizTerms').textContent = terms;
+
+            let sum = 0;
+            for (let n = 0; n < terms; n++) {
+                sum += (n % 2 === 0 ? 1 : -1) / (2 * n + 1);
+            }
+
+            const pi = sum * 4;
+            const piStr = pi.toFixed(15);
+            const correct = countCorrectDigits(piStr);
+
+            document.getElementById('leibnizDigits').innerHTML = colorDigits(piStr);
+            document.getElementById('leibnizCorrect').textContent = correct;
+
+            // store for graph (sample at intervals)
+            leibnizHistory = [];
+            let ls = 0;
+            const samplePoints = [1,2,5,10,20,50,100,200,500];
+            let si = 0;
+            for (let n = 0; n < 500; n++) {
+                ls += (n % 2 === 0 ? 1 : -1) / (2 * n + 1);
+                if (si < samplePoints.length && n + 1 === samplePoints[si]) {
+                    leibnizHistory.push({ terms: samplePoints[si], pi: ls * 4 });
+                    si++;
+                }
+            }
+            drawConvergenceGraph();
+        }
+
+        /* ===== CONVERGENCE GRAPH ===== */
+        function drawConvergenceGraph() {
+            const cvs = document.getElementById('convergenceCanvas');
+            if (!cvs) return;
+            const ctx = cvs.getContext('2d');
+            const W = cvs.width, H = cvs.height;
+            ctx.clearRect(0, 0, W, H);
+
+            const pad = { l: 50, r: 20, t: 20, b: 30 };
+            const gw = W - pad.l - pad.r, gh = H - pad.t - pad.b;
+
+            // y-axis range: 2.8 to 3.5
+            const yMin = 2.8, yMax = 3.5;
+            const toY = v => pad.t + gh * (1 - (v - yMin) / (yMax - yMin));
+
+            // axes
+            ctx.strokeStyle = 'rgba(255,255,255,.15)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, H - pad.b);
+            ctx.lineTo(W - pad.r, H - pad.b);
+            ctx.stroke();
+
+            // π dashed line
+            ctx.setLineDash([6, 4]);
+            ctx.strokeStyle = 'rgba(78,200,160,.6)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            const piY = toY(Math.PI);
+            ctx.moveTo(pad.l, piY); ctx.lineTo(W - pad.r, piY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#4ec8a0';
+            ctx.font = '12px sans-serif';
+            ctx.fillText('π', pad.l - 16, piY + 4);
+
+            // y-axis labels
+            ctx.fillStyle = 'rgba(255,255,255,.3)';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'right';
+            for (let v = 2.8; v <= 3.5; v += 0.1) {
+                ctx.fillText(v.toFixed(1), pad.l - 6, toY(v) + 3);
+            }
+
+            // --- Leibniz dots (blue) ---
+            if (leibnizHistory.length) {
+                ctx.fillStyle = '#60a5fa';
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                leibnizHistory.forEach((p, i) => {
+                    // x: map log(terms) across graph width
+                    const x = pad.l + (i / (leibnizHistory.length - 1 || 1)) * gw;
+                    const y = toY(Math.max(yMin, Math.min(yMax, p.pi)));
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+                leibnizHistory.forEach((p, i) => {
+                    const x = pad.l + (i / (leibnizHistory.length - 1 || 1)) * gw;
+                    const y = toY(Math.max(yMin, Math.min(yMax, p.pi)));
+                    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+                });
+            }
+
+            // --- Ramanujan dots (gold) ---
+            if (ramanujanHistory.length) {
+                ctx.fillStyle = '#fbbf24';
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ramanujanHistory.forEach((pi, i) => {
+                    const x = pad.l + 10 + i * 24;
+                    const y = toY(Math.max(yMin, Math.min(yMax, pi)));
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+                ramanujanHistory.forEach((pi, i) => {
+                    const x = pad.l + 10 + i * 24;
+                    const y = toY(Math.max(yMin, Math.min(yMax, pi)));
+                    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+                });
+            }
+
+            // legend
+            ctx.textAlign = 'left';
+            ctx.font = '11px sans-serif';
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(W - 180, pad.t + 4, 10, 10);
+            ctx.fillText('Ramanujan', W - 166, pad.t + 13);
+            ctx.fillStyle = '#60a5fa';
+            ctx.fillRect(W - 180, pad.t + 20, 10, 10);
+            ctx.fillText('Leibniz', W - 166, pad.t + 29);
+        }
+
+        // ========== MAGIC SQUARE FUNCTIONS ==========
+        function validateMagicSquare() {
+            const values = [
+                parseInt(document.getElementById('cell0').value) || 0,
+                1,
+                parseInt(document.getElementById('cell2').value) || 0,
+                parseInt(document.getElementById('cell3').value) || 0,
+                5,
+                parseInt(document.getElementById('cell5').value) || 0,
+                parseInt(document.getElementById('cell6').value) || 0,
+                parseInt(document.getElementById('cell7').value) || 0,
+                2
+            ];
+
+            const rows = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            const message = document.getElementById('magicSquareMessage');
+            let allCorrect = true;
+
+            rows.forEach(row => {
+                const sum = values[row[0]] + values[row[1]] + values[row[2]];
+                if (sum !== 0 && sum !== 15) {
+                    allCorrect = false;
+                }
+            });
+
+            if (values.some(v => v === 0)) {
+                message.innerHTML = '';
+            } else if (allCorrect) {
+                message.innerHTML = '<div class="taxicab-result" style="background: rgba(16, 185, 129, 0.3); border-color: #10b981;">🎉 Perfect! You completed the magic square! All rows, columns, and diagonals add to 15!</div>';
+            } else {
+                message.innerHTML = '<div class="taxicab-result not-found">❌ Not quite right. Check that each row, column, and diagonal adds to 15!</div>';
+            }
+        }
+
+        function hintMagicSquare() {
+            document.getElementById('magicSquareMessage').innerHTML = '<div class="taxicab-result" style="background: rgba(6, 182, 212, 0.2); border-color: #06b6d4;">💡 Hint: The magic constant is 15. Remember: rows, columns, and diagonals should all add to 15. In a 3×3 magic square with numbers 1-9, the center is always 5!</div>';
+        }
+
+        function showMagicSquareAnswer() {
+            const answer = [8, 1, 6, 3, 5, 7, 4, 9, 2];
+            document.getElementById('cell0').value = 8;
+            document.getElementById('cell2').value = 6;
+            document.getElementById('cell3').value = 3;
+            document.getElementById('cell5').value = 7;
+            document.getElementById('cell6').value = 4;
+            document.getElementById('cell7').value = 9;
+            validateMagicSquare();
+        }
+
+        function resetMagicSquare() {
+            document.getElementById('cell0').value = '';
+            document.getElementById('cell2').value = '';
+            document.getElementById('cell3').value = '';
+            document.getElementById('cell5').value = '';
+            document.getElementById('cell6').value = '';
+            document.getElementById('cell7').value = '';
+            document.getElementById('magicSquareMessage').innerHTML = '';
+        }
+
+        // ========== QUIZ FUNCTIONS ==========
+        const quizQuestions = [
+            {
+                q: "In what year was Ramanujan born?",
+                opts: ["1885", "1887", "1890", "1892"],
+                correct: 1,
+                explain: "Ramanujan was born on December 22, 1887, in Erode, India."
+            },
+            {
+                q: "What famous book did Ramanujan study at age 15?",
+                opts: ["Newton's Principles", "Carr's Synopsis of Pure Mathematics", "Euclid's Elements", "Euler's Introduction"],
+                correct: 1,
+                explain: "He borrowed 'Carr's Synopsis of Pure Mathematics' which contained 5,000 formulas. He proved every single one!"
+            },
+            {
+                q: "How many incredible formulas did Ramanujan include in his famous letter to G.H. Hardy?",
+                opts: ["50", "75", "120", "200"],
+                correct: 2,
+                explain: "His 1913 letter to Hardy contained 120 formulas that took mathematicians decades to verify."
+            },
+            {
+                q: "What is the taxicab number famously associated with Ramanujan?",
+                opts: ["729", "1000", "1729", "3000"],
+                correct: 2,
+                explain: "1729 is the smallest number expressible as the sum of two cubes in two ways: 1³ + 12³ = 9³ + 10³"
+            },
+            {
+                q: "How old was Ramanujan when he died?",
+                opts: ["25", "28", "32", "35"],
+                correct: 2,
+                explain: "Ramanujan died on April 26, 1920, at just 32 years old due to tuberculosis."
+            },
+            {
+                q: "What rating did Hardy give Ramanujan on his scale of mathematicians?",
+                opts: ["80", "75", "90", "100"],
+                correct: 3,
+                explain: "Hardy gave Ramanujan a rating of 100, himself a 25, and the famous mathematician Hilbert an 80!"
+            },
+            {
+                q: "How many mathematical results did Ramanujan produce in his lifetime?",
+                opts: ["1,000", "1,500", "2,500", "3,900"],
+                correct: 3,
+                explain: "Despite his short life, Ramanujan created 3,900 mathematical results!"
+            },
+            {
+                q: "What did Ramanujan claim was the source of his mathematical insights?",
+                opts: ["University textbooks", "Dreams from goddess Namagiri", "Collaboration with other mathematicians", "Pure logic"],
+                correct: 1,
+                explain: "Ramanujan said his formulas came to him in dreams from the goddess Namagiri."
+            },
+            {
+                q: "When was Ramanujan's 'lost notebook' discovered?",
+                opts: ["1945", "1965", "1976", "1985"],
+                correct: 2,
+                explain: "A lost notebook containing 600+ formulas was discovered in 1976 and is still being studied today."
+            },
+            {
+                q: "What is Ramanujan's birthday celebrated as in India?",
+                opts: ["Science Day", "National Mathematics Day", "Innovation Day", "Genius Day"],
+                correct: 1,
+                explain: "December 22 is celebrated as National Mathematics Day in India in honor of Ramanujan."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswers = [];
+
+        function startQuiz() {
+            document.getElementById('startBtn').classList.add('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= quizQuestions.length) {
+                showResult();
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            let html = `
+                <div class="quiz-question">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${((currentQuestion + 1) / quizQuestions.length) * 100}%"></div>
+                    </div>
+                    <div class="score-display">Question ${currentQuestion + 1} of ${quizQuestions.length}</div>
+                    <h4>${q.q}</h4>
+                    <div class="quiz-options">
+            `;
+
+            q.opts.forEach((opt, i) => {
+                html += `<button class="quiz-option" onclick="selectAnswer(${i})">${opt}</button>`;
+            });
+
+            html += `
+                    </div>
+                    <button class="btn" onclick="nextQuestion()" id="nextBtn" disabled>Next Question →</button>
+                </div>
+            `;
+
+            document.getElementById('quizContainer').innerHTML = html;
+            document.getElementById('quizContainer').classList.remove('hidden');
+        }
+
+        function selectAnswer(index) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            selectedAnswers[currentQuestion] = index;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            const q = quizQuestions[currentQuestion];
+            const selected = selectedAnswers[currentQuestion];
+
+            if (selected === q.correct) {
+                score++;
+            }
+
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((opt, i) => {
+                opt.disabled = true;
+                if (i === q.correct) {
+                    opt.classList.add('correct');
+                } else if (i === selected && selected !== q.correct) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            const feedback = `<div class="quiz-feedback">✓ ${q.explain}</div>`;
+            document.querySelector('.quiz-question').innerHTML += feedback;
+
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.textContent = currentQuestion === quizQuestions.length - 1 ? 'See Results →' : 'Next Question →';
+
+            setTimeout(() => {
+                currentQuestion++;
+                showQuestion();
+            }, 3000);
+        }
+
+        function showResult() {
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            let message = '';
+
+            if (percentage === 100) {
+                message = '🌟 PERFECT SCORE! You\'re a Ramanujan expert!';
+            } else if (percentage >= 80) {
+                message = '🎉 Excellent! You know Ramanujan really well!';
+            } else if (percentage >= 60) {
+                message = '👍 Good job! You learned a lot about Ramanujan!';
+            } else if (percentage >= 40) {
+                message = '📚 Nice try! Want to revisit His Story section?';
+            } else {
+                message = '🌱 Keep learning! Check out the other sections for more info!';
+            }
+
+            let html = `
+                <div class="result-screen">
+                    <h3>Quiz Complete!</h3>
+                    <div class="score-display">${score} / ${quizQuestions.length}</div>
+                    <p>${percentage}%</p>
+                    <p>${message}</p>
+                    <button class="btn" onclick="resetQuiz()">Take Quiz Again</button>
+                </div>
+            `;
+
+            document.getElementById('quizContainer').innerHTML = html;
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswers = [];
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('startBtn').classList.remove('hidden');
+        }
+
+        // Initialize
+        updateRamanujanSeries();
+        updateLeibnizSeries();
+    </script>
+</body>
+</html>
