@@ -82,34 +82,6 @@
             border-color: #f5d863;
         }
 
-        .language-toggle {
-            display: flex;
-            gap: 0.5rem;
-            margin-left: auto;
-        }
-
-        .lang-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid #8fd4a4;
-            background-color: #314231;
-            color: #e8e4d9;
-            cursor: pointer;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.85rem;
-        }
-
-        .lang-btn:hover {
-            background-color: #3d523d;
-        }
-
-        .lang-btn.active {
-            background-color: #f5d863;
-            color: #2b3a2b;
-            border-color: #f5d863;
-        }
-
         /* Main Content */
         .container {
             max-width: 1200px;
@@ -568,7 +540,7 @@
   <a href="../pythagoras-explorer.html">EN</a>
   <a href="#" class="active">DE</a>
 </div>
-    <!-- Navigation -->
+<!-- Navigation -->
     <nav>
   <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
         <div class="nav-container">
@@ -580,10 +552,6 @@
                 <button class="nav-btn" onclick="showSection('music')">Musik & Mathe</button>
                 <button class="nav-btn" onclick="showSection('fun-facts')">Spaßige Fakten</button>
                 <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
-            </div>
-            <div class="language-toggle">
-                <a href="../pythagoras-explorer.html" class="lang-btn">EN</a>
-                <button class="lang-btn active">DE</button>
             </div>
         </div>
     </nav>

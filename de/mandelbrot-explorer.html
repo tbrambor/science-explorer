@@ -119,10 +119,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
 
 /* ── LANGUAGE TOGGLE ── */
 .lang-toggle{position:absolute;top:12px;right:16px;display:flex;gap:8px}
-.lang-btn{padding:7px 12px;border:1px solid rgba(245,216,99,.3);border-radius:4px;background:transparent;color:var(--dim);font-size:12px;font-weight:600;cursor:pointer;transition:.25s}
-.lang-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
-.lang-btn:hover{color:#fff}
-
 @media(max-width:600px){
   nav button{padding:7px 10px;font-size:11px}
   .card{padding:18px}
@@ -135,12 +131,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
 </style>
 </head>
 <body>
-
 <div class="lang-toggle">
-  <a href="../mandelbrot-explorer.html" style="text-decoration:none"><button class="lang-btn">EN</button></a>
-  <button class="lang-btn active">DE</button>
+  <a href="../mandelbrot-explorer.html">EN</a>
+  <a href="#" class="active">DE</a>
 </div>
-
 <div class="hero">
   <div class="hero-content">
     <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Benoit_Mandelbrot%2C_TED_2010_%283x4_cropped%29.jpg/250px-Benoit_Mandelbrot%2C_TED_2010_%283x4_cropped%29.jpg" alt="Benoît Mandelbrot">

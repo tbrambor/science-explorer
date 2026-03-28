@@ -158,7 +158,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
 </style>
 </head>
 <body>
-
+<div class="lang-toggle">
+  <a href="../turing-explorer.html">EN</a>
+  <a href="#" class="active">DE</a>
+</div>
 <div class="hero">
   <div class="hero-content">
     <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Alan_Turing_Aged_16.jpg" alt="Alan Turing im Alter von 16 Jahren">
@@ -177,11 +180,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
   <button onclick="show('test',this)">Der Test</button>
   <button onclick="show('facts',this)">Interessante Fakten</button>
   <button onclick="show('quiz',this)">Quiz</button>
-  <div class="lang-toggle">
-    <button onclick="window.location.href='../turing-explorer.html'">EN</button>
-    <button class="active" onclick="window.location.href='./turing-explorer.html'">DE</button>
-  </div>
-</nav>
+  </nav>
 
 <!-- ═══════════ STORY ═══════════ -->
 <section id="sec-story" class="visible">

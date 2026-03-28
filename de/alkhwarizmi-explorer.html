@@ -20,10 +20,6 @@ nav button.active{background:var(--accent);color:#000;box-shadow:0 4px 18px rgba
 
 /* ── LANG TOGGLE ── */
 .lang-toggle{position:absolute;right:20px;display:flex;gap:6px}
-.lang-btn{padding:6px 12px;border:1px solid rgba(245,216,99,.3);border-radius:4px;background:transparent;color:var(--dim);font-size:12px;font-weight:600;cursor:pointer;transition:.25s}
-.lang-btn:hover{color:#fff;border-color:var(--accent)}
-.lang-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
-
 /* ── HERO ── */
 .hero{position:relative;text-align:center;padding:50px 20px 35px;overflow:hidden}
 .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(245,216,99,.08) 0%,transparent 50%);pointer-events:none}
@@ -155,12 +151,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
 </style>
 </head>
 <body>
-
 <div class="lang-toggle">
-  <button class="lang-btn" onclick="switchLang('../alkhwarizmi-explorer.html')">EN</button>
-  <button class="lang-btn active" onclick="switchLang('self')">DE</button>
+  <a href="../alkhwarizmi-explorer.html">EN</a>
+  <a href="#" class="active">DE</a>
 </div>
-
 <div class="hero">
   <div class="hero-content">
     <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Khwarizmi_Amirkabir_University_of_Technology.png" alt="Al-Khwarizmi Statue an der Amirkabir University">
@@ -404,11 +398,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;heigh
 </div>
 
 <script>
-function switchLang(target) {
-  if (target === 'self') return;
-  window.location.href = target;
-}
-
 /* ═══════ NAVIGATION ═══════ */
 function show(name,btn){
   document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));

@@ -61,30 +61,6 @@
             border-color: #f5d863;
         }
 
-        /* Language Toggle */
-        .language-toggle {
-            margin-left: auto;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .language-toggle button {
-            padding: 0.5rem 0.8rem;
-            font-size: 0.85rem;
-            background: #2b3a2b;
-            border: 2px solid #8fd4a4;
-            color: #8fd4a4;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .language-toggle button.active {
-            background: #f5d863;
-            color: #2b3a2b;
-            border-color: #f5d863;
-        }
-
         /* Sections */
         section {
             display: none;
@@ -481,7 +457,7 @@
   <a href="../fibonacci-explorer.html">EN</a>
   <a href="#" class="active">DE</a>
 </div>
-    <!-- Navigation -->
+<!-- Navigation -->
     <nav id="nav">
         <button class="nav-btn active" data-section="story">Seine Geschichte</button>
         <button class="nav-btn" data-section="builder">Sequenz-Baumeister</button>
@@ -489,10 +465,6 @@
         <button class="nav-btn" data-section="nature">In der Natur</button>
         <button class="nav-btn" data-section="facts">Lustige Fakten</button>
         <button class="nav-btn" data-section="quiz">Quiz</button>
-        <div class="language-toggle">
-            <button onclick="changeLanguage('en')">EN</button>
-            <button onclick="changeLanguage('de')" class="active">DE</button>
-        </div>
     </nav>
 
     <!-- Section 1: His Story -->
@@ -847,8 +819,6 @@
                 window.location.href = '../fibonacci-explorer.html';
             } else {
                 // Stay on current page (German)
-                document.querySelectorAll('.language-toggle button').forEach(btn => {
-                    btn.classList.remove('active');
                 });
                 event.target.classList.add('active');
             }
