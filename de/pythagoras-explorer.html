@@ -180,21 +180,32 @@ button:hover{transform:scale(1.04);box-shadow:0 4px 16px rgba(245,216,99,.4)}
   <div class="card">
     <h2>Rechtwinkliger Dreiecks-Rechner</h2>
     <p class="sub">Gib zwei beliebige Seiten ein und berechne die dritte mit dem Satz des Pythagoras.</p>
-    <p style="margin-bottom:20px;font-size:15px;">Dieses Werkzeug ermöglicht dir, die fehlende Seite eines rechtwinkligen Dreiecks zu lösen.</p>
-    <div class="calc-group">
-      <label>Seite a (ein Schenkel)</label>
-      <input type="number" id="calcA" placeholder="Wert eingeben oder leer lassen" oninput="calculateTriangle()">
+    <div class="step-explain" style="margin-bottom:20px">
+      <div class="step-item"><div class="step-num">1</div><div class="step-text">Wähle zwei Seiten eines rechtwinkligen Dreiecks — <strong>a</strong> und <strong>b</strong> sind die Katheten, <strong>c</strong> ist die Hypotenuse (längste Seite).</div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-text">Gib in genau zwei Felder eine Zahl ein und lass das dritte leer.</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-text">Sieh zu, wie der Rechner die fehlende Seite findet und das Dreieck zeichnet!</div></div>
     </div>
-    <div class="calc-group">
-      <label>Seite b (anderer Schenkel)</label>
-      <input type="number" id="calcB" placeholder="Wert eingeben oder leer lassen" oninput="calculateTriangle()">
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <div style="flex:1;min-width:240px">
+        <div class="calc-group">
+          <label>Seite a (ein Schenkel)</label>
+          <input type="number" id="calcA" placeholder="z.B. 3" oninput="calculateTriangle()" min="0.1" step="any">
+        </div>
+        <div class="calc-group">
+          <label>Seite b (anderer Schenkel)</label>
+          <input type="number" id="calcB" placeholder="z.B. 4" oninput="calculateTriangle()" min="0.1" step="any">
+        </div>
+        <div class="calc-group">
+          <label>Seite c (Hypotenuse)</label>
+          <input type="number" id="calcC" placeholder="Leer lassen zum Berechnen" oninput="calculateTriangle()" min="0.1" step="any">
+        </div>
+        <button onclick="calculateTriangle()" style="width:100%;margin-top:8px;">Fehlende Seite berechnen</button>
+        <div id="calcResult" style="margin-top:14px"></div>
+      </div>
+      <div style="flex:1;min-width:280px;text-align:center">
+        <canvas id="calcCanvas" width="360" height="300" style="width:100%;max-width:360px;border-radius:8px;border:1px solid rgba(245,216,99,.15)"></canvas>
+      </div>
     </div>
-    <div class="calc-group">
-      <label>Seite c (Hypotenuse)</label>
-      <input type="number" id="calcC" placeholder="Wert eingeben oder leer lassen" oninput="calculateTriangle()">
-    </div>
-    <button onclick="calculateTriangle()" style="width:100%;margin-top:16px;">Berechnen</button>
-    <div id="calcResult"></div>
   </div>
 </section>
 <section id="sec-triples">
@@ -247,7 +258,30 @@ let currentQuestion=0,score=0,selectedQuestions=[];
 function show(sectionId,btn){document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));document.getElementById('sec-'+sectionId).classList.add('visible');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');window.scrollTo(0,0);}
 function updateTheoremViz(){const a=parseFloat(document.getElementById('sideASlider').value),b=parseFloat(document.getElementById('sideBSlider').value),c=Math.sqrt(a*a+b*b);document.getElementById('sideAVal').textContent=a.toFixed(1);document.getElementById('sideBVal').textContent=b.toFixed(1);document.getElementById('a2Val').textContent=(a*a).toFixed(1);document.getElementById('b2Val').textContent=(b*b).toFixed(1);document.getElementById('sumVal').textContent=(a*a+b*b).toFixed(1);document.getElementById('cVal').textContent=c.toFixed(2);drawTheorem(a,b,c);}
 function drawTheorem(a,b,c){const canvas=document.getElementById('theoremCanvas'),ctx=canvas.getContext('2d');ctx.fillStyle='#2b3a2b';ctx.fillRect(0,0,canvas.width,canvas.height);const scale=Math.min(200/(a+b),200/(a+b)),startX=50,startY=300;ctx.strokeStyle='#e8e4d9';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(startX,startY);ctx.lineTo(startX+a*scale,startY);ctx.lineTo(startX+a*scale,startY-b*scale);ctx.closePath();ctx.stroke();const rectSize=12;ctx.fillStyle='#e8e4d9';ctx.fillRect(startX+a*scale-rectSize,startY-rectSize,rectSize,rectSize);ctx.fillStyle='rgba(245,216,99,0.3)';ctx.fillRect(startX,startY,a*scale,a*scale);ctx.strokeStyle='#f5d863';ctx.lineWidth=2;ctx.strokeRect(startX,startY,a*scale,a*scale);ctx.fillStyle='rgba(217,107,107,0.3)';ctx.fillRect(startX+a*scale,startY-b*scale,b*scale,b*scale);ctx.strokeStyle='#d96b6b';ctx.strokeRect(startX+a*scale,startY-b*scale,b*scale,b*scale);ctx.fillStyle='rgba(143,212,164,0.3)';ctx.fillRect(startX+a*scale+b*scale*0.7,startY-b*scale-a*scale*0.7,c*scale,c*scale);ctx.strokeStyle='#8fd4a4';ctx.lineWidth=2;ctx.strokeRect(startX+a*scale+b*scale*0.7,startY-b*scale-a*scale*0.7,c*scale,c*scale);ctx.fillStyle='#e8e4d9';ctx.font='14px Patrick Hand';ctx.fillText('a',startX+a*scale/2,startY+20);ctx.fillText('b',startX+a*scale+15,startY-b*scale/2);ctx.fillText('c',startX+a*scale+50,startY-150);}
-function calculateTriangle(){const a=parseFloat(document.getElementById('calcA').value)||null,b=parseFloat(document.getElementById('calcB').value)||null,c=parseFloat(document.getElementById('calcC').value)||null;let result='';if(a&&b&&!c){const calcC=Math.sqrt(a*a+b*b);result=`<div class="calc-result">✓ Seite c = ${calcC.toFixed(2)}</div>`;}else if(a&&c&&!b){const calcB=Math.sqrt(c*c-a*a);result=`<div class="calc-result">✓ Seite b = ${calcB.toFixed(2)}</div>`;}else if(b&&c&&!a){const calcA=Math.sqrt(c*c-b*b);result=`<div class="calc-result">✓ Seite a = ${calcA.toFixed(2)}</div>`;}else result='<div class="calc-result">Gib Werte für zwei Seiten ein!</div>';document.getElementById('calcResult').innerHTML=result;}
+function calculateTriangle(){
+const aVal=document.getElementById('calcA').value.trim(),bVal=document.getElementById('calcB').value.trim(),cVal=document.getElementById('calcC').value.trim();
+const a=aVal?parseFloat(aVal):null,b=bVal?parseFloat(bVal):null,c=cVal?parseFloat(cVal):null;
+let result='',da=a,db=b,dc=c,found='';
+const filled=(a!==null?1:0)+(b!==null?1:0)+(c!==null?1:0);
+if(filled<2){result='<div class="calc-result" style="color:var(--dim)">Gib in zwei Felder oben eine Zahl ein...</div>';drawCalcTriangle(null,null,null,'');document.getElementById('calcResult').innerHTML=result;return;}
+if(a!==null&&b!==null&&c===null){dc=Math.sqrt(a*a+b*b);da=a;db=b;found='c';result=`<div class="calc-result" style="color:var(--accent3)">✓ c = √(${a}² + ${b}²) = √${(a*a+b*b).toFixed(1)} = <strong>${dc.toFixed(2)}</strong></div>`;}
+else if(a!==null&&c!==null&&b===null){if(c<=a){result='<div class="calc-result" style="color:var(--accent2)">⚠ Hypotenuse c muss größer als Kathete a sein!</div>';drawCalcTriangle(null,null,null,'');document.getElementById('calcResult').innerHTML=result;return;}db=Math.sqrt(c*c-a*a);da=a;dc=c;found='b';result=`<div class="calc-result" style="color:var(--accent3)">✓ b = √(${c}² − ${a}²) = √${(c*c-a*a).toFixed(1)} = <strong>${db.toFixed(2)}</strong></div>`;}
+else if(b!==null&&c!==null&&a===null){if(c<=b){result='<div class="calc-result" style="color:var(--accent2)">⚠ Hypotenuse c muss größer als Kathete b sein!</div>';drawCalcTriangle(null,null,null,'');document.getElementById('calcResult').innerHTML=result;return;}da=Math.sqrt(c*c-b*b);db=b;dc=c;found='a';result=`<div class="calc-result" style="color:var(--accent3)">✓ a = √(${c}² − ${b}²) = √${(c*c-b*b).toFixed(1)} = <strong>${da.toFixed(2)}</strong></div>`;}
+else{result='<div class="calc-result" style="color:var(--dim)">Lass ein Feld leer, damit ich es berechnen kann!</div>';}
+document.getElementById('calcResult').innerHTML=result;
+if(da&&db&&dc)drawCalcTriangle(da,db,dc,found);
+}
+function drawCalcTriangle(a,b,c,found){
+const cv=document.getElementById('calcCanvas'),ctx=cv.getContext('2d');ctx.fillStyle='#2b3a2b';ctx.fillRect(0,0,cv.width,cv.height);
+if(!a||!b||!c)return;const pad=50,maxW=cv.width-pad*2,maxH=cv.height-pad*2,scale=Math.min(maxW/a,maxH/b)*0.85,ox=pad,oy=cv.height-pad;
+ctx.lineWidth=3;ctx.strokeStyle='#e8e4d9';ctx.fillStyle='rgba(245,216,99,.06)';ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+a*scale,oy);ctx.lineTo(ox+a*scale,oy-b*scale);ctx.closePath();ctx.fill();ctx.stroke();
+const sq=10;ctx.fillStyle='#e8e4d9';ctx.fillRect(ox+a*scale-sq,oy-sq,sq,sq);
+ctx.font='bold 18px Patrick Hand';ctx.textAlign='center';
+ctx.fillStyle=found==='a'?'#8fd4a4':'#f5d863';ctx.fillText('a = '+a.toFixed(1),ox+a*scale/2,oy+25);
+ctx.fillStyle=found==='b'?'#8fd4a4':'#f5d863';ctx.fillText('b = '+b.toFixed(1),ox+a*scale+30,oy-b*scale/2);
+ctx.fillStyle=found==='c'?'#8fd4a4':'#f5d863';ctx.fillText('c = '+c.toFixed(1),(ox+ox+a*scale)/2-20,(oy+oy-b*scale)/2-10);
+ctx.font='14px Patrick Hand';ctx.fillStyle='var(--dim)';ctx.textAlign='left';ctx.fillText(a.toFixed(1)+'² + '+b.toFixed(1)+'² = '+c.toFixed(1)+'²',10,20);ctx.fillText((a*a).toFixed(1)+' + '+(b*b).toFixed(1)+' = '+(c*c).toFixed(1),10,38);
+}
 function findTriples(){const limit=parseInt(document.getElementById('tripleLimit').value)||50,triples=[];for(let a=3;a<=limit;a++)for(let b=a;b<=limit;b++){const c=Math.sqrt(a*a+b*b);Number.isInteger(c)&&c<=limit&&triples.push([a,b,Math.round(c)]);}let html='<div class="triples-grid">';triples.forEach(t=>{html+=`<div class="triple-card found"><div class="triple-num">${t[0]}-${t[1]}-${t[2]}</div><div class="triple-check">✓ ${t[0]}² + ${t[1]}² = ${t[2]}²</div></div>`;});html+='</div>';html+=triples.length===0?`<div class="triple-result">Keine Triples bis ${limit} gefunden</div>`:`<div class="triple-result">${triples.length} Pythagoras-Triple${triples.length===1?'':'s'} bis ${limit}</div>`;document.getElementById('triplesResult').innerHTML=html;}
 function initQuiz(){selectedQuestions=quizQuestions.sort(()=>0.5-Math.random()).slice(0,10);currentQuestion=0;score=0;document.getElementById('quizResults').style.display='none';showQuestion();}
 function showQuestion(){const q=selectedQuestions[currentQuestion];document.getElementById('progressFill').style.width=((currentQuestion+1)/10)*100+'%';let html=`<div class="question-box"><div class="question-number">Frage ${currentQuestion+1} von 10</div><div class="question-text">${q.q}</div><div class="answers">`;q.options.forEach((opt,i)=>{html+=`<div class="answer" onclick="selectAnswer(${i})">${opt}</div>`;});html+=`</div><div class="feedback" id="feedback"></div></div>`;document.getElementById('quizContent').innerHTML=html;}
