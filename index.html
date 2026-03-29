@@ -229,9 +229,6 @@ footer a:hover{opacity:1;text-decoration:underline}
 </div>
 
 <div class="grid-wrapper">
-  <div class="section-label">Start Here</div>
-  <div class="grid" id="introGrid"></div>
-
   <div class="section-label">Mathematician Explorers</div>
   <div class="grid" id="mathGrid"></div>
 </div>
@@ -245,16 +242,6 @@ footer a:hover{opacity:1;text-decoration:underline}
 <script>
 /* ===== EXPLORER DATA ===== */
 const explorers = [
-  {
-    section: 'intro',
-    title: 'Geometry Explorer',
-    file: 'geometry-explorer.html',
-    icon: '\u25B3',
-    color: 'white',
-    dates: 'Shapes & Symmetry',
-    desc: 'Start your math journey! Explore circles, symmetry, and geometric patterns through hands-on interactives.',
-    tags: ['Circles', 'Symmetry', 'Beginner']
-  },
   {
     section: 'math',
     title: 'Pythagoras',
@@ -398,7 +385,6 @@ const explorers = [
 ];
 
 /* ===== RENDER CARDS ===== */
-const introGrid = document.getElementById('introGrid');
 const mathGrid = document.getElementById('mathGrid');
 
 let activeCount = 0;
@@ -424,7 +410,7 @@ explorers.forEach(e => {
     ${isComingSoon ? '' : '<div class="arrow">\u203A</div>'}
   `;
 
-  (e.section === 'intro' ? introGrid : mathGrid).appendChild(a);
+  mathGrid.appendChild(a);
 });
 
 document.getElementById('explorerCount').textContent = activeCount + ' interactive explorers and counting\u2026';
