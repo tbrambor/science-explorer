@@ -286,7 +286,7 @@ canvas#archCanvas{border-radius:12px;background:rgba(123,104,238,.06);border:1px
     </div>
 
     <div class="arch-canvas-wrapper">
-      <canvas id="archCanvas" width="700" height="400"></canvas>
+      <canvas id="archCanvas" width="700" height="360" style="width:100%;max-width:700px;display:block;margin:0 auto"></canvas>
     </div>
 
     <div style="background:rgba(123,104,238,.08);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px">
@@ -511,80 +511,185 @@ function resetPD(){
    ═══════════════════════════════════════ */
 const archCanvas=document.getElementById('archCanvas');
 const archCtx=archCanvas.getContext('2d');
+const AW=700,AH=360;
 
-const archInstructions=['LOAD 5','ADD 3','STORE result','HALT'];
-let archStep=0;
+const archInstructions=[
+  {text:'LOAD 5',desc:'Fetch the number 5 from Memory',highlight:0,arrow:0},
+  {text:'ADD 3',desc:'Send values to the ALU to add',highlight:2,arrow:1},
+  {text:'STORE result',desc:'Write the result (8) back to Memory',highlight:0,arrow:2},
+  {text:'OUTPUT 8',desc:'Send the result to the Output',highlight:3,arrow:3}
+];
+let archStep=-1;
+
+/* Box positions — clean T-shaped layout:
+   [CPU box containing Control + ALU] centered top
+   [Memory] left        [Input/Output] right
+   All connected by a shared data bus at bottom */
+const archBoxes=[
+  {x:40, y:160,w:150,h:90, label:'Memory\n(RAM)',     color:'#f5d863'},  // 0
+  {x:230,y:40, w:150,h:90, label:'Control\nUnit',     color:'#d96b6b'},  // 1
+  {x:430,y:40, w:150,h:90, label:'ALU\n(Math Unit)',  color:'#8fd4a4'},  // 2
+  {x:430,y:160,w:150,h:90, label:'Input /\nOutput',   color:'#7bb8e0'}   // 3
+];
+
+/* Arrows: from box → to box */
+const archArrows=[
+  {from:0,to:1, label:'1. Fetch',     y:-1},  // Memory → Control (up-right)
+  {from:1,to:2, label:'2. Decode+Send',y: 0},  // Control → ALU (right)
+  {from:2,to:0, label:'3. Store',      y: 1},  // ALU → Memory (down-left)
+  {from:2,to:3, label:'4. Output',     y: 0}   // ALU → I/O (down)
+];
+
+function boxCenter(b){return{x:b.x+b.w/2,y:b.y+b.h/2}}
+
+function drawArrow(ctx,x1,y1,x2,y2,color,lw){
+  ctx.strokeStyle=color;ctx.lineWidth=lw;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  // arrowhead
+  const angle=Math.atan2(y2-y1,x2-x1);
+  const hl=10;
+  ctx.fillStyle=color;ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-hl*Math.cos(angle-0.4),y2-hl*Math.sin(angle-0.4));
+  ctx.lineTo(x2-hl*Math.cos(angle+0.4),y2-hl*Math.sin(angle+0.4));
+  ctx.closePath();ctx.fill();
+}
+
+function edgePoint(box,tx,ty){
+  // Get point on box edge toward (tx,ty)
+  const cx=box.x+box.w/2, cy=box.y+box.h/2;
+  const dx=tx-cx, dy=ty-cy;
+  if(dx===0&&dy===0)return{x:cx,y:cy};
+  const scaleX=Math.abs(dx)/(box.w/2+8);
+  const scaleY=Math.abs(dy)/(box.h/2+8);
+  const scale=Math.max(scaleX,scaleY);
+  return{x:cx+dx/scale, y:cy+dy/scale};
+}
 
 function drawArchitecture(){
-  archCtx.clearRect(0,0,700,400);
+  archCtx.clearRect(0,0,AW,AH);
 
-  const boxes=[
-    {x:50,y:80,w:120,h:80,label:'Memory\n(RAM)',key:'memory'},
-    {x:260,y:80,w:120,h:80,label:'Control\nUnit',key:'control'},
-    {x:470,y:80,w:120,h:80,label:'ALU\n(Math Unit)',key:'alu'},
-    {x:260,y:220,w:120,h:80,label:'Input/\nOutput',key:'io'}
-  ];
+  // Title label
+  archCtx.fillStyle='#9ca898';
+  archCtx.font='13px Patrick Hand, sans-serif';
+  archCtx.textAlign='center';
+  archCtx.fillText('THE VON NEUMANN ARCHITECTURE',AW/2,24);
 
-  const highlight=archStep%4;
+  // CPU dashed enclosure around Control + ALU
+  archCtx.strokeStyle='rgba(245,216,99,.2)';
+  archCtx.lineWidth=2;
+  archCtx.setLineDash([6,4]);
+  const cpuX=220,cpuY=25,cpuW=370,cpuH=120;
+  archCtx.strokeRect(cpuX,cpuY,cpuW,cpuH);
+  archCtx.setLineDash([]);
+  archCtx.fillStyle='rgba(245,216,99,.08)';
+  archCtx.fillRect(cpuX,cpuY,cpuW,cpuH);
+  archCtx.fillStyle='#f5d863';
+  archCtx.font='bold 11px sans-serif';
+  archCtx.textAlign='right';
+  archCtx.fillText('CPU',cpuX+cpuW-8,cpuY+14);
 
-  boxes.forEach((box,idx)=>{
-    if(idx===highlight){
-      archCtx.fillStyle='rgba(245,216,99,.25)';
-      archCtx.strokeStyle='#f5d863';
-      archCtx.lineWidth=3;
-    }else{
-      archCtx.fillStyle='rgba(123,104,238,.06)';
-      archCtx.strokeStyle='rgba(123,104,238,.3)';
-      archCtx.lineWidth=2;
-    }
+  // Data bus line
+  const busY=300;
+  archCtx.strokeStyle='rgba(245,216,99,.15)';
+  archCtx.lineWidth=4;
+  archCtx.beginPath();
+  archCtx.moveTo(40,busY);ctx.lineTo(AW-80,busY);
+  archCtx.stroke();
+  archCtx.fillStyle='#9ca898';
+  archCtx.font='11px sans-serif';
+  archCtx.textAlign='center';
+  archCtx.fillText('Data Bus',AW/2,busY+16);
+
+  // Bus connection stubs from each box down to bus
+  archBoxes.forEach(box=>{
+    const cx=box.x+box.w/2;
+    const botY=box.y+box.h;
+    archCtx.strokeStyle='rgba(245,216,99,.12)';
+    archCtx.lineWidth=2;
+    archCtx.setLineDash([4,3]);
+    archCtx.beginPath();
+    archCtx.moveTo(cx,botY);
+    archCtx.lineTo(cx,busY);
+    archCtx.stroke();
+    archCtx.setLineDash([]);
+  });
+
+  // Draw arrows (behind boxes)
+  archArrows.forEach((arr,idx)=>{
+    const fromBox=archBoxes[arr.from];
+    const toBox=archBoxes[arr.to];
+    const fc=boxCenter(fromBox), tc=boxCenter(toBox);
+    const fp=edgePoint(fromBox,tc.x,tc.y);
+    const tp=edgePoint(toBox,fc.x,fc.y);
+
+    const isActive=archStep>=0&&archArrows[archInstructions[archStep].arrow]===arr;
+    const color=isActive?'#f5d863':'rgba(143,212,164,.3)';
+    const lw=isActive?3:2;
+
+    drawArrow(archCtx,fp.x,fp.y,tp.x,tp.y,color,lw);
+
+    // Label
+    const mx=(fp.x+tp.x)/2, my=(fp.y+tp.y)/2;
+    archCtx.fillStyle=isActive?'#f5d863':'#9ca898';
+    archCtx.font=(isActive?'bold ':'')+' 12px sans-serif';
+    archCtx.textAlign='center';
+    // Offset label so it doesn't overlap the line
+    const dx=tp.x-fp.x, dy=tp.y-fp.y;
+    const len=Math.sqrt(dx*dx+dy*dy)||1;
+    const nx=-dy/len*16, ny=dx/len*16;
+    archCtx.fillText(arr.label,mx+nx,my+ny);
+  });
+
+  // Draw boxes
+  archBoxes.forEach((box,idx)=>{
+    const isActive=archStep>=0&&archInstructions[archStep].highlight===idx;
+
+    // Fill
+    archCtx.fillStyle=isActive?'rgba(245,216,99,.2)':'rgba(49,66,49,.9)';
     archCtx.fillRect(box.x,box.y,box.w,box.h);
+
+    // Border
+    archCtx.strokeStyle=isActive?'#f5d863':box.color;
+    archCtx.lineWidth=isActive?3:2;
     archCtx.strokeRect(box.x,box.y,box.w,box.h);
 
-    archCtx.fillStyle='#e8e4d9';
-    archCtx.font='bold 14px sans-serif';
+    // Label
+    archCtx.fillStyle=isActive?'#f5d863':'#e8e4d9';
+    archCtx.font='bold 15px Patrick Hand, sans-serif';
     archCtx.textAlign='center';
     archCtx.textBaseline='middle';
     const lines=box.label.split('\n');
     lines.forEach((line,li)=>{
-      archCtx.fillText(line,box.x+box.w/2,box.y+box.h/2+(li-(lines.length-1)/2)*18);
+      archCtx.fillText(line,box.x+box.w/2,box.y+box.h/2+(li-(lines.length-1)/2)*20);
     });
   });
 
-  const arrows=[
-    {from:[50+120,80+40],to:[260,80+40],label:'Fetch'},
-    {from:[260+60,80+80],to:[470+60,80],label:'Execute'},
-    {from:[470,80+40],to:[260+120,80+40],label:'Store'},
-    {from:[260+60,220],to:[260+60,160],label:'Result'}
-  ];
-
-  arrows.forEach((arr,idx)=>{
-    archCtx.strokeStyle=idx===highlight?'#f5d863':'rgba(80,227,194,.4)';
-    archCtx.lineWidth=idx===highlight?3:2;
-    archCtx.beginPath();
-    archCtx.moveTo(arr.from[0],arr.from[1]);
-    archCtx.lineTo(arr.to[0],arr.to[1]);
-    archCtx.stroke();
-
-    archCtx.fillStyle='#9ca898';
-    archCtx.font='12px sans-serif';
-    const mx=(arr.from[0]+arr.to[0])/2;
-    const my=(arr.from[1]+arr.to[1])/2;
+  // Step description
+  if(archStep>=0){
+    const inst=archInstructions[archStep];
+    archCtx.fillStyle='#e8e4d9';
+    archCtx.font='15px Patrick Hand, sans-serif';
     archCtx.textAlign='center';
-    archCtx.fillText(arr.label,mx,my-8);
-  });
+    archCtx.fillText(inst.desc,AW/2,AH-30);
+  }else{
+    archCtx.fillStyle='#9ca898';
+    archCtx.font='14px Patrick Hand, sans-serif';
+    archCtx.textAlign='center';
+    archCtx.fillText('Click "Next Step" to watch the computer execute a program!',AW/2,AH-30);
+  }
 }
 
 function stepArchitecture(){
-  if(archStep<archInstructions.length){
-    document.getElementById('archInstruction').textContent=archInstructions[archStep];
-  }
-  archStep=(archStep+1)%(archInstructions.length*2);
+  archStep++;
+  if(archStep>=archInstructions.length)archStep=0;
+  document.getElementById('archInstruction').textContent=archInstructions[archStep].text;
   drawArchitecture();
 }
 
 function resetArchitecture(){
-  archStep=0;
-  document.getElementById('archInstruction').textContent='LOAD 5';
+  archStep=-1;
+  document.getElementById('archInstruction').textContent='Ready...';
   drawArchitecture();
 }
 

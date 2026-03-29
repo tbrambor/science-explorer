@@ -228,15 +228,24 @@ canvas{border-radius:12px;background:rgba(123,104,238,.04);border:2px solid rgba
 <section id="sec-architecture">
   <div class="card">
     <h2>Von-Neumann-Architektur — Der Bauplan für jeden Computer</h2>
-    <p class="sub">Vor von Neumann wurden Computer durch physisches Umverdrahten 'programmiert'. Er hatte eine bessere Idee.</p>
-  </div>
+    <p class="sub">Vor von Neumann wurden Computer durch physisches Umverdrahten "programmiert". Er hatte eine bessere Idee.</p>
 
-  <div class="card">
-    <div class="arch-container">
-      <canvas id="archCanvas" width="700" height="400"></canvas>
+    <div style="margin-bottom:20px">
+      <p style="margin-bottom:16px;font-size:14px;">Klicke auf den Button, um zu sehen, wie ein Computer Anweisungen ausführt. Beobachte, wie jede Komponente aufleuchtet!</p>
+      <button class="game-btn" onclick="stepArchitecture()">Nächster Schritt</button>
+      <button class="game-btn" style="background:rgba(123,104,238,.15);color:var(--dim)" onclick="resetArchitecture()">Zurücksetzen</button>
     </div>
-    <div class="game-info" style="margin-top:20px">
-      <strong>Das Konzept des gespeicherten Programms:</strong> Von Neumann erkannte, dass Programme wie Daten sind — sie können im selben Speicher wie die Daten gespeichert werden. Dies ermöglichte es Computern, ihre eigenen Programme zu ändern, was all unsere modernen Computer möglich macht. Die vier Komponenten arbeiten zusammen: Das Steuerwerk holt Anweisungen aus dem Speicher, das Rechenwerk (ALU) führt sie aus, und Ein-/Ausgabe kommuniziert mit der Außenwelt.
+
+    <div>
+      <canvas id="archCanvas" width="700" height="360" style="width:100%;max-width:700px;display:block;margin:0 auto;border-radius:12px;background:rgba(123,104,238,.06);border:1px solid rgba(123,104,238,.15)"></canvas>
+    </div>
+
+    <div style="background:rgba(123,104,238,.08);border-radius:12px;padding:14px;margin:16px 0;font-size:13px">
+      <strong>Aktuelle Anweisung:</strong> <span id="archInstruction" style="color:var(--accent);font-weight:700">Bereit...</span>
+    </div>
+
+    <div class="game-info">
+      <strong>Von Neumanns Schlüsselidee:</strong> Speichere das <strong>PROGRAMM im selben Speicher wie die Daten</strong>. Vorher bedeutete "Programmieren", die Maschine physisch mit Kabeln umzuverdrahten! Diese eine Idee ist der Grund, warum du <strong>Apps auf dein Handy installieren</strong> kannst — das Programm ist einfach Daten im Speicher. Jeder Computer, jedes Handy und jede Spielkonsole nutzt heute diese Architektur.
     </div>
   </div>
 </section>
@@ -404,106 +413,175 @@ function playPD(yourMove) {
 // ════════════════════════════════════════
 // COMPUTER ARCHITECTURE VISUALIZATION
 // ════════════════════════════════════════
-function drawArchitecture() {
-  const canvas = document.getElementById('archCanvas');
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
+const archCanvas=document.getElementById('archCanvas');
+const archCtx=archCanvas.getContext('2d');
+const AW=700,AH=360;
 
-  ctx.fillStyle = 'rgba(123,104,238,.04)';
-  ctx.fillRect(0,0,w,h);
+const archInstructions=[
+  {text:'LADE 5',desc:'Hole die Zahl 5 aus dem Speicher',highlight:0,arrow:0},
+  {text:'ADDIERE 3',desc:'Sende Werte an das Rechenwerk zum Addieren',highlight:2,arrow:1},
+  {text:'SPEICHERE Ergebnis',desc:'Schreibe das Ergebnis (8) zurück in den Speicher',highlight:0,arrow:2},
+  {text:'AUSGABE 8',desc:'Sende das Ergebnis an die Ausgabe',highlight:3,arrow:3}
+];
+let archStep=-1;
 
-  // Colors
-  const colors = {
-    memory:'#f5d863',
-    control:'#d96b6b',
-    alu:'#8fd4a4',
-    io:'#7bb8e0'
-  };
+const archBoxes=[
+  {x:40, y:160,w:150,h:90, label:'Speicher\n(RAM)',      color:'#f5d863'},
+  {x:230,y:40, w:150,h:90, label:'Steuerwerk',           color:'#d96b6b'},
+  {x:430,y:40, w:150,h:90, label:'Rechenwerk\n(ALU)',    color:'#8fd4a4'},
+  {x:430,y:160,w:150,h:90, label:'Ein- /\nAusgabe',     color:'#7bb8e0'}
+];
 
-  // Draw boxes
-  const boxWidth = 140, boxHeight = 80;
-  const y1 = 60, y2 = 260;
+const archArrows=[
+  {from:0,to:1, label:'1. Holen'},
+  {from:1,to:2, label:'2. Dekodieren'},
+  {from:2,to:0, label:'3. Speichern'},
+  {from:2,to:3, label:'4. Ausgabe'}
+];
 
-  // Memory
-  drawBox(ctx, 40, y1, boxWidth, boxHeight, 'Speicher\n(RAM)', colors.memory);
-  // Control
-  drawBox(ctx, 220, y1, boxWidth, boxHeight, 'Steuerwerk', colors.control);
-  // ALU
-  drawBox(ctx, 400, y1, boxWidth, boxHeight, 'Rechenwerk\n(ALU)', colors.alu);
-  // I/O
-  drawBox(ctx, 580, y1, boxWidth, boxHeight, 'Ein-/\nAusgabe', colors.io);
+function boxCenter(b){return{x:b.x+b.w/2,y:b.y+b.h/2}}
 
-  // Data buses (animated arrows)
-  const offset = (Date.now() / 20) % 20;
-  drawAnimatedArrow(ctx, 110, y1+boxHeight+20, 110, y2, colors.memory, offset);
-  drawAnimatedArrow(ctx, 290, y1+boxHeight+20, 290, y2, colors.control, offset);
-  drawAnimatedArrow(ctx, 470, y1+boxHeight+20, 470, y2, colors.alu, offset+5);
-  drawAnimatedArrow(ctx, 650, y1+boxHeight+20, 650, y2, colors.io, offset+10);
-
-  // Display examples at bottom
-  ctx.fillStyle = '#e8e4d9';
-  ctx.font = '14px Patrick Hand';
-  ctx.textAlign = 'center';
-  ctx.fillText('LADE 5', 110, y2+35);
-  ctx.fillText('ADDIERE 3', 290, y2+35);
-  ctx.fillText('SPEICHERE', 470, y2+35);
-  ctx.fillText('AUSGABE', 650, y2+35);
-
-  // Horizontal bus
-  ctx.strokeStyle = 'rgba(245,216,99,.3)';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(40, y1+40);
-  ctx.lineTo(w-40, y1+40);
-  ctx.stroke();
-
-  requestAnimationFrame(drawArchitecture);
+function drawArrowLine(ctx,x1,y1,x2,y2,color,lw){
+  ctx.strokeStyle=color;ctx.lineWidth=lw;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  const angle=Math.atan2(y2-y1,x2-x1);
+  const hl=10;
+  ctx.fillStyle=color;ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-hl*Math.cos(angle-0.4),y2-hl*Math.sin(angle-0.4));
+  ctx.lineTo(x2-hl*Math.cos(angle+0.4),y2-hl*Math.sin(angle+0.4));
+  ctx.closePath();ctx.fill();
 }
 
-function drawBox(ctx, x, y, w, h, text, color) {
-  ctx.fillStyle = color;
-  ctx.globalAlpha = 0.2;
-  ctx.fillRect(x, y, w, h);
-  ctx.globalAlpha = 1;
+function edgePoint(box,tx,ty){
+  const cx=box.x+box.w/2, cy=box.y+box.h/2;
+  const dx=tx-cx, dy=ty-cy;
+  if(dx===0&&dy===0)return{x:cx,y:cy};
+  const scaleX=Math.abs(dx)/(box.w/2+8);
+  const scaleY=Math.abs(dy)/(box.h/2+8);
+  const scale=Math.max(scaleX,scaleY);
+  return{x:cx+dx/scale, y:cy+dy/scale};
+}
 
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.strokeRect(x, y, w, h);
+function drawArchitecture(){
+  archCtx.clearRect(0,0,AW,AH);
 
-  ctx.fillStyle = '#e8e4d9';
-  ctx.font = 'bold 13px Patrick Hand';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const lines = text.split('\n');
-  const lineHeight = 16;
-  const startY = y + h/2 - (lines.length-1)*lineHeight/2;
-  lines.forEach((line, i) => {
-    ctx.fillText(line, x+w/2, startY + i*lineHeight);
+  archCtx.fillStyle='#9ca898';
+  archCtx.font='13px Patrick Hand, sans-serif';
+  archCtx.textAlign='center';
+  archCtx.fillText('DIE VON-NEUMANN-ARCHITEKTUR',AW/2,24);
+
+  // CPU enclosure
+  archCtx.strokeStyle='rgba(245,216,99,.2)';
+  archCtx.lineWidth=2;
+  archCtx.setLineDash([6,4]);
+  const cpuX=220,cpuY=25,cpuW=370,cpuH=120;
+  archCtx.strokeRect(cpuX,cpuY,cpuW,cpuH);
+  archCtx.setLineDash([]);
+  archCtx.fillStyle='rgba(245,216,99,.08)';
+  archCtx.fillRect(cpuX,cpuY,cpuW,cpuH);
+  archCtx.fillStyle='#f5d863';
+  archCtx.font='bold 11px sans-serif';
+  archCtx.textAlign='right';
+  archCtx.fillText('CPU',cpuX+cpuW-8,cpuY+14);
+
+  // Data bus
+  const busY=300;
+  archCtx.strokeStyle='rgba(245,216,99,.15)';
+  archCtx.lineWidth=4;
+  archCtx.beginPath();
+  archCtx.moveTo(40,busY);archCtx.lineTo(AW-80,busY);
+  archCtx.stroke();
+  archCtx.fillStyle='#9ca898';
+  archCtx.font='11px sans-serif';
+  archCtx.textAlign='center';
+  archCtx.fillText('Datenbus',AW/2,busY+16);
+
+  // Bus stubs
+  archBoxes.forEach(box=>{
+    const cx=box.x+box.w/2;
+    archCtx.strokeStyle='rgba(245,216,99,.12)';
+    archCtx.lineWidth=2;
+    archCtx.setLineDash([4,3]);
+    archCtx.beginPath();
+    archCtx.moveTo(cx,box.y+box.h);
+    archCtx.lineTo(cx,busY);
+    archCtx.stroke();
+    archCtx.setLineDash([]);
   });
+
+  // Arrows
+  archArrows.forEach((arr,idx)=>{
+    const fromBox=archBoxes[arr.from];
+    const toBox=archBoxes[arr.to];
+    const fc=boxCenter(fromBox), tc=boxCenter(toBox);
+    const fp=edgePoint(fromBox,tc.x,tc.y);
+    const tp=edgePoint(toBox,fc.x,fc.y);
+
+    const isActive=archStep>=0&&archArrows[archInstructions[archStep].arrow]===arr;
+    const color=isActive?'#f5d863':'rgba(143,212,164,.3)';
+    const lw=isActive?3:2;
+
+    drawArrowLine(archCtx,fp.x,fp.y,tp.x,tp.y,color,lw);
+
+    const mx=(fp.x+tp.x)/2, my=(fp.y+tp.y)/2;
+    archCtx.fillStyle=isActive?'#f5d863':'#9ca898';
+    archCtx.font=(isActive?'bold ':'')+'12px sans-serif';
+    archCtx.textAlign='center';
+    const dx=tp.x-fp.x, dy=tp.y-fp.y;
+    const len=Math.sqrt(dx*dx+dy*dy)||1;
+    const nx=-dy/len*16, ny=dx/len*16;
+    archCtx.fillText(arr.label,mx+nx,my+ny);
+  });
+
+  // Boxes
+  archBoxes.forEach((box,idx)=>{
+    const isActive=archStep>=0&&archInstructions[archStep].highlight===idx;
+
+    archCtx.fillStyle=isActive?'rgba(245,216,99,.2)':'rgba(49,66,49,.9)';
+    archCtx.fillRect(box.x,box.y,box.w,box.h);
+
+    archCtx.strokeStyle=isActive?'#f5d863':box.color;
+    archCtx.lineWidth=isActive?3:2;
+    archCtx.strokeRect(box.x,box.y,box.w,box.h);
+
+    archCtx.fillStyle=isActive?'#f5d863':'#e8e4d9';
+    archCtx.font='bold 15px Patrick Hand, sans-serif';
+    archCtx.textAlign='center';
+    archCtx.textBaseline='middle';
+    const lines=box.label.split('\n');
+    lines.forEach((line,li)=>{
+      archCtx.fillText(line,box.x+box.w/2,box.y+box.h/2+(li-(lines.length-1)/2)*20);
+    });
+  });
+
+  if(archStep>=0){
+    archCtx.fillStyle='#e8e4d9';
+    archCtx.font='15px Patrick Hand, sans-serif';
+    archCtx.textAlign='center';
+    archCtx.fillText(archInstructions[archStep].desc,AW/2,AH-30);
+  }else{
+    archCtx.fillStyle='#9ca898';
+    archCtx.font='14px Patrick Hand, sans-serif';
+    archCtx.textAlign='center';
+    archCtx.fillText('Klicke "Nächster Schritt" um das Programm auszuführen!',AW/2,AH-30);
+  }
 }
 
-function drawAnimatedArrow(ctx, x1, y1, x2, y2, color, offset) {
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.setLineDash([5, 5]);
-  ctx.lineDashOffset = -offset;
-  ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // Arrow head
-  const headlen = 15;
-  const angle = Math.atan2(y2-y1, x2-x1);
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(x2, y2);
-  ctx.lineTo(x2 - headlen*Math.cos(angle-Math.PI/6), y2 - headlen*Math.sin(angle-Math.PI/6));
-  ctx.lineTo(x2 - headlen*Math.cos(angle+Math.PI/6), y2 - headlen*Math.sin(angle+Math.PI/6));
-  ctx.closePath();
-  ctx.fill();
+function stepArchitecture(){
+  archStep++;
+  if(archStep>=archInstructions.length)archStep=0;
+  document.getElementById('archInstruction').textContent=archInstructions[archStep].text;
+  drawArchitecture();
 }
+
+function resetArchitecture(){
+  archStep=-1;
+  document.getElementById('archInstruction').textContent='Bereit...';
+  drawArchitecture();
+}
+
+drawArchitecture();
 
 // ════════════════════════════════════════
 // QUIZ SYSTEM
