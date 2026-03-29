@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<title>The World of von Neumann</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#2b3a2b;--card:#314231;--accent:#f5d863;--accent2:#d96b6b;
+  --accent3:#8fd4a4;--blue:#7bb8e0;--text:#e8e4d9;--dim:#9ca898;
+  --radius:8px;
+}
+body{font-family:'Patrick Hand','Caveat',cursive,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;background:rgba(35,48,35,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(123,104,238,.2);flex-wrap:wrap}
+nav button{padding:9px 18px;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--dim);transition:.25s}
+nav button:hover{color:#fff}
+nav button.active{background:var(--accent);color:#fff;box-shadow:0 4px 18px rgba(123,104,238,.4)}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:60px 20px 40px;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 60%,rgba(123,104,238,.12) 0%,transparent 50%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.portrait{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid var(--accent);box-shadow:0 0 40px rgba(245,216,99,.3);margin-bottom:18px;display:block;margin-left:auto;margin-right:auto}
+.hero h1{font-size:clamp(32px,6vw,56px);font-weight:800;background:linear-gradient(135deg,#f5d863,#d96b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.hero .subtitle{font-size:20px;color:var(--dim)}
+.hero .life{margin-top:12px;font-size:15px;color:var(--accent3)}
+.hero .tagline{margin-top:16px;font-size:17px;max-width:600px;margin-left:auto;margin-right:auto;color:var(--text)}
+
+/* ── SECTIONS ── */
+section{display:none;padding:20px;max-width:960px;margin:0 auto}
+section.visible{display:block;animation:fadeUp .45s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:var(--radius);padding:28px;margin-bottom:28px;border:1px solid rgba(123,104,238,.12)}
+.card h2{font-size:24px;margin-bottom:4px}
+.card .sub{color:var(--dim);margin-bottom:18px;font-size:14px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2),var(--accent3));border-radius:2px}
+.tl-item{position:relative;margin-bottom:28px}
+.tl-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 10px rgba(123,104,238,.5)}
+.tl-item:nth-child(2n) .tl-dot{background:var(--accent2)}
+.tl-item:nth-child(3n) .tl-dot{background:var(--accent3)}
+.tl-year{font-weight:800;font-size:15px;color:var(--accent);margin-bottom:2px}
+.tl-text{font-size:15px;color:var(--text)}
+.tl-text strong{color:var(--accent)}
+
+/* ── GAME THEORY & INTERACTIVE ── */
+.game-container{display:flex;flex-wrap:wrap;gap:24px;justify-content:center}
+.game-side{flex:1;min-width:240px}
+.rps-buttons{display:flex;gap:12px;justify-content:center;margin-bottom:20px}
+.rps-btn{padding:16px 28px;border:none;border-radius:8px;font-size:20px;cursor:pointer;background:rgba(245,216,99,.15);color:var(--text);transition:.2s;font-weight:700;flex:1;max-width:120px}
+.rps-btn:hover{background:rgba(245,216,99,.3);transform:scale(1.05)}
+.score-board{background:rgba(123,104,238,.08);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center}
+.score-board .score-label{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.score-board .score-value{font-size:28px;font-weight:800;color:var(--accent)}
+.result-box{padding:16px;border-radius:12px;margin-bottom:16px;text-align:center;font-weight:700;min-height:50px;display:flex;align-items:center;justify-content:center}
+.result-box.win{background:rgba(80,227,194,.15);color:var(--accent3)}
+.result-box.lose{background:rgba(255,107,138,.15);color:var(--accent2)}
+.result-box.tie{background:rgba(245,216,99,.15);color:var(--accent)}
+
+.explain-box{margin-top:16px;padding:14px;background:rgba(80,227,194,.08);border-radius:12px;border-left:4px solid var(--accent3);font-size:14px;line-height:1.7}
+
+.pd-matrix{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pd-cell{padding:16px;border-radius:8px;background:rgba(123,104,238,.06);border:2px solid rgba(123,104,238,.15);text-align:center}
+.pd-cell.selected{border-color:var(--accent);background:rgba(123,104,238,.12)}
+.pd-label{font-weight:700;font-size:13px;margin-bottom:4px;color:var(--dim)}
+.pd-payoff{font-size:18px;font-weight:700;margin:4px 0}
+
+.pd-buttons{display:flex;gap:12px;margin-bottom:16px}
+.pd-btn{flex:1;padding:12px;border:none;border-radius:8px;font-weight:700;cursor:pointer;transition:.2s}
+.pd-btn.cooperate{background:rgba(80,227,194,.2);color:var(--accent3)}
+.pd-btn.cooperate:hover{background:rgba(80,227,194,.35)}
+.pd-btn.betray{background:rgba(255,107,138,.2);color:var(--accent2)}
+.pd-btn.betray:hover{background:rgba(255,107,138,.35)}
+
+.pd-score{font-size:14px;margin-bottom:8px;text-align:center;color:var(--dim)}
+
+/* ── ARCHITECTURE DIAGRAM ── */
+.arch-canvas-wrapper{display:flex;justify-content:center;margin-bottom:20px}
+canvas#archCanvas{border-radius:12px;background:rgba(123,104,238,.06);border:1px solid rgba(123,104,238,.15)}
+
+.step-btn{padding:12px 24px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:.2s;margin:0 8px}
+.step-btn:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(123,104,238,.4)}
+
+/* ── FUN FACTS ── */
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.fact-card{background:rgba(123,104,238,.06);border-radius:14px;padding:20px;border-left:4px solid var(--accent);transition:.25s}
+.fact-card:nth-child(2){border-left-color:var(--accent2)}
+.fact-card:nth-child(3){border-left-color:var(--accent3)}
+.fact-card:nth-child(4){border-left-color:#ffa500}
+.fact-card:nth-child(5){border-left-color:#ff8c42}
+.fact-card:nth-child(6){border-left-color:#a78bfa}
+.fact-card:nth-child(7){border-left-color:#f472b6}
+.fact-card:nth-child(8){border-left-color:var(--accent3)}
+.fact-card:nth-child(9){border-left-color:#38bdf8}
+.fact-card:nth-child(10){border-left-color:#fb923c}
+.fact-card:nth-child(11){border-left-color:#c084fc}
+.fact-card:nth-child(12){border-left-color:#94a3b8}
+.fact-icon{font-size:28px;margin-bottom:8px}
+.fact-title{font-weight:700;font-size:15px;margin-bottom:6px}
+.fact-text{font-size:14px;color:var(--dim);line-height:1.6}
+
+/* ── QUIZ ── */
+.quiz-area{max-width:640px;margin:0 auto}
+.q-card{background:rgba(123,104,238,.06);border-radius:14px;padding:24px;margin-bottom:20px}
+.q-num{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.q-text{font-size:17px;font-weight:700;margin-bottom:16px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{padding:12px 16px;border-radius:8px;border:2px solid rgba(123,104,238,.15);cursor:pointer;transition:.2s;font-size:15px}
+.q-opt:hover{border-color:var(--accent);background:rgba(123,104,238,.06)}
+.q-opt.correct{border-color:var(--accent3);background:rgba(80,227,194,.1);color:var(--accent3)}
+.q-opt.wrong{border-color:var(--accent2);background:rgba(255,107,138,.08);color:var(--accent2)}
+.q-opt.disabled{pointer-events:none;opacity:.6}
+.quiz-score{text-align:center;padding:32px;background:rgba(123,104,238,.06);border-radius:14px;margin-top:20px}
+.quiz-score .big{font-size:48px;font-weight:800}
+.quiz-score .msg{font-size:18px;margin-top:8px;color:var(--dim)}
+.quiz-restart{margin-top:16px;padding:12px 32px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  nav button{padding:7px 12px;font-size:12px}
+  .card{padding:20px}
+  .portrait{width:130px;height:130px}
+  .game-container{flex-direction:column}
+  .rps-buttons{flex-direction:column}
+  .rps-btn{max-width:none}
+  .pd-buttons{flex-direction:column}
+}
+
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:20px;display:flex;gap:8px;font-size:12px;z-index:200}
+.lang-toggle a{padding:6px 12px;border-radius:4px;background:rgba(245,216,99,.1);color:var(--text);text-decoration:none;transition:.2s}
+.lang-toggle a:hover{background:rgba(245,216,99,.2)}
+.lang-toggle a.active{background:var(--accent);color:#000;font-weight:700}
+</style>
+</head>
+<body>
+<div class="lang-toggle">
+  <a href="#" class="active">EN</a>
+  <a href="de/vonneumann-explorer.html">DE</a>
+</div>
+
+<!-- ════ HERO ════ -->
+<div class="hero">
+  <div class="hero-content">
+    <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/JohnvonNeumann-LosAlamos.gif/250px-JohnvonNeumann-LosAlamos.gif" alt="Portrait of John von Neumann">
+    <h1>The World of von Neumann</h1>
+    <p class="subtitle">The smartest person who ever lived?</p>
+    <p class="life">1903 – 1957 · Budapest → Princeton</p>
+    <p class="tagline">He helped invent the modern computer, created game theory, and contributed to quantum mechanics — all before lunch. Explore the astonishing mind of John von Neumann.</p>
+  </div>
+</div>
+
+<!-- ════ NAV ════ -->
+<nav>
+  <a href="index.html" style="padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(245,216,99,.15);color:var(--accent);text-decoration:none;transition:.25s;display:inline-flex;align-items:center;gap:4px" onmouseover="this.style.background='rgba(245,216,99,.3)'" onmouseout="this.style.background='rgba(245,216,99,.15)'">← Hub</a>
+  <button class="active" onclick="show('story',this)">His Story</button>
+  <button onclick="show('gametheory',this)">Game Theory</button>
+  <button onclick="show('architecture',this)">Architecture</button>
+  <button onclick="show('facts',this)">Fun Facts</button>
+  <button onclick="show('quiz',this)">Quiz</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — HIS STORY
+     ═══════════════════════════════════════════ -->
+<section id="sec-story" class="visible">
+  <div class="card">
+    <h2>The Life of John von Neumann</h2>
+    <p class="sub">From Hungarian prodigy to the architect of the modern computer.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1903</div><div class="tl-text">Born in <strong>Budapest, Hungary</strong> to a wealthy Jewish family. By age 6, he could divide 8-digit numbers in his head.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1921 (age 18)</div><div class="tl-text">Published his <strong>first mathematics paper</strong> while simultaneously studying chemistry in Berlin. An absolute genius on every front.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1926 (age 23)</div><div class="tl-text">Received his <strong>PhD in mathematics</strong> from the University of Budapest. His thesis helped create the mathematical foundations of quantum mechanics.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1930 (age 27)</div><div class="tl-text">Moved to <strong>Princeton University</strong> as a visiting lecturer. At age 30, when the Institute for Advanced Study opened, he became one of the youngest professors ever — working alongside <strong>Albert Einstein</strong>.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1944 (age 41)</div><div class="tl-text">Published <strong>"Theory of Games and Economic Behavior"</strong> with Oskar Morgenstern, founding the entire field of game theory that changed everything from business to warfare to biology.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1945 (age 42)</div><div class="tl-text">Key contributor to the <strong>Manhattan Project</strong>, developing the atomic bomb. Also wrote the revolutionary <strong>"First Draft of a Report on the EDVAC"</strong> — the blueprint describing the architecture that virtually ALL modern computers use today.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1949 (age 46)</div><div class="tl-text">Helped design one of the first programmable computers (EDVAC/ENIAC). Proved that <strong>computer programs could self-replicate</strong> — predicting computer viruses and biological computing decades before either existed!</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1957 (age 53)</div><div class="tl-text">Passed away in Washington, D.C. Even on his deathbed, he was doing math and advising the military. One of the greatest minds in human history, his influence shaped the modern world.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — GAME THEORY
+     ═══════════════════════════════════════════ -->
+<section id="sec-gametheory">
+  <!-- ROCK-PAPER-SCISSORS GAME -->
+  <div class="card">
+    <h2>Game Theory — The Math of Strategy</h2>
+    <p class="sub">Von Neumann proved that in any two-player game, there's always a best strategy. Let's explore!</p>
+
+    <h3 style="font-size:18px;margin-top:20px;margin-bottom:12px;color:var(--accent)">Rock-Paper-Scissors: The Optimal Game</h3>
+    <div class="game-container">
+      <div class="game-side">
+        <p style="margin-bottom:16px;font-size:14px;">Pick your move! The AI plays randomly.</p>
+        <div class="rps-buttons">
+          <button class="rps-btn" onclick="playRPS('rock')">✊<br>Rock</button>
+          <button class="rps-btn" onclick="playRPS('paper')">✋<br>Paper</button>
+          <button class="rps-btn" onclick="playRPS('scissors')">✌️<br>Scissors</button>
+        </div>
+        <div class="result-box" id="rpsResult" style="display:none"></div>
+      </div>
+      <div class="game-side">
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div class="score-board" style="flex:1">
+            <div class="score-label">You</div>
+            <div class="score-value" id="rpsPlayerScore">0</div>
+          </div>
+          <div class="score-board" style="flex:1">
+            <div class="score-label">AI</div>
+            <div class="score-value" id="rpsAIScore">0</div>
+          </div>
+          <div class="score-board" style="flex:1">
+            <div class="score-label">Ties</div>
+            <div class="score-value" id="rpsTieScore">0</div>
+          </div>
+        </div>
+        <button class="rps-btn" style="max-width:none;background:rgba(123,104,238,.15);color:var(--dim);margin-bottom:16px" onclick="resetRPS()">Reset Scores</button>
+      </div>
+    </div>
+
+    <div class="explain-box">
+      <strong>Von Neumann's Minimax Theorem:</strong> In a zero-sum game, you should assume your opponent plays perfectly. In Rock-Paper-Scissors, the optimal strategy is to play <strong>completely randomly</strong> — each option exactly 1/3 of the time. Any pattern can be exploited! If you always play Rock, your opponent learns this and always plays Paper. But if you mix it up randomly, they can't predict you.
+    </div>
+  </div>
+
+  <!-- PRISONER'S DILEMMA GAME -->
+  <div class="card">
+    <h2>The Prisoner's Dilemma</h2>
+    <p class="sub">Why is cooperation hard? Von Neumann's game theory has the answer.</p>
+
+    <p style="margin-bottom:16px;font-size:14px;">You play against a "Tit-for-Tat" AI. It starts by cooperating, then copies your last move. What will you do?</p>
+
+    <div class="game-container">
+      <div class="game-side">
+        <div class="pd-buttons">
+          <button class="pd-btn cooperate" onclick="playPD('cooperate')">Cooperate</button>
+          <button class="pd-btn betray" onclick="playPD('betray')">Betray</button>
+        </div>
+        <div class="pd-score">Round <span id="pdRound">1</span> / 10</div>
+        <div style="font-size:12px;color:var(--dim);margin-bottom:12px;text-align:center" id="pdStatus">Click a button to start!</div>
+      </div>
+      <div class="game-side">
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div class="score-board" style="flex:1">
+            <div class="score-label">Your Total</div>
+            <div class="score-value" id="pdPlayerTotal">0</div>
+          </div>
+          <div class="score-board" style="flex:1">
+            <div class="score-label">AI Total</div>
+            <div class="score-value" id="pdAITotal">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(123,104,238,.06);border-radius:12px;padding:16px;margin-top:16px;margin-bottom:16px;font-size:13px">
+      <strong>The Payoff Matrix:</strong> If <strong>both cooperate</strong>: +3 points each. If <strong>both betray</strong>: +1 point each. If <strong>one betrays</strong>: betrayer gets +5, the other gets 0.
+    </div>
+
+    <div class="explain-box">
+      <strong>The Key Insight:</strong> The Prisoner's Dilemma shows why cooperation is hard. In a one-shot game, betrayal is mathematically "rational" — you always do better by betraying. But in <strong>repeated games</strong>, strategies like Tit-for-Tat (copy what the other player did last time) lead to mutual cooperation, which is better for everyone! This applies to everything from business partnerships to evolution to international relations.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — COMPUTER ARCHITECTURE
+     ═══════════════════════════════════════════ -->
+<section id="sec-architecture">
+  <div class="card">
+    <h2>Von Neumann Architecture — The Blueprint for Every Computer</h2>
+    <p class="sub">Before von Neumann, computers were "programmed" by physically rewiring them. He had a better idea.</p>
+
+    <div style="margin-bottom:20px">
+      <p style="margin-bottom:16px;font-size:14px;">Click the button below to animate how a computer follows instructions. Watch each component light up as it processes the program!</p>
+      <button class="step-btn" onclick="stepArchitecture()">Next Step</button>
+      <button style="background:rgba(123,104,238,.15);color:var(--dim)" class="step-btn" onclick="resetArchitecture()">Reset</button>
+    </div>
+
+    <div class="arch-canvas-wrapper">
+      <canvas id="archCanvas" width="700" height="400"></canvas>
+    </div>
+
+    <div style="background:rgba(123,104,238,.08);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px">
+      <strong>Current Instruction:</strong> <span id="archInstruction" style="color:var(--accent);font-weight:700">LOAD 5</span>
+    </div>
+
+    <div class="explain-box">
+      <strong>Von Neumann's Key Insight:</strong> Store the <strong>PROGRAM in the same memory as the data</strong>. Before this, "programming" meant physically rewiring the machine with cables and switches! This single idea is why you can <strong>install apps on your phone</strong> — the program is just data in memory. Every computer, phone, and game console today uses this architecture. It's the foundation of everything digital.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — FUN FACTS
+     ═══════════════════════════════════════════ -->
+<section id="sec-facts">
+  <div class="card">
+    <h2>Mind-Blowing von Neumann Facts</h2>
+    <p class="sub">This guy was unreal.</p>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-icon">🧒</div>
+        <div class="fact-title">8-Digit Calculator at Age 6</div>
+        <div class="fact-text">By age 6, he could multiply 8-digit numbers in his head and joke with his father in Ancient Greek. He was already operating on a different level from everyone else.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">📚</div>
+        <div class="fact-title">Photographic Memory</div>
+        <div class="fact-text">He had a legendary photographic memory — he could recite entire books word-for-word after reading them once. Imagine uploading a file directly to your brain!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🚗</div>
+        <div class="fact-title">Terrible Driver</div>
+        <div class="fact-text">Despite his genius, he was a notoriously terrible driver! He got in so many car crashes that one intersection in Princeton was informally called "von Neumann corner." Math powers don't include driving skills.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🎉</div>
+        <div class="fact-title">Life of the Party</div>
+        <div class="fact-text">He loved throwing huge parties and was known as the life of the party — not your typical mathematician stereotype! He could switch from abstract math to telling hilarious jokes instantly.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">💣</div>
+        <div class="fact-title">Manhattan Project Designer</div>
+        <div class="fact-text">He helped design the implosion mechanism for the atomic bomb during the Manhattan Project. His calculations were critical to getting the physics exactly right.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🤖</div>
+        <div class="fact-title">Predicted Self-Replicating Machines</div>
+        <div class="fact-text">He predicted that computers would eventually be able to reproduce themselves — like biological organisms. He was essentially predicting computer viruses and artificial life, decades before the internet!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🌤️</div>
+        <div class="fact-title">Weather Prediction Pioneer</div>
+        <div class="fact-text">He helped create the first computer weather simulations on ENIAC, starting the entire field of numerical weather forecasting. Modern meteorologists owe him a debt!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🧮</div>
+        <div class="fact-title">Faster Than Calculators</div>
+        <div class="fact-text">He could do complex calculus problems faster in his head than most people could with a calculator. His mental math was legendary — colleagues were genuinely baffled.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🎯</div>
+        <div class="fact-title">Minimax in AI & Poker</div>
+        <div class="fact-text">His minimax theorem is used today in chess computers, poker AI, and even business strategy. AlphaGo uses principles he discovered to beat world champions.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🏛️</div>
+        <div class="fact-title">Government Advisor</div>
+        <div class="fact-text">He advised the US government on everything from nuclear strategy to early computer development. He was essentially the chief scientist of the Cold War.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">📊</div>
+        <div class="fact-title">Invented the Monte Carlo Method</div>
+        <div class="fact-text">He helped create the Monte Carlo method — using random numbers to solve hard math problems. It's named after the famous casino, and it's now used everywhere in science and finance!</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🧬</div>
+        <div class="fact-title">Self-Replicating Automata</div>
+        <div class="fact-text">His work on self-replicating automata influenced the study of artificial life and DNA computing. He was thinking about biological computation before DNA was even understood!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — QUIZ
+     ═══════════════════════════════════════════ -->
+<section id="sec-quiz">
+  <div class="card">
+    <h2>Test Your von Neumann Knowledge</h2>
+    <p class="sub">Can you answer these questions about the man who basically invented the modern computer?</p>
+
+    <div class="quiz-area" id="quizContainer">
+      <!-- Quiz questions will be inserted here -->
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center;padding:30px 20px 50px;color:var(--dim);font-size:13px;">
+  Portrait: Los Alamos Laboratory (public domain via Wikimedia Commons)<br>
+  Built with math and curiosity.
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════ */
+function show(id,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+id).classList.add('visible');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(id==='quiz')initQuiz();
+}
+
+/* ═══════════════════════════════════════
+   ROCK-PAPER-SCISSORS GAME
+   ═══════════════════════════════════════ */
+let rpsStats={player:0,ai:0,ties:0};
+
+function playRPS(playerMove){
+  const moves=['rock','paper','scissors'];
+  const aiMove=moves[Math.floor(Math.random()*3)];
+  let result='';
+  let resultClass='';
+
+  if(playerMove===aiMove){
+    result=`Tie! You both played ${playerMove}!`;
+    resultClass='tie';
+    rpsStats.ties++;
+  }else if(
+    (playerMove==='rock'&&aiMove==='scissors')||
+    (playerMove==='paper'&&aiMove==='rock')||
+    (playerMove==='scissors'&&aiMove==='paper')
+  ){
+    result=`You win! ${playerMove} beats ${aiMove}!`;
+    resultClass='win';
+    rpsStats.player++;
+  }else{
+    result=`You lose! ${aiMove} beats ${playerMove}!`;
+    resultClass='lose';
+    rpsStats.ai++;
+  }
+
+  const resultEl=document.getElementById('rpsResult');
+  resultEl.textContent=result;
+  resultEl.className='result-box '+resultClass;
+  resultEl.style.display='flex';
+
+  document.getElementById('rpsPlayerScore').textContent=rpsStats.player;
+  document.getElementById('rpsAIScore').textContent=rpsStats.ai;
+  document.getElementById('rpsTieScore').textContent=rpsStats.ties;
+}
+
+function resetRPS(){
+  rpsStats={player:0,ai:0,ties:0};
+  document.getElementById('rpsPlayerScore').textContent='0';
+  document.getElementById('rpsAIScore').textContent='0';
+  document.getElementById('rpsTieScore').textContent='0';
+  document.getElementById('rpsResult').style.display='none';
+}
+
+/* ═══════════════════════════════════════
+   PRISONER'S DILEMMA GAME
+   ═══════════════════════════════════════ */
+let pdState={round:0,playerTotal:0,aiTotal:0,playerLast:null,aiLast:null};
+
+function playPD(playerMove){
+  if(pdState.round>=10){
+    document.getElementById('pdStatus').textContent='Game Over! Play again.';
+    return;
+  }
+
+  pdState.round++;
+  let aiMove;
+
+  if(pdState.round===1){
+    aiMove='cooperate';
+  }else{
+    aiMove=pdState.playerLast;
+  }
+
+  let playerPoints=0,aiPoints=0;
+
+  if(playerMove==='cooperate'&&aiMove==='cooperate'){
+    playerPoints=3;aiPoints=3;
+  }else if(playerMove==='cooperate'&&aiMove==='betray'){
+    playerPoints=0;aiPoints=5;
+  }else if(playerMove==='betray'&&aiMove==='cooperate'){
+    playerPoints=5;aiPoints=0;
+  }else{
+    playerPoints=1;aiPoints=1;
+  }
+
+  pdState.playerTotal+=playerPoints;
+  pdState.aiTotal+=aiPoints;
+  pdState.playerLast=playerMove;
+  pdState.aiLast=aiMove;
+
+  document.getElementById('pdRound').textContent=pdState.round+1;
+  document.getElementById('pdPlayerTotal').textContent=pdState.playerTotal;
+  document.getElementById('pdAITotal').textContent=pdState.aiTotal;
+  document.getElementById('pdStatus').textContent=
+    `You ${playerMove}ed, AI ${aiMove}ed. You: +${playerPoints}, AI: +${aiPoints}`;
+
+  if(pdState.round===10){
+    document.getElementById('pdStatus').innerHTML+=
+      `<br><strong>${pdState.playerTotal>pdState.aiTotal?'You won!':pdState.playerTotal===pdState.aiTotal?'Tie!':'You lost.'}</strong> <button class="rps-btn" style="margin-top:12px;max-width:none;font-size:14px;padding:8px 16px" onclick="resetPD()">Play Again</button>`;
+  }
+}
+
+function resetPD(){
+  pdState={round:0,playerTotal:0,aiTotal:0,playerLast:null,aiLast:null};
+  document.getElementById('pdRound').textContent='1';
+  document.getElementById('pdPlayerTotal').textContent='0';
+  document.getElementById('pdAITotal').textContent='0';
+  document.getElementById('pdStatus').textContent='Click a button to start!';
+}
+
+/* ═══════════════════════════════════════
+   COMPUTER ARCHITECTURE DIAGRAM
+   ═══════════════════════════════════════ */
+const archCanvas=document.getElementById('archCanvas');
+const archCtx=archCanvas.getContext('2d');
+
+const archInstructions=['LOAD 5','ADD 3','STORE result','HALT'];
+let archStep=0;
+
+function drawArchitecture(){
+  archCtx.clearRect(0,0,700,400);
+
+  const boxes=[
+    {x:50,y:80,w:120,h:80,label:'Memory\n(RAM)',key:'memory'},
+    {x:260,y:80,w:120,h:80,label:'Control\nUnit',key:'control'},
+    {x:470,y:80,w:120,h:80,label:'ALU\n(Math Unit)',key:'alu'},
+    {x:260,y:220,w:120,h:80,label:'Input/\nOutput',key:'io'}
+  ];
+
+  const highlight=archStep%4;
+
+  boxes.forEach((box,idx)=>{
+    if(idx===highlight){
+      archCtx.fillStyle='rgba(245,216,99,.25)';
+      archCtx.strokeStyle='#f5d863';
+      archCtx.lineWidth=3;
+    }else{
+      archCtx.fillStyle='rgba(123,104,238,.06)';
+      archCtx.strokeStyle='rgba(123,104,238,.3)';
+      archCtx.lineWidth=2;
+    }
+    archCtx.fillRect(box.x,box.y,box.w,box.h);
+    archCtx.strokeRect(box.x,box.y,box.w,box.h);
+
+    archCtx.fillStyle='#e8e4d9';
+    archCtx.font='bold 14px sans-serif';
+    archCtx.textAlign='center';
+    archCtx.textBaseline='middle';
+    const lines=box.label.split('\n');
+    lines.forEach((line,li)=>{
+      archCtx.fillText(line,box.x+box.w/2,box.y+box.h/2+(li-(lines.length-1)/2)*18);
+    });
+  });
+
+  const arrows=[
+    {from:[50+120,80+40],to:[260,80+40],label:'Fetch'},
+    {from:[260+60,80+80],to:[470+60,80],label:'Execute'},
+    {from:[470,80+40],to:[260+120,80+40],label:'Store'},
+    {from:[260+60,220],to:[260+60,160],label:'Result'}
+  ];
+
+  arrows.forEach((arr,idx)=>{
+    archCtx.strokeStyle=idx===highlight?'#f5d863':'rgba(80,227,194,.4)';
+    archCtx.lineWidth=idx===highlight?3:2;
+    archCtx.beginPath();
+    archCtx.moveTo(arr.from[0],arr.from[1]);
+    archCtx.lineTo(arr.to[0],arr.to[1]);
+    archCtx.stroke();
+
+    archCtx.fillStyle='#9ca898';
+    archCtx.font='12px sans-serif';
+    const mx=(arr.from[0]+arr.to[0])/2;
+    const my=(arr.from[1]+arr.to[1])/2;
+    archCtx.textAlign='center';
+    archCtx.fillText(arr.label,mx,my-8);
+  });
+}
+
+function stepArchitecture(){
+  if(archStep<archInstructions.length){
+    document.getElementById('archInstruction').textContent=archInstructions[archStep];
+  }
+  archStep=(archStep+1)%(archInstructions.length*2);
+  drawArchitecture();
+}
+
+function resetArchitecture(){
+  archStep=0;
+  document.getElementById('archInstruction').textContent='LOAD 5';
+  drawArchitecture();
+}
+
+drawArchitecture();
+
+/* ═══════════════════════════════════════
+   QUIZ SYSTEM
+   ═══════════════════════════════════════ */
+const quizQuestions=[
+  {q:'Where was von Neumann born?',opts:['Vienna, Austria','Budapest, Hungary','Prague, Czech Republic','Berlin, Germany'],correct:1},
+  {q:'What could von Neumann do by age 6?',opts:['Speak 5 languages','Play violin','Divide 8-digit numbers in his head','Solve calculus problems'],correct:2},
+  {q:'What field did von Neumann create with Oskar Morgenstern?',opts:['Computer Science','Game Theory','Quantum Mechanics','Graph Theory'],correct:1},
+  {q:'What is the "von Neumann architecture"?',opts:['A building design','Storing programs in the same memory as data','A type of quantum computer','A chess strategy'],correct:1},
+  {q:'In Rock-Paper-Scissors, what is the optimal strategy according to game theory?',opts:['Always play Rock','Always play the opponent\'s last move','Play completely randomly','Play in a pattern'],correct:2},
+  {q:'What famous wartime project did von Neumann work on?',opts:['The Nazi V-2 Rocket','The Manhattan Project','The Enigma code','The Turing Machine'],correct:1},
+  {q:'What method named after a casino did von Neumann help create?',opts:['The Roulette Method','The Monte Carlo Method','The Blackjack Algorithm','The Poker Strategy'],correct:1},
+  {q:'What was von Neumann notoriously bad at?',opts:['Public speaking','Mathematics','Driving a car','Writing papers'],correct:2},
+  {q:'What did von Neumann predict computers would eventually do?',opts:['Become smarter than humans','Reproduce themselves','Run out of memory','Control the internet'],correct:1},
+  {q:'Who was von Neumann\'s famous colleague at Princeton?',opts:['Stephen Hawking','Albert Einstein','Isaac Newton','Marie Curie'],correct:1}
+];
+
+let quizCurrent=0,quizScore=0,quizShuffled=[],quizAnswered=[];
+
+function initQuiz(){
+  quizCurrent=0;quizScore=0;quizAnswered=[];
+  quizShuffled=[...quizQuestions].sort(()=>Math.random()-0.5).slice(0,10);
+  showQuizQuestion();
+}
+
+function showQuizQuestion(){
+  const container=document.getElementById('quizContainer');
+  if(quizCurrent>=quizShuffled.length){
+    const pct=Math.round(quizScore/quizShuffled.length*100);
+    let msg='';
+    if(pct===100)msg='Perfect! You\'re a von Neumann expert!';
+    else if(pct>=80)msg='Excellent! You really know your stuff!';
+    else if(pct>=60)msg='Good job! You understand von Neumann\'s work.';
+    else if(pct>=40)msg='Not bad! Keep learning about this genius.';
+    else msg='Want to try again? Read through His Story first!';
+
+    container.innerHTML=`<div class="quiz-score"><div class="big">${quizScore}/${quizShuffled.length}</div><div class="msg">${msg}</div><button class="quiz-restart" onclick="initQuiz()">Try Again</button></div>`;
+    return;
+  }
+
+  const q=quizShuffled[quizCurrent];
+  const opts=[...q.opts].sort(()=>Math.random()-0.5);
+
+  let html=`<div class="q-card"><div class="q-num">Question ${quizCurrent+1} / ${quizShuffled.length}</div><div class="q-text">${q.q}</div><div class="q-opts">`;
+
+  opts.forEach((opt,i)=>{
+    const isCorrect=opt===q.opts[q.correct];
+    html+=`<div class="q-opt" onclick="answerQuiz(this,${isCorrect})">${opt}</div>`;
+  });
+
+  html+=`</div></div>`;
+  container.innerHTML=html;
+}
+
+function answerQuiz(el,correct){
+  document.querySelectorAll('.q-opt').forEach(o=>o.classList.add('disabled'));
+  if(correct){
+    el.classList.add('correct');
+    quizScore++;
+  }else{
+    el.classList.add('wrong');
+  }
+  quizCurrent++;
+  setTimeout(showQuizQuestion,1000);
+}
+
+</script>
+</body>
+</html>
